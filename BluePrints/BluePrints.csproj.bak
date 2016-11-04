@@ -1,0 +1,670 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3824191A-1EA6-471E-A7EF-9930FF121E25}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BluePrints</RootNamespace>
+    <AssemblyName>BluePrints</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Images.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Mvvm.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v15.2.Core, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Controls.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Core.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Docking.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v15.2.Core, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Layout.v15.2.Core, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.LayoutControl.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.NavBar.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Printing.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.ReportDesigner.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Ribbon.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="BluePrintsEntitiesDataModel\BluePrintsEntitiesUnitOfWork.cs" />
+    <Compile Include="BluePrintsEntitiesDataModel\DesignTimeBluePrintsEntitiesUnitOfWork.cs" />
+    <Compile Include="BluePrintsEntitiesDataModel\IBluePrintsEntitiesUnitOfWork.cs" />
+    <Compile Include="BluePrintsEntitiesDataModel\UnitOfWorkSource.cs" />
+    <Compile Include="Common\CommonResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CommonResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Common\DataModel\DbExceptions.cs" />
+    <Compile Include="Common\DataModel\DesignTime\DesignTimeInstantFeedbackSource.cs" />
+    <Compile Include="Common\DataModel\DesignTime\DesignTimeReadOnlyRepository.cs" />
+    <Compile Include="Common\DataModel\DesignTime\DesignTimeRepository.cs" />
+    <Compile Include="Common\DataModel\DesignTime\DesignTimeUnitOfWork.cs" />
+    <Compile Include="Common\DataModel\DesignTime\DesignTimeUnitOfWorkFactory.cs" />
+    <Compile Include="Common\DataModel\EntityFramework\DbExceptionsConverter.cs" />
+    <Compile Include="Common\DataModel\EntityFramework\DbReadOnlyRepository.cs" />
+    <Compile Include="Common\DataModel\EntityFramework\DbRepository.cs" />
+    <Compile Include="Common\DataModel\EntityFramework\DbUnitOfWork.cs" />
+    <Compile Include="Common\DataModel\EntityFramework\DbUnitOfWorkFactory.cs" />
+    <Compile Include="Common\DataModel\EntityFramework\InstantFeedbackSource.cs" />
+    <Compile Include="Common\DataModel\EntityState.cs" />
+    <Compile Include="Common\DataModel\IReadOnlyRepository.cs" />
+    <Compile Include="Common\DataModel\IRepository.cs" />
+    <Compile Include="Common\DataModel\IUnitOfWork.cs" />
+    <Compile Include="Common\DataModel\UnitOfWorkBase.cs" />
+    <Compile Include="Common\LayoutSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>LayoutSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Common\Utils\DbExtensions.cs" />
+    <Compile Include="Common\Utils\ExpressionHelper.cs" />
+    <Compile Include="Common\ViewModel\AddRemoveDetailEntitiesViewModel.cs" />
+    <Compile Include="Common\ViewModel\AddRemoveJunctionDetailEntitiesViewModel.cs" />
+    <Compile Include="Common\ViewModel\CollectionViewModel.cs" />
+    <Compile Include="Common\ViewModel\DocumentManagerServiceExtensions.cs" />
+    <Compile Include="Common\ViewModel\DocumentsViewModel.cs" />
+    <Compile Include="Common\ViewModel\EntitiesViewModel.cs" />
+    <Compile Include="Common\ViewModel\InstantFeedbackCollectionViewModel.cs" />
+    <Compile Include="Common\ViewModel\ISingleObjectViewModel.cs" />
+    <Compile Include="Common\ViewModel\LookUpEntitiesViewModel.cs" />
+    <Compile Include="Common\ViewModel\Messages.cs" />
+    <Compile Include="Common\ViewModel\PeekCollectionViewModel.cs" />
+    <Compile Include="Common\ViewModel\PersistentLayoutHelper.cs" />
+    <Compile Include="Common\ViewModel\ReadOnlyCollectionViewModel.cs" />
+    <Compile Include="Common\ViewModel\SingleObjectViewModel.cs" />
+    <Compile Include="ViewModels\AREA\AREACollectionViewModel.cs" />
+    <Compile Include="ViewModels\AREA\AREAViewModel.cs" />
+    <Compile Include="ViewModels\BASELINE\BASELINECollectionViewModel.cs" />
+    <Compile Include="ViewModels\BASELINE\BASELINEViewModel.cs" />
+    <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMCollectionViewModel.cs" />
+    <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMViewModel.cs" />
+    <Compile Include="ViewModels\BluePrintsEntitiesViewModel.cs" />
+    <Compile Include="ViewModels\COMMODITY\COMMODITYCollectionViewModel.cs" />
+    <Compile Include="ViewModels\COMMODITY\COMMODITYViewModel.cs" />
+    <Compile Include="ViewModels\COMMODITY_CODE\COMMODITY_CODECollectionViewModel.cs" />
+    <Compile Include="ViewModels\COMMODITY_CODE\COMMODITY_CODEViewModel.cs" />
+    <Compile Include="ViewModels\DEPARTMENT\DEPARTMENTCollectionViewModel.cs" />
+    <Compile Include="ViewModels\DEPARTMENT\DEPARTMENTViewModel.cs" />
+    <Compile Include="ViewModels\DISCIPLINE\DISCIPLINECollectionViewModel.cs" />
+    <Compile Include="ViewModels\DISCIPLINE\DISCIPLINEViewModel.cs" />
+    <Compile Include="ViewModels\DOCTYPE\DOCTYPECollectionViewModel.cs" />
+    <Compile Include="ViewModels\DOCTYPE\DOCTYPEViewModel.cs" />
+    <Compile Include="ViewModels\ESTIMATION\ESTIMATIONCollectionViewModel.cs" />
+    <Compile Include="ViewModels\ESTIMATION\ESTIMATIONViewModel.cs" />
+    <Compile Include="ViewModels\ESTIMATION_ITEM\ESTIMATION_ITEMCollectionViewModel.cs" />
+    <Compile Include="ViewModels\ESTIMATION_ITEM\ESTIMATION_ITEMViewModel.cs" />
+    <Compile Include="ViewModels\PHASE\PHASECollectionViewModel.cs" />
+    <Compile Include="ViewModels\PHASE\PHASEViewModel.cs" />
+    <Compile Include="ViewModels\PROGRESS\PROGRESSCollectionViewModel.cs" />
+    <Compile Include="ViewModels\PROGRESS\PROGRESSViewModel.cs" />
+    <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMCollectionViewModel.cs" />
+    <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMViewModel.cs" />
+    <Compile Include="ViewModels\PROJECT\PROJECTCollectionViewModel.cs" />
+    <Compile Include="ViewModels\PROJECT\PROJECTViewModel.cs" />
+    <Compile Include="ViewModels\PROJECT_REPORT\PROJECT_REPORTCollectionViewModel.cs" />
+    <Compile Include="ViewModels\PROJECT_REPORT\PROJECT_REPORTViewModel.cs" />
+    <Compile Include="ViewModels\RATE\RATECollectionViewModel.cs" />
+    <Compile Include="ViewModels\RATE\RATEViewModel.cs" />
+    <Compile Include="ViewModels\REGISTER\REGISTERCollectionViewModel.cs" />
+    <Compile Include="ViewModels\REGISTER\REGISTERViewModel.cs" />
+    <Compile Include="ViewModels\ROLE\ROLECollectionViewModel.cs" />
+    <Compile Include="ViewModels\ROLE\ROLEViewModel.cs" />
+    <Compile Include="ViewModels\ROLE_PERMISSION\ROLE_PERMISSIONCollectionViewModel.cs" />
+    <Compile Include="ViewModels\ROLE_PERMISSION\ROLE_PERMISSIONViewModel.cs" />
+    <Compile Include="ViewModels\SETTINGS_GLOBAL\SETTINGS_GLOBALCollectionViewModel.cs" />
+    <Compile Include="ViewModels\SETTINGS_GLOBAL\SETTINGS_GLOBALViewModel.cs" />
+    <Compile Include="ViewModels\UOM\UOMCollectionViewModel.cs" />
+    <Compile Include="ViewModels\UOM\UOMViewModel.cs" />
+    <Compile Include="ViewModels\USER\USERCollectionViewModel.cs" />
+    <Compile Include="ViewModels\USER\USERViewModel.cs" />
+    <Compile Include="ViewModels\VARIATION\VARIATIONCollectionViewModel.cs" />
+    <Compile Include="ViewModels\VARIATION\VARIATIONViewModel.cs" />
+    <Compile Include="ViewModels\VARIATION_ITEM\VARIATION_ITEMCollectionViewModel.cs" />
+    <Compile Include="ViewModels\VARIATION_ITEM\VARIATION_ITEMViewModel.cs" />
+    <Compile Include="ViewModels\WORKPACK\WORKPACKCollectionViewModel.cs" />
+    <Compile Include="ViewModels\WORKPACK\WORKPACKViewModel.cs" />
+    <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTCollectionViewModel.cs" />
+    <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTViewModel.cs" />
+    <Compile Include="Views\AREA\AREACollectionView.xaml.cs">
+      <DependentUpon>AREACollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AREA\AREAView.xaml.cs">
+      <DependentUpon>AREAView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BASELINE\BASELINECollectionView.xaml.cs">
+      <DependentUpon>BASELINECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BASELINE\BASELINEView.xaml.cs">
+      <DependentUpon>BASELINEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BASELINE_ITEM\BASELINE_ITEMCollectionView.xaml.cs">
+      <DependentUpon>BASELINE_ITEMCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BASELINE_ITEM\BASELINE_ITEMView.xaml.cs">
+      <DependentUpon>BASELINE_ITEMView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BluePrintsEntitiesView.xaml.cs">
+      <DependentUpon>BluePrintsEntitiesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\COMMODITY\COMMODITYCollectionView.xaml.cs">
+      <DependentUpon>COMMODITYCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\COMMODITY\COMMODITYView.xaml.cs">
+      <DependentUpon>COMMODITYView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\COMMODITY_CODE\COMMODITY_CODECollectionView.xaml.cs">
+      <DependentUpon>COMMODITY_CODECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\COMMODITY_CODE\COMMODITY_CODEView.xaml.cs">
+      <DependentUpon>COMMODITY_CODEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DEPARTMENT\DEPARTMENTCollectionView.xaml.cs">
+      <DependentUpon>DEPARTMENTCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DEPARTMENT\DEPARTMENTView.xaml.cs">
+      <DependentUpon>DEPARTMENTView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DISCIPLINE\DISCIPLINECollectionView.xaml.cs">
+      <DependentUpon>DISCIPLINECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DISCIPLINE\DISCIPLINEView.xaml.cs">
+      <DependentUpon>DISCIPLINEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DOCTYPE\DOCTYPECollectionView.xaml.cs">
+      <DependentUpon>DOCTYPECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DOCTYPE\DOCTYPEView.xaml.cs">
+      <DependentUpon>DOCTYPEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ESTIMATION\ESTIMATIONCollectionView.xaml.cs">
+      <DependentUpon>ESTIMATIONCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ESTIMATION\ESTIMATIONView.xaml.cs">
+      <DependentUpon>ESTIMATIONView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ESTIMATION_ITEM\ESTIMATION_ITEMCollectionView.xaml.cs">
+      <DependentUpon>ESTIMATION_ITEMCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ESTIMATION_ITEM\ESTIMATION_ITEMView.xaml.cs">
+      <DependentUpon>ESTIMATION_ITEMView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PHASE\PHASECollectionView.xaml.cs">
+      <DependentUpon>PHASECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PHASE\PHASEView.xaml.cs">
+      <DependentUpon>PHASEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROGRESS\PROGRESSCollectionView.xaml.cs">
+      <DependentUpon>PROGRESSCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROGRESS\PROGRESSView.xaml.cs">
+      <DependentUpon>PROGRESSView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROGRESS_ITEM\PROGRESS_ITEMCollectionView.xaml.cs">
+      <DependentUpon>PROGRESS_ITEMCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROGRESS_ITEM\PROGRESS_ITEMView.xaml.cs">
+      <DependentUpon>PROGRESS_ITEMView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROJECT\PROJECTCollectionView.xaml.cs">
+      <DependentUpon>PROJECTCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROJECT\PROJECTView.xaml.cs">
+      <DependentUpon>PROJECTView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROJECT_REPORT\PROJECT_REPORTCollectionView.xaml.cs">
+      <DependentUpon>PROJECT_REPORTCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PROJECT_REPORT\PROJECT_REPORTView.xaml.cs">
+      <DependentUpon>PROJECT_REPORTView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RATE\RATECollectionView.xaml.cs">
+      <DependentUpon>RATECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RATE\RATEView.xaml.cs">
+      <DependentUpon>RATEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\REGISTER\REGISTERCollectionView.xaml.cs">
+      <DependentUpon>REGISTERCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\REGISTER\REGISTERView.xaml.cs">
+      <DependentUpon>REGISTERView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ROLE\ROLECollectionView.xaml.cs">
+      <DependentUpon>ROLECollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ROLE\ROLEView.xaml.cs">
+      <DependentUpon>ROLEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ROLE_PERMISSION\ROLE_PERMISSIONCollectionView.xaml.cs">
+      <DependentUpon>ROLE_PERMISSIONCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ROLE_PERMISSION\ROLE_PERMISSIONView.xaml.cs">
+      <DependentUpon>ROLE_PERMISSIONView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SETTINGS_GLOBAL\SETTINGS_GLOBALCollectionView.xaml.cs">
+      <DependentUpon>SETTINGS_GLOBALCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SETTINGS_GLOBAL\SETTINGS_GLOBALView.xaml.cs">
+      <DependentUpon>SETTINGS_GLOBALView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UOM\UOMCollectionView.xaml.cs">
+      <DependentUpon>UOMCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UOM\UOMView.xaml.cs">
+      <DependentUpon>UOMView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\USER\USERCollectionView.xaml.cs">
+      <DependentUpon>USERCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\USER\USERView.xaml.cs">
+      <DependentUpon>USERView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VARIATION\VARIATIONCollectionView.xaml.cs">
+      <DependentUpon>VARIATIONCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VARIATION\VARIATIONView.xaml.cs">
+      <DependentUpon>VARIATIONView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VARIATION_ITEM\VARIATION_ITEMCollectionView.xaml.cs">
+      <DependentUpon>VARIATION_ITEMCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VARIATION_ITEM\VARIATION_ITEMView.xaml.cs">
+      <DependentUpon>VARIATION_ITEMView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WORKPACK\WORKPACKCollectionView.xaml.cs">
+      <DependentUpon>WORKPACKCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WORKPACK\WORKPACKView.xaml.cs">
+      <DependentUpon>WORKPACKView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTCollectionView.xaml.cs">
+      <DependentUpon>WORKPACK_ASSIGNMENTCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTView.xaml.cs">
+      <DependentUpon>WORKPACK_ASSIGNMENTView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\AREA.cs" />
+    <Compile Include="Data\BASELINE.cs" />
+    <Compile Include="Data\BASELINE_ITEM.cs" />
+    <Compile Include="Data\BluePrintsEntities.cs" />
+    <Compile Include="Data\COMMODITY.cs" />
+    <Compile Include="Data\COMMODITY_CODE.cs" />
+    <Compile Include="Data\DEPARTMENT.cs" />
+    <Compile Include="Data\DISCIPLINE.cs" />
+    <Compile Include="Data\DOCTYPE.cs" />
+    <Compile Include="Data\ESTIMATION.cs" />
+    <Compile Include="Data\ESTIMATION_ITEM.cs" />
+    <Compile Include="Data\PHASE.cs" />
+    <Compile Include="Data\PROGRESS.cs" />
+    <Compile Include="Data\PROGRESS_ITEM.cs" />
+    <Compile Include="Data\PROJECT.cs" />
+    <Compile Include="Data\PROJECT_REPORT.cs" />
+    <Compile Include="Data\RATE.cs" />
+    <Compile Include="Data\REGISTER.cs" />
+    <Compile Include="Data\ROLE.cs" />
+    <Compile Include="Data\ROLE_PERMISSION.cs" />
+    <Compile Include="Data\SETTINGS_GLOBAL.cs" />
+    <Compile Include="Data\UOM.cs" />
+    <Compile Include="Data\USER.cs" />
+    <Compile Include="Data\VARIATION.cs" />
+    <Compile Include="Data\VARIATION_ITEM.cs" />
+    <Compile Include="Data\WORKPACK.cs" />
+    <Compile Include="Data\WORKPACK_ASSIGNMENT.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Views\AREA\AREACollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AREA\AREAView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BASELINE\BASELINECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BASELINE\BASELINEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BASELINE_ITEM\BASELINE_ITEMCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BASELINE_ITEM\BASELINE_ITEMView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BluePrintsEntitiesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\COMMODITY\COMMODITYCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\COMMODITY\COMMODITYView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\COMMODITY_CODE\COMMODITY_CODECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\COMMODITY_CODE\COMMODITY_CODEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DEPARTMENT\DEPARTMENTCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DEPARTMENT\DEPARTMENTView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DISCIPLINE\DISCIPLINECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DISCIPLINE\DISCIPLINEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DOCTYPE\DOCTYPECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DOCTYPE\DOCTYPEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ESTIMATION\ESTIMATIONCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ESTIMATION\ESTIMATIONView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ESTIMATION_ITEM\ESTIMATION_ITEMCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ESTIMATION_ITEM\ESTIMATION_ITEMView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PHASE\PHASECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PHASE\PHASEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROGRESS\PROGRESSCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROGRESS\PROGRESSView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROGRESS_ITEM\PROGRESS_ITEMCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROGRESS_ITEM\PROGRESS_ITEMView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROJECT\PROJECTCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROJECT\PROJECTView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROJECT_REPORT\PROJECT_REPORTCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PROJECT_REPORT\PROJECT_REPORTView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\RATE\RATECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\RATE\RATEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\REGISTER\REGISTERCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\REGISTER\REGISTERView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ROLE\ROLECollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ROLE\ROLEView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ROLE_PERMISSION\ROLE_PERMISSIONCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ROLE_PERMISSION\ROLE_PERMISSIONView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SETTINGS_GLOBAL\SETTINGS_GLOBALCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SETTINGS_GLOBAL\SETTINGS_GLOBALView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UOM\UOMCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UOM\UOMView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\USER\USERCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\USER\USERView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VARIATION\VARIATIONCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VARIATION\VARIATIONView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VARIATION_ITEM\VARIATION_ITEMCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VARIATION_ITEM\VARIATION_ITEMView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WORKPACK\WORKPACKCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WORKPACK\WORKPACKView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Common\CommonResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommonResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Common\LayoutSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>LayoutSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
