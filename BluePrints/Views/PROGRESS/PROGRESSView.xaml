@@ -13,7 +13,7 @@
         xmlns:dxrudex="http://schemas.devexpress.com/winfx/2008/xaml/reports/userdesignerextensions"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:viewmodel="clr-namespace:BluePrints.ViewModels"
-        mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" DataContext="{dxmvvm:ViewModelSource viewmodel:PROGRESSViewModelWrapper}">
+        mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" DataContext="{dxmvvm:ViewModelSource viewmodel:PROGRESS_ITEMSViewModelWrapper}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

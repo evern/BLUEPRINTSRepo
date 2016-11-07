@@ -109,14 +109,14 @@ namespace BluePrints.Common.ViewModel.Reporting
         decimal CurrencyConversion { get; set; }
         IEnumerable<TASK> PROGRESS_TASKS { get; set; }
         BluePrints.P6Data.PROJECT PROGRESS_PROJECT = null;
-        public ProjectSummaryBuilder(SummarizableObject summaryObject, IQueryable<ReportableObject> ProgressReportables, PROGRESS LivePROGRESS, BASELINE LiveBASELINE, IBluePrintsEntitiesUnitOfWork BluePrintsUOW = null, IP6EntitiesUnitOfWork P6UOW = null)
+        public ProjectSummaryBuilder(SummarizableObject summaryObject, IEnumerable<ReportableObject> ProgressReportables, PROGRESS LivePROGRESS, BASELINE LiveBASELINE, IBluePrintsEntitiesUnitOfWork BluePrintsUOW = null, IP6EntitiesUnitOfWork P6UOW = null)
         {
             if (LivePROGRESS == null || LiveBASELINE == null)
                 return;
 
             this.CurrencyConversion = LiveBASELINE.PROJECT.CURRENCYCONVERSION;
             this.summaryObject = summaryObject;
-            this.summaryObject.ReportableObjects = ProgressReportables.ToArray().AsEnumerable();
+            this.summaryObject.ReportableObjects = ProgressReportables;
             this.summaryObject.LiveBASELINE = LiveBASELINE;
             this.summaryObject.LivePROGRESS = LivePROGRESS;
             this.summaryObject.ReportingDataDate = LivePROGRESS.DATA_DATE;

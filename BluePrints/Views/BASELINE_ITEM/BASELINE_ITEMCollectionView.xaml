@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="BluePrints.Views.BASELINE_ITEMSCollectionView"
+﻿<UserControl x:Name="userControl" x:Class="BluePrints.Views.BASELINE_ITEMCollectionView"
         xmlns="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,8 +11,9 @@
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:dxrudex="http://schemas.devexpress.com/winfx/2008/xaml/reports/userdesignerextensions"
+        xmlns:common="clr-namespace:BluePrints.Common"
         xmlns:viewmodel="clr-namespace:BluePrints.ViewModels"
-        mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" DataContext="{dxmvvm:ViewModelSource viewmodel:BASELINE_ITEMSCollectionViewModel}">
+        mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" DataContext="{dxmvvm:ViewModelSource viewmodel:BASELINE_ITEMSViewModelWrapper}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,15 +24,15 @@
     <dxmvvm:Interaction.Behaviors>
         <dx:DXMessageBoxService />
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding OnLoadedCommand}" />
-        <dxmvvm:EventToCommand Event="Unloaded" Command="{Binding OnUnloadedCommand}" />
+        <!--<dxmvvm:EventToCommand Event="Unloaded" Command="{Binding BASELINE_ITEMSJoinRATESDetails.OnUnloadedCommand}" />-->
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <DockPanel>
-            <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl DataContext="{Binding BASELINE_ITEMSJoinRATESCollectionViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
-                        <dxr:RibbonPageGroup Caption="BASELINE ITEM Tasks">
+                        <dxr:RibbonPageGroup Caption="BASELINE ITEM Tasks" >
                             <dxb:BarButtonItem Content="Delete" Command="{Binding BulkDeleteCommand}" CommandParameter="{Binding SelectedEntities}" LargeGlyph="{dx:DXImage Image=Delete_32x32.png}" Glyph="{dx:DXImage Image=Delete_16x16.png}" />
                             <dxb:BarButtonItem Content="Refresh" Command="{Binding RefreshCommand}" LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}" Glyph="{dx:DXImage Image=Refresh_16x16.png}" />
                             <dxb:BarButtonItem Content="Undo" Command="{Binding UndoCommand}" LargeGlyph="{dx:DXImage Image=Undo_32x32.png}" Glyph="{dx:DXImage Image=Undo_16x16.png}" />
@@ -49,7 +50,63 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" Style="{StaticResource DefaultGridTemplate}" ColumnsSource="{StaticResource BASELINEITEMColumns}">
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="BASELINE_ITEMSJoinRATESGrid" DataContext="{Binding BASELINE_ITEMSJoinRATESCollectionViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, ElementName=userControl, Mode=OneWay}" ValueMember="GUID"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_PHASE" Header="PHASE"  >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.PHASECollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NUM" ValueMember="GUID"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_AREA" Header="AREA" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.AREACollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NUM" ValueMember="GUID"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_DOCTYPE" Header="DOCTYPE" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.DOCTYPECollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="NAME" ValueMember="GUID"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_DISCIPLINE" Header="DISCIPLINE" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.DISCIPLINECollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="NAME" ValueMember="GUID"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_DEPARTMENT" Header="DEPARTMENT" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.DEPARTMENTCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="NAME" ValueMember="GUID"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.INTERNAL_NUM" Header="INTERNAL_NUM" />
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.CLIENT_NUM" Header="CLIENT_NUM" />
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.REVISION_NUMBER" Header="REVISION_NUM" />
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.DELIVERABLE_TYPE" Header="TYPE">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:DeliverableType}}"/>
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.PRIMARY_TITLE" Header="PRIMARY_TITLE" />
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.SECONDARY_TITLE" Header="SECONDARY_TITLE" />
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.COMMENTS" Header="COMMENTS" />
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.ESTIMATED_HOURS" Header="ESTIMATED_HOURS" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:SpinEditSettings MaskType="Numeric" Mask="n" MinValue="0" Increment="1" MaskUseAsDisplayFormat="True" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="BASELINE_ITEM.DC_HOURS" Header="DC_HOURS" ReadOnly="True" />
+                        <dxg:GridColumn FieldName="TOTAL_COSTS" Header="COSTS" AllowSearchPanel="False" >
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <dxe:TextEdit Name="PART_Editor" MaskUseAsDisplayFormat="True" MaskType="Numeric"  Mask="c" />
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+                    </dxg:GridControl.Columns>
                     <dxg:GridControl.TotalSummary>
                         <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
                     </dxg:GridControl.TotalSummary>
@@ -59,7 +116,7 @@
                     <dxg:GridControl.View>
                         <dxg:TableView Name="tableView" Style="{StaticResource DefaultTableViewTemplate}">
                             <dxmvvm:Interaction.Behaviors>
-                                <dxrudex:GridReportManagerService x:Name="BASELINE_ITEMSCollectionViewReportService" />
+                                <dxmvvm:EventToCommand Command="{Binding DataContext.CellValueChangingCommand, ElementName=userControl}" PassEventArgsToCommand="True" EventName="CellValueChanging" />
                             </dxmvvm:Interaction.Behaviors>
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Content="Fill Down" Glyph="{dx:DXImageOffice2013 Image=SortAsc_16x16.png}" Command="{Binding View.DataContext.FillDownCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />

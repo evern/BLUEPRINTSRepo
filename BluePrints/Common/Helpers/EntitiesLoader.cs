@@ -38,18 +38,28 @@ namespace BluePrints.Data.Helpers
             Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc,
             Func<Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>>> constructProjectionCallBackFunc = null,
             Type dependencyType = null,
-            Action<IEnumerable<TProjection>> collectionViewModelFirstLoadedCallBack = null,
+            Func<IEnumerable<TProjection>, bool> isContinueLoadingCallBack = null,
             Action<object, Type, EntityMessageType, object> collectionViewModelChangedCallBack = null)
             where TEntity : class
             where TProjection : class
             where TUnitOfWork : IUnitOfWork
         {
-            this.Add(new EntitiesLoaderDescription<TEntity, TProjection, TPrimaryKey, TUnitOfWork>(this.owner, loadOrder, unitOfWorkFactory, getRepositoryFunc, collectionViewModelFirstLoadedCallBack, collectionViewModelChangedCallBack, constructProjectionCallBackFunc, dependencyType));
+            this.Add(new EntitiesLoaderDescription<TEntity, TProjection, TPrimaryKey, TUnitOfWork>(this.owner, loadOrder, unitOfWorkFactory, getRepositoryFunc, isContinueLoadingCallBack, collectionViewModelChangedCallBack, constructProjectionCallBackFunc, dependencyType));
         }
 
         public IEntitiesLoaderDescription GetLoader(Type dependencyType)
         {
             return this.FirstOrDefault(x => x.GetProjectionEntityType() == dependencyType);
+        }
+
+        public IEntitiesViewModel<TProjection> GetViewModel<TProjection>()
+            where TProjection : class
+        {
+            IEntitiesLoaderDescription<TProjection> entitiesLoader = (IEntitiesLoaderDescription<TProjection>)GetLoader(typeof(TProjection));
+            if (entitiesLoader == null)
+                throw new InvalidOperationException("Entities loader not added");
+
+            return entitiesLoader.GetViewModel();
         }
 
         public Func<TProjection> GetObjectFunc<TProjection>()
@@ -77,6 +87,13 @@ namespace BluePrints.Data.Helpers
         {
             Func<IQueryable<TProjection>> GetCollectionFunc = GetCollectionFunc<TProjection>();
             return GetCollectionFunc();
+        }
+
+        public TProjection GetObject<TProjection>()
+            where TProjection : class
+        {
+            Func<TProjection> GetSingleObjectFunc = GetObjectFunc<TProjection>();
+            return GetSingleObjectFunc();
         }
 
         public bool IsEntitiesLoaderExists(Type type)
@@ -109,7 +126,7 @@ namespace BluePrints.Data.Helpers
         Func<Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>>> constructProjectionCallBackFunc;
 
         IEntitiesViewModel<TProjection> collectionViewModel;
-        Action<IEnumerable<TProjection>> collectionViewModelFirstLoadedCallBack;
+        Func<IEnumerable<TProjection>, bool> isContinueLoadingCallBack;
         Action<object, Type, EntityMessageType, object> collectionViewModelChangedCallBack;
 
         /// <summary>
@@ -124,7 +141,7 @@ namespace BluePrints.Data.Helpers
             int loadOrder,
             IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory,
             Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc,
-            Action<IEnumerable<TProjection>> collectionViewModelFirstLoadedCallBack = null,
+            Func<IEnumerable<TProjection>, bool> isContinueLoadingCallBack = null,
             Action<object, Type, EntityMessageType, object> collectionViewModelChangedCallBack = null,
             Func<Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>>> constructProjectionCallBackFunc = null,
             Type dependencyType = null)
@@ -135,7 +152,7 @@ namespace BluePrints.Data.Helpers
             this.unitOfWorkFactory = unitOfWorkFactory;
             this.getRepositoryFunc = getRepositoryFunc;
             this.constructProjectionCallBackFunc = constructProjectionCallBackFunc;
-            this.collectionViewModelFirstLoadedCallBack = collectionViewModelFirstLoadedCallBack;
+            this.isContinueLoadingCallBack = isContinueLoadingCallBack;
             this.collectionViewModelChangedCallBack = collectionViewModelChangedCallBack;
         }
 
@@ -155,8 +172,12 @@ namespace BluePrints.Data.Helpers
         {
             isLoaded = true;
 
-            if (this.collectionViewModelFirstLoadedCallBack != null)
-                collectionViewModelFirstLoadedCallBack(loadedEntities);
+            if (this.isContinueLoadingCallBack != null)
+                if (!isContinueLoadingCallBack(loadedEntities))
+                {
+                    collectionViewModel.OnEntitiesLoadedCallBack = null;
+                    return;
+                }
 
             collectionViewModel.OnEntitiesLoadedCallBack = null;
             owner.InvokeEntitiesLoaderDescriptionLoading();

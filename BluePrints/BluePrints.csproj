@@ -847,7 +847,7 @@
     <Compile Include="ViewModels\AREA\AREAViewModel.cs" />
     <Compile Include="ViewModels\AREA\PROJECTAREADetailsCollectionViewModel.cs" />
     <Compile Include="ViewModels\BASELINE\BASELINECollectionViewModel.cs" />
-    <Compile Include="ViewModels\BASELINE\BASELINEViewModel.cs" />
+    <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\P6PROJECTCollectionViewModel.cs" />
     <Compile Include="ViewModels\P6PROJWBSCollectionViewModel.cs" />
@@ -877,7 +877,7 @@
     <Compile Include="ViewModels\PHASE\PHASEViewModel.cs" />
     <Compile Include="ViewModels\PHASE\PROJECTPHASEDetailsCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROGRESS\PROGRESSCollectionViewModel.cs" />
-    <Compile Include="ViewModels\PROGRESS\PROGRESSViewModel.cs" />
+    <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\PROGRESS\PROJECTPROGRESSDetailsCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMViewModel.cs" />
@@ -968,9 +968,6 @@
     </Compile>
     <Compile Include="Views\BASELINE\BASELINECollectionView.xaml.cs">
       <DependentUpon>BASELINECollectionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\BASELINE\BASELINEView.xaml.cs">
-      <DependentUpon>BASELINEView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\BASELINE_ITEM\BASELINE_ITEMCollectionView.xaml.cs">
       <DependentUpon>BASELINE_ITEMCollectionView.xaml</DependentUpon>
@@ -1241,10 +1238,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\BASELINE\BASELINECollectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\BASELINE\BASELINEView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -23,14 +23,14 @@ namespace BluePrints.Common.ViewModel
         where TMainViewModel : IEntitiesViewModel<TMainProjectionEntity>
     {
         protected bool isSubEntitiesAdded;
-        protected EntitiesLoaderDescriptionCollection entitiesLoaderDescriptionCollection = null;
+        protected EntitiesLoaderDescriptionCollection loaderCollection = null;
         protected EntitiesLoaderDescription<TMainEntity, TMainProjectionEntity, TMainEntityPrimaryKey, TMainEntityUnitOfWork> mainEntityLoader;
-        protected TMainViewModel mainViewModel;
+        protected TMainViewModel MainViewModel;
         protected Dispatcher mainThreadDispatcher = Application.Current.Dispatcher;
 
         public virtual void InvokeEntitiesLoaderDescriptionLoading()
         {
-            if (mainViewModel != null)
+            if (MainViewModel != null)
                 return;
             else if (isAllEntitiesLoaded())
                 mainThreadDispatcher.BeginInvoke(new Action(() => OnAllEntitiesCollectionLoaded()));
@@ -43,14 +43,14 @@ namespace BluePrints.Common.ViewModel
         /// </summary>
         void loadEntitiesCollectionOnMainThread()
         {
-            int currentLoadOrder = entitiesLoaderDescriptionCollection.Where(x => !x.isLoaded).Min(x => x.loadOrder);
-            IEntitiesLoaderDescription entitiesLoaderDescription = entitiesLoaderDescriptionCollection.First(x => x.loadOrder == currentLoadOrder);
+            int currentLoadOrder = loaderCollection.Where(x => !x.isLoaded).Min(x => x.loadOrder);
+            IEntitiesLoaderDescription entitiesLoaderDescription = loaderCollection.First(x => x.loadOrder == currentLoadOrder);
 
             if (entitiesLoaderDescription.dependencyType != null)
             {
-                if (entitiesLoaderDescriptionCollection.IsEntitiesLoaderExists(entitiesLoaderDescription.dependencyType))
+                if (loaderCollection.IsEntitiesLoaderExists(entitiesLoaderDescription.dependencyType))
                 {
-                    IEntitiesLoaderDescription dependentEntitiesLoaderDescription = entitiesLoaderDescriptionCollection.GetLoader(entitiesLoaderDescription.dependencyType);
+                    IEntitiesLoaderDescription dependentEntitiesLoaderDescription = loaderCollection.GetLoader(entitiesLoaderDescription.dependencyType);
                     if (!dependentEntitiesLoaderDescription.isLoaded)
                         throw new InvalidOperationException("Dependent entities loader is sequenced after the current entities loader.");
                     else
@@ -65,19 +65,19 @@ namespace BluePrints.Common.ViewModel
 
         bool isAllEntitiesLoaded()
         {
-            if (entitiesLoaderDescriptionCollection == null)
+            if (loaderCollection == null)
                 return false;
 
-            return entitiesLoaderDescriptionCollection.Where(x => !x.isLoaded).Count() == 0 ? true : false;
+            return loaderCollection.Where(x => !x.isLoaded).Count() == 0 ? true : false;
         }
 
         protected IEnumerable<TProjection> GetEntities<TProjection>()
             where TProjection : class
         {
-            if (entitiesLoaderDescriptionCollection == null)
+            if (loaderCollection == null)
                 return null;
 
-            Func<IEnumerable<TProjection>> getCollectionFunc = entitiesLoaderDescriptionCollection.GetCollectionFunc<TProjection>();
+            Func<IEnumerable<TProjection>> getCollectionFunc = loaderCollection.GetCollectionFunc<TProjection>();
             return getCollectionFunc();
         }
 
@@ -102,9 +102,28 @@ namespace BluePrints.Common.ViewModel
             throw new NotImplementedException("Override this method to initialize main entity loader.");
         }
 
-        protected virtual void OnMainViewModelAssigned(IEnumerable<TMainProjectionEntity> entities)
+        protected void CreateMainViewModel(
+            IUnitOfWorkFactory<TMainEntityUnitOfWork> unitOfWorkFactory,
+            Func<TMainEntityUnitOfWork, IRepository<TMainEntity, TMainEntityPrimaryKey>> getRepositoryFunc)
         {
-            mainViewModel = (TMainViewModel)mainEntityLoader.GetViewModel();
+            mainEntityLoader = new EntitiesLoaderDescription<TMainEntity, TMainProjectionEntity, TMainEntityPrimaryKey, TMainEntityUnitOfWork>(this, 0, unitOfWorkFactory, getRepositoryFunc, OnMainViewModelLoaded, OnEntitiesChanged, ConstructMainViewModelProjection);
+        }
+
+        protected virtual Func<IRepositoryQuery<TMainEntity>, IQueryable<TMainProjectionEntity>> ConstructMainViewModelProjection()
+        {
+            throw new NotImplementedException("Override this method to define how main view model should be constructed.");
+        }
+
+        protected virtual bool OnMainViewModelLoaded(IEnumerable<TMainProjectionEntity> entities)
+        {
+            MainViewModel = (TMainViewModel)mainEntityLoader.GetViewModel();
+            AssignCallBacksAndRaisePropertyChange(MainViewModel);
+            return true;
+        }
+
+        protected virtual void AssignCallBacksAndRaisePropertyChange(TMainViewModel mainViewModel)
+        {
+            throw new NotImplementedException("Override this method to assign call backs and also notify the view.");
         }
 
         protected virtual void OnEntitiesChanged(object key, Type changedType, EntityMessageType messageType, object sender)
@@ -144,10 +163,10 @@ namespace BluePrints.Common.ViewModel
             if (mainEntityLoader != null)
                 mainEntityLoader.OnDestroy();
 
-            if (entitiesLoaderDescriptionCollection == null)
+            if (loaderCollection == null)
                 return;
 
-            foreach (IEntitiesLoaderDescription entityLoaderDescription in entitiesLoaderDescriptionCollection)
+            foreach (IEntitiesLoaderDescription entityLoaderDescription in loaderCollection)
             {
                 entityLoaderDescription.OnDestroy();
             }

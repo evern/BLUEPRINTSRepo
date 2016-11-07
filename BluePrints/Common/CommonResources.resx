@@ -180,19 +180,10 @@
   <data name="CommodityCode_NoDiscipline" xml:space="preserve">
     <value>Please add disciplines before adding commodity code</value>
   </data>
-  <data name="Missing_LivePROGRESS" xml:space="preserve">
-    <value>PROGRESS has been removed</value>
+  <data name="Notify_View_Removed" xml:space="preserve">
+    <value>{0} has been removed, this view can't be accessed until it is restored</value>
   </data>
-  <data name="Missing_LiveBASELINE" xml:space="preserve">
-    <value>BASELINE has been removed</value>
-  </data>
-  <data name="View_Removed" xml:space="preserve">
-    <value> has been removed, this view can't be accessed until it is restored</value>
-  </data>
-  <data name="View_Restored" xml:space="preserve">
-    <value> has been restored</value>
-  </data>
-  <data name="Warning_ParentViewMissing" xml:space="preserve">
-    <value>has been removed, this view can't be accessed until it is restored</value>
+  <data name="Notify_View_Restored" xml:space="preserve">
+    <value>{0} has been restored</value>
   </data>
 </root>

@@ -187,20 +187,20 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BASELINE has been removed.
+        ///   Looks up a localized string similar to {0} has been removed, this view can&apos;t be accessed until it is restored.
         /// </summary>
-        internal static string Missing_LiveBASELINE {
+        internal static string Notify_View_Removed {
             get {
-                return ResourceManager.GetString("Missing_LiveBASELINE", resourceCulture);
+                return ResourceManager.GetString("Notify_View_Removed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PROGRESS has been removed.
+        ///   Looks up a localized string similar to {0} has been restored.
         /// </summary>
-        internal static string Missing_LivePROGRESS {
+        internal static string Notify_View_Restored {
             get {
-                return ResourceManager.GetString("Missing_LivePROGRESS", resourceCulture);
+                return ResourceManager.GetString("Notify_View_Restored", resourceCulture);
             }
         }
         
@@ -232,38 +232,11 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  has been removed, this view can&apos;t be accessed until it is restored.
-        /// </summary>
-        internal static string View_Removed {
-            get {
-                return ResourceManager.GetString("View_Removed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  has been restored.
-        /// </summary>
-        internal static string View_Restored {
-            get {
-                return ResourceManager.GetString("View_Restored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         internal static string Warning_Caption {
             get {
                 return ResourceManager.GetString("Warning_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to has been removed, this view can&apos;t be accessed until it is restored.
-        /// </summary>
-        internal static string Warning_ParentViewMissing {
-            get {
-                return ResourceManager.GetString("Warning_ParentViewMissing", resourceCulture);
             }
         }
         

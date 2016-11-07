@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace BluePrints.Views
 {
-    public partial class BASELINE_ITEMSCollectionView : UserControl
+    public partial class BASELINE_ITEMCollectionView : UserControl
     {
-        public BASELINE_ITEMSCollectionView()
+        public BASELINE_ITEMCollectionView()
         {
             InitializeComponent();
         }
