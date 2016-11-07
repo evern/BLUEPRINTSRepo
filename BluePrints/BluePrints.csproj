@@ -856,7 +856,6 @@
     <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKAssignmentViewModel.cs" />
     <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKMappingCollectionViewModelWrapper.cs" />
     <Compile Include="ViewModels\BASELINE\PROJECTBASELINEDetailsCollectionViewModel.cs" />
-    <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMCollectionViewModel.cs" />
     <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMViewModel.cs" />
     <Compile Include="ViewModels\BluePrintsEntitiesViewModel.cs" />
     <Compile Include="ViewModels\COMMODITY\COMMODITYCollectionViewModel.cs" />
@@ -879,7 +878,6 @@
     <Compile Include="ViewModels\PROGRESS\PROGRESSCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\PROGRESS\PROJECTPROGRESSDetailsCollectionViewModel.cs" />
-    <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMViewModel.cs" />
     <Compile Include="ViewModels\WORKPACK\PROJECTWORKPACKDashboardCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROJECT\PROJECTDashboardCollectionViewModel.cs" />
@@ -966,9 +964,6 @@
     <Compile Include="Views\AREA\AREAView.xaml.cs">
       <DependentUpon>AREAView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\BASELINE\BASELINECollectionView.xaml.cs">
-      <DependentUpon>BASELINECollectionView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\BASELINE_ITEM\BASELINE_ITEMCollectionView.xaml.cs">
       <DependentUpon>BASELINE_ITEMCollectionView.xaml</DependentUpon>
     </Compile>
@@ -1034,12 +1029,6 @@
     </Compile>
     <Compile Include="Views\PHASE\PHASEView.xaml.cs">
       <DependentUpon>PHASEView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PROGRESS\PROGRESSCollectionView.xaml.cs">
-      <DependentUpon>PROGRESSCollectionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PROGRESS\PROGRESSView.xaml.cs">
-      <DependentUpon>PROGRESSView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PROGRESS_ITEM\PROGRESS_ITEMCollectionView.xaml.cs">
       <DependentUpon>PROGRESS_ITEMCollectionView.xaml</DependentUpon>
@@ -1237,10 +1226,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\BASELINE\BASELINECollectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\BASELINE_ITEM\BASELINE_ITEMCollectionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1330,14 +1315,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PHASE\PHASEView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PROGRESS\PROGRESSCollectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PROGRESS\PROGRESSView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

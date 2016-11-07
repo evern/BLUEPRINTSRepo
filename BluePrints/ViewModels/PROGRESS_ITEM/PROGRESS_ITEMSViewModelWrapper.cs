@@ -288,7 +288,7 @@ namespace BluePrints.ViewModels
 
         public void HijackSave(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM projectionEntity)
         {
-            PROGRESS_ITEMSCollectionViewModel PROGRESS_ITEMSCollectionViewModel = (PROGRESS_ITEMSCollectionViewModel)loaderCollection.GetViewModel<PROGRESS_ITEM>();
+            CollectionViewModel<PROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> PROGRESS_ITEMSCollectionViewModel = (CollectionViewModel<PROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<PROGRESS_ITEM>();
             PROGRESS_ITEM savePROGRESS_ITEM = projectionEntity.PROGRESS_ITEMCurrent;
             savePROGRESS_ITEM.EARNED_DATE = loadPROGRESS.DATA_DATE;
             savePROGRESS_ITEM.GUID_PROGRESS = loadPROGRESS.GUID;

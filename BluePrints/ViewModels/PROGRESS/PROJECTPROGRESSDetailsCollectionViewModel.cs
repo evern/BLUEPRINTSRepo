@@ -98,7 +98,7 @@ namespace BluePrints.ViewModels
         #region ISupportCustomDocumentTypeNameAndParameter
         public string GetCustomDocumentTypeName()
         {
-            return "PROGRESSView";
+            return "PROGRESS_ITEMCollectionView";
         }
 
         public object GetCustomDocumentParameter()

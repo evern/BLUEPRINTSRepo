@@ -119,7 +119,7 @@ namespace BluePrints.ViewModels
 
             TreeViewProperty PROJECTLIVEBASELINEModuleTreeProperty = new TreeViewProperty() { Id = "LiveBASELINEView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
             moduleTitle = "[" + entity.NUMBER + "] LIVE BASELINE";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "BASELINEView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, BASELINE>(entity, null), PROJECTLIVEBASELINEModuleTreeProperty));
+            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "BASELINE_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, BASELINE>(entity, null), PROJECTLIVEBASELINEModuleTreeProperty));
 
             TreeViewProperty PROJECTWORKPACKModuleTreeProperty = new TreeViewProperty() { Id = "WORKPACKDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
             moduleTitle = "[" + entity.NUMBER + "] WORKPACKS";
@@ -131,7 +131,7 @@ namespace BluePrints.ViewModels
 
             TreeViewProperty PROJECTLIVEPROGRESSModuleTreeProperty = new TreeViewProperty() { Id = "LivePROGRESSView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
             moduleTitle = "[" + entity.NUMBER + "] LIVE PROGRESS";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROGRESSView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, PROGRESS>(entity, null), PROJECTLIVEPROGRESSModuleTreeProperty));
+            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROGRESS_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, PROGRESS>(entity, null), PROJECTLIVEPROGRESSModuleTreeProperty));
 
             TreeViewProperty PROJECTVARIATIONModuleTreeProperty = new TreeViewProperty() { Id = "VARIATIONDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
             moduleTitle = "[" + entity.NUMBER + "] VARIATIONS";
