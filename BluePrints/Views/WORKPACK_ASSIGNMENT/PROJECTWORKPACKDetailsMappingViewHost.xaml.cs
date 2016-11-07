@@ -32,7 +32,7 @@ namespace BluePrints.Views
         public PROJECTWORKPACKDetailsMappingViewHost()
         {
             InitializeComponent();
-            ((PROJECTWORKPACKMappingCollectionViewModelWrapper)this.DataContext).windowsFormHostViewInitialization = this.windowsFormHostViewInitialization;
+            //((PROJECTWORKPACKMappingCollectionViewModelWrapper)this.DataContext).windowsFormHostViewInitialization = this.windowsFormHostViewInitialization;
         }
 
         public void windowsFormHostViewInitialization(Func<IQueryable<TASK>> getTASKsFunc, Func<IQueryable<PROJWBS>> getWBSSFunc, PROJECTWORKPACKMappingCollectionViewModel WORKPACKSMappingCollectionViewModel, WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACKS_ASSIGNMENTSViewModel, bool IsModified)

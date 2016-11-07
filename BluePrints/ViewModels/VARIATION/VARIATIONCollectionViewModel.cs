@@ -19,9 +19,9 @@ namespace BluePrints.ViewModels
         /// Creates a new instance of VARIATIONCollectionViewModel as a POCO view model.
         /// </summary>
         /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-        public static VARIATIONCollectionViewModel Create(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
+        public static VARIATIONCollectionViewModel Create(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null, Func<IRepositoryQuery<VARIATION>, IQueryable<VARIATION>> projection = null)
         {
-            return ViewModelSource.Create(() => new VARIATIONCollectionViewModel(unitOfWorkFactory));
+            return ViewModelSource.Create(() => new VARIATIONCollectionViewModel(unitOfWorkFactory, projection));
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace BluePrints.ViewModels
         /// This constructor is declared protected to avoid undesired instantiation of the VARIATIONCollectionViewModel type without the POCO proxy factory.
         /// </summary>
         /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-        protected VARIATIONCollectionViewModel(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
-            : base(unitOfWorkFactory ?? BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory(), x => x.VARIATIONS)
+        protected VARIATIONCollectionViewModel(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null, Func<IRepositoryQuery<VARIATION>, IQueryable<VARIATION>> projection = null)
+            : base(unitOfWorkFactory ?? BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory(), x => x.VARIATIONS, projection)
         {
         }
     }

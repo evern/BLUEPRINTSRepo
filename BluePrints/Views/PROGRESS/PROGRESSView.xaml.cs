@@ -11,7 +11,7 @@ namespace BluePrints.Views
         public PROGRESSView()
         {
             InitializeComponent();
-            ((PROGRESSViewModelWrapper)this.DataContext).ShowNewWorkpack = this.ShowNewWorkpack;
+            //((PROGRESSViewModelWrapper)this.DataContext).ShowNewWorkpack = this.ShowNewWorkpack;
         }
 
         void ShowNewWorkpack()

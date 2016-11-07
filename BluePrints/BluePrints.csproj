@@ -196,6 +196,7 @@
     </Compile>
     <Compile Include="Common\Projections\BASELINE_ITEMJoinRATE.cs" />
     <Compile Include="Common\Projections\BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM.cs" />
+    <Compile Include="Common\Projections\BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION.cs" />
     <Compile Include="Common\Projections\OptionalEntitiesParameter.cs" />
     <Compile Include="Common\Projections\ROLE_PERMISSIONInfo.cs" />
     <Compile Include="Common\Projections\TASK_AppointmentInfo.cs" />

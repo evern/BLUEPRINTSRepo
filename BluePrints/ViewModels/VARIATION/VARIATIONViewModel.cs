@@ -18,371 +18,414 @@ using BluePrints.Common.ViewModel.UndoRedo;
 using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Editors.Settings;
 using BluePrints.Common.Helpers;
+using BluePrints.Common.Projections;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace BluePrints.ViewModels
 {
     /// <summary>
     /// Represents the single VARIATION object view model.
     /// </summary>
-    public partial class VARIATIONViewModel : SingleObjectViewModel<VARIATION, Guid, IBluePrintsEntitiesUnitOfWork>
+    public partial class VARIATIONViewModelWrapper
     {
-        /// <summary>
-        /// Creates a new instance of VARIATIONViewModel as a POCO view model.
-        /// </summary>
-        /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-        public static VARIATIONViewModel Create(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
-        {
-            return ViewModelSource.Create(() => new VARIATIONViewModel(unitOfWorkFactory));
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the VARIATIONViewModel class.
-        /// This constructor is declared protected to avoid undesired instantiation of the VARIATIONViewModel type without the POCO proxy factory.
-        /// </summary>
-        /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-        protected VARIATIONViewModel(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
-            : base(unitOfWorkFactory ?? BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory(), x => x.VARIATIONS, x => x.NAME)
-        {
-        }
-
-        #region Main View
-        CollectionViewModel<VARIATION_ITEM, VARIATION_ITEMInfo, Guid, IBluePrintsEntitiesUnitOfWork> VARIATION_ITEMInfosCollectionViewModel;
-        /// <summary>
-        /// The view model for the VARIATIONVARIATION_ITEMS detail collection.
-        /// </summary>
-        public CollectionViewModel<VARIATION_ITEM, VARIATION_ITEMInfo, Guid, IBluePrintsEntitiesUnitOfWork> VARIATIONVARIATION_ITEMSDetails
-        {
-            get
-            {
-
-                if (VARIATION_ITEMInfosCollectionViewModel == null && loadedViewModelCount == 3)
-                {
-                    VARIATION_ITEMInfosCollectionViewModel = GetDetailProjectionsCollectionViewModel((VARIATIONViewModel x) => x.VARIATIONVARIATION_ITEMSDetails, x => x.VARIATION_ITEMS, x => x.GUID_VARIATION, (x, key) => { x.GUID_VARIATION = key; }, query => QueriesHelper.MorphVARIATION_ITEMInfo(query, BASELINE_byLiveLoader.GetSingleObjectFunc, BASELINE_ITEM_byVARIATIONLoader.GetCollectionFunc, RATES_byProjectLoader.GetCollectionFunc, this.Entity.SUBMITTED != null));
-                    VARIATION_ITEMInfosCollectionViewModel.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntityCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.ExistingProjectionEditCallBack = this.ExistingProjectionEditCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.NewProjectionInitializeCallBack = this.NewProjectionInitializeCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.EntityBeforeDeletionCallBack = this.EntityBeforeDeletionCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.CanBulkDeleteCallBack = this.CanBulkDeleteCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.CanFillDownCallBack = this.CanFillDownCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.ValidateFillDownCallBack = this.ValidateFillDownCallBack;
-                    VARIATION_ITEMInfosCollectionViewModel.AllowEdit = false;
-                }
-
-                return VARIATION_ITEMInfosCollectionViewModel;
-            }
-        }
-        #endregion
-
-        #region Query Lookups
-        EntitiesLoader<BASELINE_ITEM> BASELINE_ITEM_byVARIATIONLoader;
-        EntitiesLoader<BASELINE> BASELINE_byLiveLoader;
-        EntitiesLoader<RATE> RATES_byProjectLoader;
-        protected override void OnParameterChanged(object parameter)
-        {
-            base.OnParameterChanged(parameter);
-            BASELINE_ITEM_byVARIATIONLoader = new EntitiesLoader<BASELINE_ITEM>(() => GetDetailsCollectionViewModel((VARIATIONViewModel x) => x.BASELINE_ITEMSDetails_ByVariation, x => x.BASELINE_ITEMS, x => x.GUID_VARIATION, (x, key) => { x.GUID_VARIATION = key; }), this.OnDetailedEntitiesLoaded);
-            BASELINE_byLiveLoader = new EntitiesLoader<BASELINE>(() => GetLookUpEntitiesViewModel((PROJECTViewModel x) => x.LookUpBASELINES, x => x.BASELINES, query => query.Where(x => (Entity.GUID_ORIBASELINE != null && x.GUID == this.Entity.GUID_ORIBASELINE) || x.STATUS == BaselineStatus.Live && x.GUID_PROJECT == Entity.GUID_PROJECT)), this.OnDetailedEntitiesLoaded);
-            RATES_byProjectLoader = new EntitiesLoader<RATE>(() => GetLookUpEntitiesViewModel((PROJECTViewModel x) => x.LookUpRATES, x => x.RATES, query => query.Where(x => x.GUID_PROJECT == Entity.GUID_PROJECT)), this.OnDetailedEntitiesLoaded);
-            //stimulate the loading of entities
-            //BASELINE_ITEMSDetails_ByVariation.Entities.ToList();
-            //LookUpBASELINE_ByLiveStatus.Entities.ToList();
-            //LookUpRATES_ByProject.Entities.ToList();
-        }
-
-        int loadedViewModelCount = 0;
-        private void OnDetailedEntitiesLoaded(IEnumerable<object> entities)
-        {
-            loadedViewModelCount += 1;
-            if (loadedViewModelCount == 3)
-                this.RaisePropertyChanged(x => x.VARIATIONVARIATION_ITEMSDetails);
-        }
-
-        private void OnEntitiesChangedCallBack(IEnumerable<object> entities, object sender)
-        {
-            if (VARIATIONVARIATION_ITEMSDetails != null)
-            {
-                VARIATIONVARIATION_ITEMSDetails.Refresh();
-                MessageBoxService.ShowMessage(CommonResources.Refresh_Notify + StringFormatUtils.GetEntityNameByEntitiesType(entities));
-            }
-
-            this.RaisePropertyChanged(x => x.VARIATIONVARIATION_ITEMSDetails);
-        }
-
-        /// <summary>
-        /// The view model for the BASELINEBASELINE_ITEMS detail collection.
-        /// </summary>
-        private CollectionViewModel<BASELINE_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> BASELINE_ITEMSDetails_ByVariation
-        {
-            get 
-            { 
-                return GetDetailsCollectionViewModel((VARIATIONViewModel x) => x.BASELINE_ITEMSDetails_ByVariation, x => x.BASELINE_ITEMS, x => x.GUID_VARIATION, (x, key) => { x.GUID_VARIATION = key; });
-            }
-        }
+        ///// <summary>
+        ///// Creates a new instance of VARIATIONViewModel as a POCO view model.
+        ///// </summary>
+        ///// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
+        //public static VARIATIONViewModelWrapper Create(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
+        //{
+        //    return ViewModelSource.Create(() => new VARIATIONViewModelWrapper(unitOfWorkFactory));
+        //}
 
         ///// <summary>
-        ///// The view model that contains a look-up collection of BASELINES for the corresponding navigation property in the view.
+        ///// Initializes a new instance of the VARIATIONViewModel class.
+        ///// This constructor is declared protected to avoid undesired instantiation of the VARIATIONViewModel type without the POCO proxy factory.
         ///// </summary>
-        //private IEntitiesViewModel<BASELINE> LookUpBASELINE_ByLiveStatus
+        ///// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
+        //protected VARIATIONViewModelWrapper(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
+        //{
+        //}
+
+        //#region View Dependencies and Operations
+        //public string WORKPACKDisplayMember
         //{
         //    get
         //    {
-        //        var viewModel = GetLookUpEntitiesViewModel((VARIATIONViewModel x) => x.LookUpBASELINE_ByLiveStatus, x => x.BASELINES, query => query.Where(x => (Entity.GUID_ORIBASELINE != null && x.GUID == this.Entity.GUID_ORIBASELINE) || x.STATUS == BaselineStatus.Live && x.GUID_PROJECT == Entity.GUID_PROJECT));
-        //        viewModel.OnEntitiesLoadedCallBack = this.OnDetailedEntitiesLoaded;
-        //        return viewModel;
+        //        if (loadPROJECT == null || loadPROJECT.USELEGACYWORKPACK)
+        //            return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME1);
+        //        else
+        //            return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME2);
         //    }
         //}
 
-        /// <summary>
-        /// The view model that contains a look-up collection of RATES for the corresponding navigation property in the view.
-        /// </summary>
-        private IEntitiesViewModel<RATE> LookUpRATES_ByProject
-        {
-            get
-            {
-                var viewModel = GetLookUpEntitiesViewModel((PROJECTViewModel x) => x.LookUpRATES, x => x.RATES, query => query.Where(x => x.GUID_PROJECT == Entity.GUID_PROJECT));
-                viewModel.OnEntitiesLoadedCallBack = this.OnDetailedEntitiesLoaded;
-                return viewModel;
-            }
-        }
-
-        public string WORKPACKDisplayMember
-        {
-            get
-            {
-                if (Entity == null || Entity.PROJECT == null || Entity.PROJECT.USELEGACYWORKPACK)
-                    return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME1);
-                else
-                    return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME2);
-            }
-        }
-        #endregion
-
-        #region View Lookups
-        /// <summary>
-        /// The view model that contains a look-up collection of PHASES for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<PHASE> LookUpPHASES
-        {
-            get { return GetLookUpEntitiesViewModel((PROJECTViewModel x) => x.LookUpPHASES, x => x.PHASES, query => query.Where(phase => phase.GUID_PROJECT == Entity.GUID_PROJECT)); }
-        }
-
-        /// <summary>
-        /// The view model that contains a look-up collection of WORKPACKS for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<WORKPACK> LookUpWORKPACKS
-        {
-            get { return GetLookUpEntitiesViewModel((VARIATIONViewModel x) => x.LookUpWORKPACKS, x => x.WORKPACKS, query => query.Where(workpack => workpack.GUID_PROJECT == Entity.GUID_PROJECT)); }
-        }
-
-        /// <summary>
-        /// The view model that contains a look-up collection of AREAS for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<AREA> LookUpAREAS
-        {
-            get { return GetLookUpEntitiesViewModel((BASELINE_ITEMSViewModel x) => x.LookUpAREAS, x => x.AREAS, query => query.Where(area => area.GUID_PROJECT == Entity.GUID_PROJECT)); }
-        }
-
-        /// <summary>
-        /// The view model that contains a look-up collection of DEPARTMENTS for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<DEPARTMENT> LookUpDEPARTMENTS
-        {
-            get { return GetLookUpEntitiesViewModel((BASELINE_ITEMSViewModel x) => x.LookUpDEPARTMENTS, x => x.DEPARTMENTS); }
-        }
-        /// <summary>
-        /// The view model that contains a look-up collection of DISCIPLINES for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<DISCIPLINE> LookUpDISCIPLINES
-        {
-            get { return GetLookUpEntitiesViewModel((BASELINE_ITEMSViewModel x) => x.LookUpDISCIPLINES, x => x.DISCIPLINES); }
-        }
-
-        /// <summary>
-        /// The view model that contains a look-up collection of DOCTYPES for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<DOCTYPE> LookUpDOCTYPES
-        {
-            get { return GetLookUpEntitiesViewModel((BASELINE_ITEMSViewModel x) => x.LookUpDOCTYPES, x => x.DOCTYPES); }
-        }
-        #endregion
-
-        #region View Interactions
-        public void CellValueChanging(CellValueChangedEventArgs e)
-        {
-            if (e.RowHandle != GridControl.NewItemRowHandle)
-                return;
-
-            VARIATION_ITEMInfo activeVARIATION_ITEMInfo = (VARIATION_ITEMInfo)e.Row;
-            if (e.Column.FieldName == BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_WORKPACK))
-            {
-                WORKPACK chosenWORKPACK = LookUpWORKPACKS.Entities.FirstOrDefault(entity => entity.GUID == (Guid)e.Value);
-                if (chosenWORKPACK != null)
-                {
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.GUID_AREA = chosenWORKPACK.GUID_DAREA;
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.GUID_DOCTYPE = chosenWORKPACK.GUID_DDOCTYPE;
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.GUID_DEPARTMENT = chosenWORKPACK.GUID_DDEPARTMENT;
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.GUID_DISCIPLINE = chosenWORKPACK.GUID_DDISCIPLINE;
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.GUID_PHASE = chosenWORKPACK.PHASE != null ? chosenWORKPACK.GUID_DPHASE : null;
-                    var SelectedAREA = LookUpAREAS.Entities.FirstOrDefault(x => x.GUID == chosenWORKPACK.GUID_DAREA);
-                    var SelectedDOCTYPE = LookUpDOCTYPES.Entities.FirstOrDefault(x => x.GUID == chosenWORKPACK.GUID_DDOCTYPE);
-                    var SelectedDISCIPLINE = LookUpDISCIPLINES.Entities.FirstOrDefault(x => x.GUID == chosenWORKPACK.GUID_DDISCIPLINE);
-
-                    IEnumerable<BASELINE_ITEMInfo> enumerateBASELINE_ITEMS = VARIATIONVARIATION_ITEMSDetails.Entities.Select(x => x.BASELINE_ITEM).AsEnumerable();
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(Entity.PROJECT, activeVARIATION_ITEMInfo.BASELINE_ITEM, enumerateBASELINE_ITEMS, SelectedAREA, SelectedDISCIPLINE, SelectedDOCTYPE);
-                    VARIATIONVARIATION_ITEMSDetails.UpdateSelectedEntity();
-                }
-            }
-            else if (e.Column.FieldName == BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DOCTYPE))
-            {
-                DOCTYPE chosenDOCTYPE = LookUpDOCTYPES.Entities.FirstOrDefault(entity => entity.GUID == (Guid)e.Value);
-                if (chosenDOCTYPE != null && chosenDOCTYPE.GUID_DDEPARTMENT != null)
-                {
-                    activeVARIATION_ITEMInfo.BASELINE_ITEM.GUID_DEPARTMENT = chosenDOCTYPE.DEPARTMENT.GUID;
-                    VARIATIONVARIATION_ITEMSDetails.UpdateSelectedEntity();
-                }
-            }
-        }
-
-        public void CancelBASELINE_ITEM(VARIATION_ITEMInfo projectionEntity)
-        {
-            if (projectionEntity.ACTION == VariationAction.Add)
-                return;
-
-            var oldValue = projectionEntity.ACTION;
-            if (projectionEntity.ACTION == VariationAction.Cancel)
-                projectionEntity.ACTION = VariationAction.NoAction;
-            else
-            {
-                projectionEntity.VARIATION_UNITS = 0;
-                projectionEntity.ACTION = VariationAction.Cancel;
-            }
-
-            VARIATIONVARIATION_ITEMSDetails.EntitiesUndoRedoManager.AddUndo(projectionEntity, BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().ACTION), oldValue, projectionEntity.ACTION, EntityMessageType.Changed);
-            VARIATIONVARIATION_ITEMSDetails.Save(VARIATIONVARIATION_ITEMSDetails.SelectedEntity);
-        }
-
-        public void CustomUnboundColumnData(GridColumnDataEventArgs e)
-        {
-            if (e.IsGetData)
-            {
-                if (VARIATIONVARIATION_ITEMSDetails == null)
-                    e.Value = null;
-                else
-                {
-
-                    VARIATION_ITEMInfo item = VARIATIONVARIATION_ITEMSDetails.Entities[e.ListSourceRowIndex];
-                    if (item.BASELINE_ITEM.RATE == null)
-                        e.Value = 0;
-                    else
-                        e.Value = (decimal)item.BASELINE_ITEM.RATE.RATE1 * (item.BASELINE_ITEM.ESTIMATED_HOURS + item.VARIATION_UNITS);
-                }
-            }
-        }
-
-        #endregion
-
-        #region CallBacks
-        public bool CanFillDownCallBack(IEnumerable<VARIATION_ITEMInfo> selectedEntities, GridMenuInfo info)
-        {
-            if (this.Entity.SUBMITTED != null || !selectedEntities.Any(x => x.ACTION == VariationAction.Add))
-                return false;
-
-            return true;
-        }
-
-        public bool ValidateFillDownCallBack(VARIATION_ITEMInfo fillDownEntity, string fieldName, object fillValue)
-        {
-            if (fillDownEntity.ACTION != VariationAction.Add)
-                return false;
-
-            if (fieldName == BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().INTERNAL_NUM))
-            {
-                string errorMessage = string.Empty;
-                VARIATIONVARIATION_ITEMSDetails.IsValidEntityCellValue(fillDownEntity, fieldName, fillValue, ref errorMessage);
-                if (errorMessage != string.Empty)
-                    return false;
-            }
-
-            return true;
-        }
-
-        public bool CanBulkDeleteCallBack(IEnumerable<VARIATION_ITEMInfo> selectedEntities)
-        {
-            return this.Entity.SUBMITTED == null && (selectedEntities != null && selectedEntities.All(x => x.ACTION == VariationAction.Add));
-        }
-
-        public void NewProjectionInitializeCallBack(VARIATION_ITEMInfo projectionEntity)
-        {
-            projectionEntity.ACTION = VariationAction.Add;
-        }
-
-        public void ExistingProjectionEditCallBack(VARIATION_ITEMInfo projectionEntity, CellValueChangedEventArgs e)
-        {
-            if (e.Column.FieldName != BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().VARIATION_UNITS))
-                return;
-
-            if (projectionEntity.ACTION == VariationAction.Add)
-                return;
-
-            VariationAction oldValue = projectionEntity.ACTION;
-
-            if (projectionEntity.VARIATION_UNITS == 0)
-                projectionEntity.ACTION = VariationAction.NoAction;
-            else if (projectionEntity.ACTION == VariationAction.NoAction)
-                projectionEntity.ACTION = VariationAction.Append;
-
-            VARIATIONVARIATION_ITEMSDetails.EntitiesUndoRedoManager.AddUndo(projectionEntity, BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().ACTION), oldValue, projectionEntity.ACTION, EntityMessageType.Changed);
-        }
-
-        public void ApplyProjectionPropertiesToEntityCallBack(VARIATION_ITEMInfo projectionEntity, VARIATION_ITEM entity)
-        {
-            entity.GUID = projectionEntity.GUID;
-            entity.ACTION = projectionEntity.ACTION;
-            entity.VARIATION_UNITS = projectionEntity.VARIATION_UNITS;
-            entity.GUID_VARIATION = this.Entity.GUID;
-
-            //workaround for created because Save() only sets the projection primary key, this is used for property redo where the interceptor only tampers with UPDATED and CREATED is left as null
-            if (entity.CREATED.Date.Year == 1)
-                projectionEntity.CREATED = DateTime.Now;
-
-            entity.CREATED = projectionEntity.CREATED;
-
-            if (entity.ACTION == VariationAction.Add)
-            {
-                projectionEntity.BASELINE_ITEM.GUID_VARIATION = this.Entity.GUID;
-
-                var actualEntity = BASELINE_ITEMSDetails_ByVariation.Entities.FirstOrDefault(x => x.GUID == projectionEntity.BASELINE_ITEM.GUID);
-                if (actualEntity != null)
-                {
-                    DataUtils.ShallowCopy(actualEntity, projectionEntity.BASELINE_ITEM);
-                }
-                else
-                {
-                    BASELINE_ITEM newBASELINE_ITEM = new BASELINE_ITEM();
-                    DataUtils.ShallowCopy(newBASELINE_ITEM, projectionEntity.BASELINE_ITEM);
-                    actualEntity = newBASELINE_ITEM;
-                }
-
-                BASELINE_ITEMSDetails_ByVariation.Save(actualEntity);
-                DataUtils.ShallowCopy(projectionEntity.BASELINE_ITEM, actualEntity); //copy the generated key into projection
-            }
-
-            //use BASELINE_ITEM.GUID_ORIGINAL because ProgressItemInfo might not be initialized
-            entity.GUID_ORIBASEITEM = projectionEntity.BASELINE_ITEM.GUID_ORIGINAL;
-        }
-
-        public void EntityBeforeDeletionCallBack(VARIATION_ITEMInfo undoRedoEntity)
-        {
-            var actualEntity = BASELINE_ITEMSDetails_ByVariation.Entities.FirstOrDefault(x => x.GUID == undoRedoEntity.BASELINE_ITEM.GUID);
-            if (actualEntity != null)
-                BASELINE_ITEMSDetails_ByVariation.Delete(actualEntity);
-        }
-        #endregion
-
-        //#region Entity Data Shaping
-        //public void BASELINE_ITEMInfoApplyProjectionPropertiesToEntity(BASELINE_ITEMInfo projectionEntity, BASELINE_ITEMInfo entity)
+        ///// <summary>
+        ///// The view model for the VARIATIONVARIATION_ITEMS detail collection.
+        ///// </summary>
+        //public BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMCollectionViewModel BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel
         //{
-        //    DataUtils.ShallowCopy(entity, projectionEntity);
+        //    get
+        //    {
+
+        //        if (mainViewModel == null && IsAllSubEntitiesLoaded)
+        //        {
+        //            mainViewModel = (BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMCollectionViewModel)mainEntityLoader.GetCollectionViewModel();
+        //            mainViewModel.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntityCallBack;
+        //            mainViewModel.ExistingProjectionEditCallBack = this.ExistingProjectionEditCallBack;
+        //            mainViewModel.NewProjectionInitializeCallBack = this.NewProjectionInitializeCallBack;
+        //            mainViewModel.EntityBeforeDeletionCallBack = this.EntityBeforeDeletionCallBack;
+        //            mainViewModel.CanBulkDeleteCallBack = this.CanBulkDeleteCallBack;
+        //            mainViewModel.CanFillDownCallBack = this.CanFillDownCallBack;
+        //            mainViewModel.ValidateFillDownCallBack = this.ValidateFillDownCallBack;
+        //            mainViewModel.AllowEdit = false;
+        //        }
+
+        //        return mainViewModel;
+        //    }
+        //}
+        //#endregion
+
+        //#region Database Operations
+        //PROJECT loadPROJECT;
+        //PROGRESS livePROGRESS;
+        //BASELINE liveBASELINE;
+        //VARIATION loadVARIATION;
+        //Dispatcher mainThreadDispatcher = Application.Current.Dispatcher;
+
+        //EntitiesLoader<BASELINE> BASELINELoader;
+        //EntitiesLoader<PROGRESS> PROGRESSLoader;
+        //EntitiesLoader<VARIATION> VARIATIONLoader;
+
+        //EntitiesLoader<PROGRESS_ITEM> PROGRESS_ITEMSLoader;
+        //EntitiesLoader<VARIATION_ITEM> VARIATION_ITEMSLoader;
+
+        //EntitiesLoader<WORKPACK> WORKPACKSLoader;
+        //EntitiesLoader<PHASE> PHASESLoader;
+        //EntitiesLoader<AREA> AREASLoader;
+        //EntitiesLoader<DEPARTMENT> DEPARTMENTSLoader;
+        //EntitiesLoader<DISCIPLINE> DISCIPLINESLoader;
+        //EntitiesLoader<DOCTYPE> DOCTYPESLoader;
+        //EntitiesLoader<RATE> RATESLoader;
+
+        //protected override void OnParameterChanged(object parameter)
+        //{
+        //    //both parameters is required because when entity is first initialized the associating entity (PROJECT) is not loaded
+        //    OptionalEntitiesParameter<PROJECT, VARIATION> receiveParameter = (OptionalEntitiesParameter<PROJECT, VARIATION>)parameter;
+        //    this.loadPROJECT = receiveParameter.GetFirstEntity();
+        //    this.loadVARIATION = receiveParameter.GetSecondEntity();
+
+        //    StartLoading();
+        //}
+
+
+        //public void StartLoading()
+        //{
+        //    auxiliaryEntitiesLoaders.Clear();
+        //    if (loadPROJECT == null)
+        //        return;
+
+        //    BASELINELoader = new EntitiesLoader<BASELINE>(() => BASELINECollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID && x.STATUS == BaselineStatus.Live)), OnBASELINEEntitiesLoaded, OnPROGRESSorBASELINEChanged);
+        //    auxiliaryEntitiesLoaders.Add(BASELINELoader);
+        //}
+
+        //private void OnBASELINEEntitiesLoaded(IEnumerable<BASELINE> entities)
+        //{
+        //    BASELINELoader.RemoveOnEntitiesFirstLoadedCallBack(null);
+        //    if (entities.Count() == 0)
+        //    {
+        //        mainThreadDispatcher.BeginInvoke(new Action(() => MessageBoxService.ShowMessage(CommonResources.Missing_LiveBASELINE)));
+        //        return;
+        //    }
+
+        //    liveBASELINE = entities.First();
+        //    mainViewModel = null;
+        //    mainEntityLoader = null;
+        //    subEntitiesLoaders.Clear();
+        //    isSubEntitiesAdded = false;
+
+        //    liveBASELINE = entities.First();
+        //    mainThreadDispatcher.BeginInvoke(new Action(() => LoadPROGRESSEntities()));
+        //}
+
+        //private void LoadPROGRESSEntities()
+        //{
+        //    if (loadPROJECT == null)
+        //        return;
+
+        //    PROGRESSLoader = new EntitiesLoader<PROGRESS>(() => PROGRESSCollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID && x.STATUS == ProgressStatus.Live)), OnPROGRESSEntitiesLoaded, OnPROGRESSorBASELINEChanged);
+        //    auxiliaryEntitiesLoaders.Add(PROGRESSLoader);
+        //}
+
+        //private void OnPROGRESSEntitiesLoaded(IEnumerable<PROGRESS> entities)
+        //{
+        //    PROGRESSLoader.RemoveOnEntitiesFirstLoadedCallBack(null);
+        //    if(entities.Count() == 0)
+        //    {
+        //        mainThreadDispatcher.BeginInvoke(new Action(() => MessageBoxService.ShowMessage(CommonResources.Missing_LivePROGRESS)));
+        //        return;
+        //    }
+
+        //    livePROGRESS = entities.First();
+        //    mainThreadDispatcher.BeginInvoke(new Action(() => LoadVARIATIONEntities()));
+        //}
+
+        //private void LoadVARIATIONEntities()
+        //{
+        //    if (loadVARIATION == null)
+        //        return;
+
+        //    VARIATIONLoader = new EntitiesLoader<VARIATION>(() => VARIATIONCollectionViewModel.Create(null, query => query.Where(x => x.GUID == loadVARIATION.GUID), OnVARIATIONEntitiesLoaded, OnPROGRESSorBASELINEChanged);
+        //    auxiliaryEntitiesLoaders.Add(VARIATIONLoader);
+        //}
+
+        //private void OnVARIATIONEntitiesLoaded(IEnumerable<VARIATION> entities)
+        //{
+        //    VARIATIONLoader.RemoveOnEntitiesFirstLoadedCallBack(null);
+        //    if (entities.Count() == 0)
+        //    {
+        //        mainThreadDispatcher.BeginInvoke(new Action(() => MessageBoxService.ShowMessage(CommonResources.View_Removed)));
+        //        return;
+        //    }
+
+        //    loadVARIATION = entities.First();
+        //    mainThreadDispatcher.BeginInvoke(new Action(() => AfterPROGRESSAndBASELINEAndVARIATIONEntitiesLoaded()));
+        //}
+
+        //private void AfterPROGRESSAndBASELINEAndVARIATIONEntitiesLoaded()
+        //{
+        //    //Auxiliary Entities
+        //    PHASESLoader = new EntitiesLoader<PHASE>(() => PHASECollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID)));
+        //    auxiliaryEntitiesLoaders.Add(PHASESLoader);
+        //    AREASLoader = new EntitiesLoader<AREA>(() => AREACollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID)));
+        //    auxiliaryEntitiesLoaders.Add(AREASLoader);
+        //    WORKPACKSLoader = new EntitiesLoader<WORKPACK>(() => WORKPACKCollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID)));
+        //    auxiliaryEntitiesLoaders.Add(WORKPACKSLoader);
+        //    DEPARTMENTSLoader = new EntitiesLoader<DEPARTMENT>(() => DEPARTMENTCollectionViewModel.Create(null));
+        //    auxiliaryEntitiesLoaders.Add(DEPARTMENTSLoader);
+        //    DISCIPLINESLoader = new EntitiesLoader<DISCIPLINE>(() => DISCIPLINECollectionViewModel.Create(null));
+        //    auxiliaryEntitiesLoaders.Add(DISCIPLINESLoader);
+        //    DOCTYPESLoader = new EntitiesLoader<DOCTYPE>(() => DOCTYPECollectionViewModel.Create(null));
+        //    auxiliaryEntitiesLoaders.Add(DOCTYPESLoader);
+
+        //    //Sub Entities
+        //    PROGRESS_ITEMSLoader = new EntitiesLoader<PROGRESS_ITEM>(() => PROGRESS_ITEMSCollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROGRESS == livePROGRESS.GUID)), OnSubEntitiesLoaded);
+        //    subEntitiesLoaders.Add(PROGRESS_ITEMSLoader);
+        //    VARIATION_ITEMSLoader = new EntitiesLoader<VARIATION_ITEM>(() => VARIATION_ITEMSCollectionViewModel.Create(null, query => query.Where(x => x.GUID_VARIATION == loadVARIATION.GUID)), OnSubEntitiesLoaded);
+        //    subEntitiesLoaders.Add(VARIATION_ITEMSLoader);
+        //    RATESLoader = new EntitiesLoader<RATE>(() => RATECollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID)), OnSubEntitiesLoaded);
+        //    subEntitiesLoaders.Add(RATESLoader);
+        //    PROGRESS_ITEMSLoader = new EntitiesLoader<PROGRESS_ITEM>(() => PROGRESS_ITEMSCollectionViewModel.Create(null, query => query.Where(x => x.GUID_PROGRESS == livePROGRESS.GUID)), OnSubEntitiesLoaded);
+        //    subEntitiesLoaders.Add(PROGRESS_ITEMSLoader);
+        //    isSubEntitiesAdded = true;
+        //}
+
+        //protected override void OnSubEntitiesLoaded(IEnumerable<object> entities)
+        //{
+        //    if (IsMainEntityLoaded)
+        //        mainViewModel.RefreshWithoutClearingUndoManager();
+        //    else if (IsAllSubEntitiesLoaded)
+        //        mainThreadDispatcher.BeginInvoke(new Action(() => AfterSubEntitiesLoaded()));
+        //}
+
+        //protected override void AfterSubEntitiesLoaded()
+        //{
+        //    mainEntityLoader = new EntitiesLoader<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM>(() => BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMCollectionViewModel.Create(query => BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSQueries.JoinRATESAndPROGRESS_ITEMSAndVARIATION_ITEMSOnBASELINE_ITEMS(query, PROGRESSLoader.GetSingleObjectFunc, BASELINELoader.GetSingleObjectFunc, VARIATIONLoader.GetSingleObjectFunc, PROGRESS_ITEMSLoader.GetCollectionFunc, VARIATION_ITEMSLoader.GetCollectionFunc, RATESLoader.GetCollectionFunc)), OnMainEntitiesFirstLoaded);
+        //}
+
+        //protected override void OnMainEntitiesFirstLoaded(IEnumerable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM> entities)
+        //{
+        //    if (BASELINELoader.GetSingleObjectFunc() != null)
+        //    {
+        //        VARIATION_ITEMSLoader.RemoveOnEntitiesFirstLoadedCallBack(this.OnVARIATION_ITEMSRefresh); //route the refresh so that it can be mapped to baseline
+
+        //        if (liveBASELINE == null || livePROGRESS == null)
+        //            return;
+
+        //        base.OnMainEntitiesFirstLoaded(entities);
+        //        mainThreadDispatcher.BeginInvoke(new Action(() => NotifyMainEntityLoaded()));
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Translates VARIATION_ITEM notification into BASELINE_ITEM notification
+        ///// </summary>
+        //private void OnVARIATION_ITEMSRefresh(IEnumerable<VARIATION_ITEM> entities)
+        //{
+        //    if (entities.Count() > 0)
+        //    {
+        //        BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM findEntity = mainViewModel.Entities.FirstOrDefault(x => x.VARIATION_ITEM != null && x.VARIATION_ITEM.GUID == entities.First().GUID);
+        //        if (findEntity != null)
+        //            mainThreadDispatcher.BeginInvoke(new Action(() => Messenger.Default.Send(new EntityMessage<BASELINE_ITEM, Guid>(findEntity.GUID, EntityMessageType.Changed, this))));
+        //    }
+        //}
+
+        //private void NotifyMainEntityLoaded()
+        //{
+        //    this.RaisePropertyChanged(x => x.BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel);
+        //}
+        //#endregion
+
+        //#region View Interactions
+        //public void CellValueChanging(CellValueChangedEventArgs e)
+        //{
+        //    if (e.RowHandle != GridControl.NewItemRowHandle)
+        //        return;
+
+        //    BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM activeEntity = (BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM)e.Row;
+
+        //    if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM().BASELINE_ITEMJoinRATE) 
+        //        + "."
+        //        + BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATE().BASELINE_ITEM)
+        //        + "."
+        //        + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_WORKPACK))
+        //    {
+        //        WORKPACK chosenWORKPACK = WORKPACKSLoader.Collection.FirstOrDefault(entity => entity.GUID == (Guid)e.Value);
+        //        if (chosenWORKPACK != null)
+        //        {
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_AREA = chosenWORKPACK.GUID_DAREA;
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_DOCTYPE = chosenWORKPACK.GUID_DDOCTYPE;
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_DEPARTMENT = chosenWORKPACK.GUID_DDEPARTMENT;
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_DISCIPLINE = chosenWORKPACK.GUID_DDISCIPLINE;
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_PHASE = chosenWORKPACK.PHASE != null ? chosenWORKPACK.GUID_DPHASE : null;
+
+        //            IEnumerable<BASELINE_ITEM> otherBASELINE_ITEMS = mainViewModel.Entities.Select(x => x.BASELINE_ITEMJoinRATE.BASELINE_ITEM).AsEnumerable();
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadPROJECT, activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM, otherBASELINE_ITEMS, chosenWORKPACK.AREA, chosenWORKPACK.DISCIPLINE, chosenWORKPACK.DOCTYPE);
+        //            BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.UpdateSelectedEntity();
+        //        }
+        //    }
+        //    else if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM().BASELINE_ITEMJoinRATE
+        //        + "."
+        //        + BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().BASELINE_ITEM) 
+        //        + "." 
+        //        + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DOCTYPE)))
+        //    {
+        //        DOCTYPE chosenDOCTYPE = DOCTYPESLoader.Collection.FirstOrDefault(entity => entity.GUID == (Guid)e.Value);
+        //        if (chosenDOCTYPE != null && chosenDOCTYPE.GUID_DDEPARTMENT != null)
+        //        {
+        //            activeEntity.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_DEPARTMENT = chosenDOCTYPE.DEPARTMENT.GUID;
+        //            BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.UpdateSelectedEntity();
+        //        }
+        //    }
+        //}
+
+        //public void CancelBASELINE_ITEM(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM projectionEntity)
+        //{
+        //    if (projectionEntity.VARIATION_ITEM.ACTION == VariationAction.Add)
+        //        return;
+
+        //    var oldValue = projectionEntity.VARIATION_ITEM.ACTION;
+        //    if (projectionEntity.VARIATION_ITEM.ACTION == VariationAction.Cancel)
+        //        projectionEntity.VARIATION_ITEM.ACTION = VariationAction.NoAction;
+        //    else
+        //    {
+        //        projectionEntity.VARIATION_ITEM.VARIATION_UNITS = 0;
+        //        projectionEntity.VARIATION_ITEM.ACTION = VariationAction.Cancel;
+        //    }
+
+        //    BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.EntitiesUndoRedoManager.AddUndo(projectionEntity, BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().ACTION), oldValue, projectionEntity.VARIATION_ITEM.ACTION, EntityMessageType.Changed);
+        //    BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.Save(BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.SelectedEntity);
+        //}
+        //#endregion
+
+        //#region CallBacks
+        //public bool CanFillDownCallBack(IEnumerable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM> selectedEntities, GridMenuInfo info)
+        //{
+        //    if (loadVARIATION.SUBMITTED != null || !selectedEntities.Any(x => x.VARIATION_ITEM.ACTION == VariationAction.Add))
+        //        return false;
+
+        //    return true;
+        //}
+
+        //public bool ValidateFillDownCallBack(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM fillDownEntity, string fieldName, object fillValue)
+        //{
+        //    if (fillDownEntity.VARIATION_ITEM.ACTION != VariationAction.Add)
+        //        return false;
+
+        //    if (fieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM().BASELINE_ITEMJoinRATE) 
+        //        + "."
+        //        + BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATE().BASELINE_ITEM)
+        //        + "."
+        //        + BindableBase.GetPropertyName(() => new BASELINE_ITEM().INTERNAL_NUM))
+        //    {
+        //        string errorMessage = string.Empty;
+        //        BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.IsValidEntityCellValue(fillDownEntity, fieldName, fillValue, ref errorMessage);
+        //        if (errorMessage != string.Empty)
+        //            return false;
+        //    }
+
+        //    return true;
+        //}
+
+        //public bool CanBulkDeleteCallBack(IEnumerable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM> selectedEntities)
+        //{
+        //    return this.loadVARIATION.SUBMITTED == null && (selectedEntities != null && selectedEntities.All(x => x.VARIATION_ITEM.ACTION == VariationAction.Add));
+        //}
+
+        //public void NewProjectionInitializeCallBack(VARIATION_ITEMInfo projectionEntity)
+        //{
+        //    projectionEntity.ACTION = VariationAction.Add;
+        //}
+
+        //public void ExistingProjectionEditCallBack(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM projectionEntity, CellValueChangedEventArgs e)
+        //{
+        //    if (e.Column.FieldName != BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM().VARIATION_ITEM + "." + BindableBase.GetPropertyName(() => new VARIATION_ITEM().VARIATION_UNITS)))
+        //        return;
+
+        //    if (projectionEntity.VARIATION_ITEM.ACTION == VariationAction.Add)
+        //        return;
+
+        //    VariationAction oldValue = projectionEntity.VARIATION_ITEM.ACTION;
+
+        //    if (projectionEntity.VARIATION_ITEM.VARIATION_UNITS == 0)
+        //        projectionEntity.VARIATION_ITEM.ACTION = VariationAction.NoAction;
+        //    else if (projectionEntity.VARIATION_ITEM.ACTION == VariationAction.NoAction)
+        //        projectionEntity.VARIATION_ITEM.ACTION = VariationAction.Append;
+
+        //    BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSJoinVARIATION_ITEMSCollectionViewModel.EntitiesUndoRedoManager.AddUndo(projectionEntity, BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM().VARIATION_ITEM) + "." + BindableBase.GetPropertyName(() => new VARIATION_ITEMInfo().ACTION), oldValue, projectionEntity.VARIATION_ITEM.ACTION, EntityMessageType.Changed);
+        //}
+
+        //public void ApplyProjectionPropertiesToEntityCallBack(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION_ITEM projectionEntity, BASELINE_ITEM entity)
+        //{
+        //    entity.GUID = projectionEntity.GUID;
+        //    entity.ACTION = projectionEntity.ACTION;
+        //    entity.VARIATION_UNITS = projectionEntity.VARIATION_UNITS;
+        //    entity.GUID_VARIATION = this.Entity.GUID;
+
+        //    //workaround for created because Save() only sets the projection primary key, this is used for property redo where the interceptor only tampers with UPDATED and CREATED is left as null
+        //    if (entity.CREATED.Date.Year == 1)
+        //        projectionEntity.CREATED = DateTime.Now;
+
+        //    entity.CREATED = projectionEntity.CREATED;
+
+        //    if (entity.ACTION == VariationAction.Add)
+        //    {
+        //        projectionEntity.BASELINE_ITEM.GUID_VARIATION = this.Entity.GUID;
+
+        //        var actualEntity = BASELINE_ITEMSDetails_ByVariation.Entities.FirstOrDefault(x => x.GUID == projectionEntity.BASELINE_ITEM.GUID);
+        //        if (actualEntity != null)
+        //        {
+        //            DataUtils.ShallowCopy(actualEntity, projectionEntity.BASELINE_ITEM);
+        //        }
+        //        else
+        //        {
+        //            BASELINE_ITEM newBASELINE_ITEM = new BASELINE_ITEM();
+        //            DataUtils.ShallowCopy(newBASELINE_ITEM, projectionEntity.BASELINE_ITEM);
+        //            actualEntity = newBASELINE_ITEM;
+        //        }
+
+        //        BASELINE_ITEMSDetails_ByVariation.Save(actualEntity);
+        //        DataUtils.ShallowCopy(projectionEntity.BASELINE_ITEM, actualEntity); //copy the generated key into projection
+        //    }
+
+        //    //use BASELINE_ITEM.GUID_ORIGINAL because ProgressItemInfo might not be initialized
+        //    entity.GUID_ORIBASEITEM = projectionEntity.BASELINE_ITEM.GUID_ORIGINAL;
+        //}
+
+        //public void EntityBeforeDeletionCallBack(VARIATION_ITEMInfo undoRedoEntity)
+        //{
+        //    var actualEntity = BASELINE_ITEMSDetails_ByVariation.Entities.FirstOrDefault(x => x.GUID == undoRedoEntity.BASELINE_ITEM.GUID);
+        //    if (actualEntity != null)
+        //        BASELINE_ITEMSDetails_ByVariation.Delete(actualEntity);
         //}
         //#endregion
     }

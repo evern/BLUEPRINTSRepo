@@ -1,90 +1,193 @@
-﻿using BluePrints.Common.ViewModel;
+﻿using BluePrints.Common.DataModel;
+using BluePrints.Common.Utils;
+using BluePrints.Common.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace BluePrints.Data.Helpers
 {
-    /// <summary>
-    /// Initializes and force load the EntitiesViewModel
-    /// also contains callBack to notify when Entities are loaded
-    /// </summary>
-    /// <typeparam name="TReturnEntity">Type of entity to return</typeparam>
-    public class EntitiesLoader<TReturnEntity> : IEntitiesLoader
-        where TReturnEntity : class
+    public class EntitiesLoaderDescriptionCollection : List<IEntitiesLoaderDescription>
     {
-        IEntitiesViewModel<TReturnEntity> collectionViewModel;
-        Action<IEnumerable<TReturnEntity>> onEntitiesLoadedCallBack;
-        public EntitiesLoader(Func<IEntitiesViewModel<TReturnEntity>> GetLookUpEntitiesViewModelFunc, Action<IEnumerable<TReturnEntity>> OnEntitiesLoadedCallBackFunc = null, Action<object, Type, EntityMessageType, object> OnEntitiesChangedCallBackFunc = null, bool defferedLoading = false)
+        readonly ICollectionViewModelsWrapper owner;
+        public EntitiesLoaderDescriptionCollection(ICollectionViewModelsWrapper owner)
         {
-            this.collectionViewModel = GetLookUpEntitiesViewModelFunc();
-            this.onEntitiesLoadedCallBack = OnEntitiesLoadedCallBackFunc;
-            this.collectionViewModel.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
-            this.collectionViewModel.OnEntitiesChangedCallBack = OnEntitiesChangedCallBackFunc;
-            //stimulate the loading of entities to avoid cross-thread operation because entities will call LoadCore on another thread
-            if (!defferedLoading)
-                this.collectionViewModel.Entities.ToList();
+            this.owner = owner;
+        }
+
+        /// <summary>
+        /// Add collection view model into parent entity
+        /// </summary>
+        /// <typeparam name="TEntity">Corresponding type of entity of CollectionViewModel</typeparam>
+        /// <typeparam name="TPrimaryKey">Corresponding type of primary key of CollectionViewModel</typeparam>
+        /// <typeparam name="TUnitOfWork">Corresponding type of unit of work for CollectionViewModel</typeparam>
+        /// <param name="loadOrder">Load order of the parent entity loader</param>
+        /// <param name="entitiesLoader"></param>
+        /// <param name="dependencyType"></param>
+        /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
+        /// <param name="getRepositoryFunc">A function that returns a repository representing entities of the given type.</param>
+        /// <param name="additionalProjection">An optional parameter that provides a LINQ function used to customize a query for entities. The parameter, for example, can be used for sorting data.</param>
+        public void AddEntitiesLoader<TEntity, TProjection, TPrimaryKey, TUnitOfWork>(
+            int loadOrder,
+            IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory, 
+            Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc,
+            Func<Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>>> constructProjectionCallBackFunc = null,
+            Type dependencyType = null,
+            Action<IEnumerable<TProjection>> collectionViewModelFirstLoadedCallBack = null,
+            Action<object, Type, EntityMessageType, object> collectionViewModelChangedCallBack = null)
+            where TEntity : class
+            where TProjection : class
+            where TUnitOfWork : IUnitOfWork
+        {
+            this.Add(new EntitiesLoaderDescription<TEntity, TProjection, TPrimaryKey, TUnitOfWork>(this.owner, loadOrder, unitOfWorkFactory, getRepositoryFunc, collectionViewModelFirstLoadedCallBack, collectionViewModelChangedCallBack, constructProjectionCallBackFunc, dependencyType));
+        }
+
+        public IEntitiesLoaderDescription GetLoader(Type dependencyType)
+        {
+            return this.FirstOrDefault(x => x.GetProjectionEntityType() == dependencyType);
+        }
+
+        public Func<TProjection> GetObjectFunc<TProjection>()
+            where TProjection : class
+        {
+            IEntitiesLoaderDescription<TProjection> entitiesLoader = (IEntitiesLoaderDescription<TProjection>)GetLoader(typeof(TProjection));
+            if (entitiesLoader == null)
+                throw new InvalidOperationException("Entities loader not added");
+
+            return entitiesLoader.GetSingleObject;
+        }
+
+        public Func<IQueryable<TProjection>> GetCollectionFunc<TProjection>()
+            where TProjection : class
+        {
+            IEntitiesLoaderDescription<TProjection> entitiesLoader = (IEntitiesLoaderDescription<TProjection>)GetLoader(typeof(TProjection));
+            if (entitiesLoader == null)
+                throw new InvalidOperationException("Entities loader not added");
+
+            return entitiesLoader.GetCollection;
+        }
+
+        public IQueryable<TProjection> GetEntities<TProjection>()
+            where TProjection : class
+        {
+            Func<IQueryable<TProjection>> GetCollectionFunc = GetCollectionFunc<TProjection>();
+            return GetCollectionFunc();
+        }
+
+        public bool IsEntitiesLoaderExists(Type type)
+        {
+            return this.Any(x => x.GetProjectionEntityType() == type);
         }
 
         public void OnDestroy()
         {
-            if (this.collectionViewModel != null)
+            foreach(IEntitiesLoaderDescription entitiesLoaderDescription in this)
             {
-                collectionViewModel.OnDestroy();
-
-                this.onEntitiesLoadedCallBack = null;
-                this.collectionViewModel.OnEntitiesLoadedCallBack = null;
-                this.collectionViewModel.OnEntitiesChangedCallBack = null;
-                collectionViewModel = null;
+                entitiesLoaderDescription.OnDestroy();
             }
         }
+    }
 
-        public void SetOnEntitiesFirstLoadedCallBack(Action<IEnumerable<TReturnEntity>> OnEntitiesLoadedCallBackFunc)
+    public class EntitiesLoaderDescription<TEntity, TProjection, TPrimaryKey, TUnitOfWork> : IEntitiesLoaderDescription<TProjection>
+        where TEntity : class
+        where TProjection : class
+        where TUnitOfWork : IUnitOfWork
+    {
+        readonly ICollectionViewModelsWrapper owner;
+        public int loadOrder { get; set; }
+        public bool isLoaded { get; set; }
+        public Type dependencyType { get; set; }
+
+        IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory;
+        Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc;
+
+        Func<Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>>> constructProjectionCallBackFunc;
+
+        IEntitiesViewModel<TProjection> collectionViewModel;
+        Action<IEnumerable<TProjection>> collectionViewModelFirstLoadedCallBack;
+        Action<object, Type, EntityMessageType, object> collectionViewModelChangedCallBack;
+
+        /// <summary>
+        /// Describe how should entities be handled within EntitiesCollectionWrapper
+        /// </summary>
+        /// <param name="loadOrder"></param>
+        /// <param name="isRequired"></param>
+        /// <param name="entitiesLoader"></param>
+        /// <param name="dependencyType"></param>
+        public EntitiesLoaderDescription(
+            ICollectionViewModelsWrapper owner,
+            int loadOrder,
+            IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory,
+            Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc,
+            Action<IEnumerable<TProjection>> collectionViewModelFirstLoadedCallBack = null,
+            Action<object, Type, EntityMessageType, object> collectionViewModelChangedCallBack = null,
+            Func<Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>>> constructProjectionCallBackFunc = null,
+            Type dependencyType = null)
         {
-            this.onEntitiesLoadedCallBack = OnEntitiesLoadedCallBackFunc;
+            this.owner = owner;
+            this.loadOrder = loadOrder;
+            this.dependencyType = dependencyType;
+            this.unitOfWorkFactory = unitOfWorkFactory;
+            this.getRepositoryFunc = getRepositoryFunc;
+            this.constructProjectionCallBackFunc = constructProjectionCallBackFunc;
+            this.collectionViewModelFirstLoadedCallBack = collectionViewModelFirstLoadedCallBack;
+            this.collectionViewModelChangedCallBack = collectionViewModelChangedCallBack;
         }
 
-        bool isloaded;
-        public bool isLoaded
+        public void CreateCollectionViewModel()
         {
-            get { return isloaded; }
-            set { isloaded = value; }
+            Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection = null;
+            if (constructProjectionCallBackFunc != null)
+                projection = constructProjectionCallBackFunc();
+
+            this.collectionViewModel = CollectionViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork>.CreateCollectionViewModel(this.unitOfWorkFactory, this.getRepositoryFunc, projection);
+            this.collectionViewModel.OnEntitiesLoadedCallBack = OnEntitiesFirstLoaded;
+            this.collectionViewModel.OnEntitiesChangedCallBack = collectionViewModelChangedCallBack;
+            this.collectionViewModel.Entities.ToList();
         }
 
-        void OnEntitiesLoaded(IEnumerable<TReturnEntity> loadedEntities)
+        void OnEntitiesFirstLoaded(IEnumerable<TProjection> loadedEntities)
         {
             isLoaded = true;
-            if (onEntitiesLoadedCallBack != null)
-                onEntitiesLoadedCallBack(loadedEntities);
+
+            if (this.collectionViewModelFirstLoadedCallBack != null)
+                collectionViewModelFirstLoadedCallBack(loadedEntities);
+
+            collectionViewModel.OnEntitiesLoadedCallBack = null;
+            owner.InvokeEntitiesLoaderDescriptionLoading();
+        }
+
+        public Type GetProjectionEntityType()
+        {
+            return typeof(TProjection);
+        }
+
+        public IEntitiesViewModel<TProjection> GetViewModel()
+        {
+            return this.collectionViewModel;
         }
 
         /// <summary>
         /// Call this only after entities has been loaded as notified by OnEntitiesLoadedCallBackFunc
         /// </summary>
-        public IQueryable<TReturnEntity> GetCollectionFunc()
+        public IQueryable<TProjection> GetCollection()
         {
             //this.collectionViewModel.OnEntitiesLoadedCallBack = null;
             if (this.collectionViewModel == null || this.collectionViewModel.Entities == null)
-                return new List<TReturnEntity>().AsQueryable();
+                return new List<TProjection>().AsQueryable();
             else
                 return this.collectionViewModel.Entities.AsQueryable();
         }
 
-        public IEnumerable<TReturnEntity> Collection
-        {
-            get
-            {
-                return GetCollectionFunc().AsEnumerable();
-            }
-        }
-
         /// <summary>
         /// Call this only after entities has been loaded as notified by OnEntitiesLoadedCallBackFunc
         /// </summary>
-        public TReturnEntity GetSingleObjectFunc()
+        public TProjection GetSingleObject()
         {
             //this.collectionViewModel.OnEntitiesLoadedCallBack = null;
             if (this.collectionViewModel.Entities == null)
@@ -98,20 +201,35 @@ namespace BluePrints.Data.Helpers
             }
         }
 
-        /// <summary>
-        /// Sometimes collectionViewModel retrieval is necessary so that its CRUD methods could be used, 
-        /// Note that when CRUD methods are used the entity must be derived from the containing collectionViewModel's repository
-        /// </summary>
-        /// <returns></returns>
-        public IEntitiesViewModel<TReturnEntity> GetCollectionViewModel()
+        public void OnDestroy()
         {
-            return this.collectionViewModel;
+            if (this.collectionViewModel != null)
+            {
+                collectionViewModel.OnDestroy();
+
+                collectionViewModel.OnEntitiesLoadedCallBack = null;
+                this.collectionViewModel.OnEntitiesLoadedCallBack = null;
+                this.collectionViewModel.OnEntitiesChangedCallBack = null;
+                collectionViewModel = null;
+            }
         }
     }
 
-    public interface IEntitiesLoader
+    public interface IEntitiesLoaderDescription<TProjection> : IEntitiesLoaderDescription
+        where TProjection : class
+    {
+        TProjection GetSingleObject();
+        IQueryable<TProjection> GetCollection();
+        IEntitiesViewModel<TProjection> GetViewModel();
+    }
+
+    public interface IEntitiesLoaderDescription
     {
         void OnDestroy();
+        Type GetProjectionEntityType();
+        void CreateCollectionViewModel();
         bool isLoaded { get; set; }
+        int loadOrder { get; set; }
+        Type dependencyType { get; set; }
     }
 }

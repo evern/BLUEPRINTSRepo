@@ -259,6 +259,15 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to has been removed, this view can&apos;t be accessed until it is restored.
+        /// </summary>
+        internal static string Warning_ParentViewMissing {
+            get {
+                return ResourceManager.GetString("Warning_ParentViewMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some fields contain invalid data. Click OK to close the page and lose unsaved changes. Press Cancel to continue editing data..
         /// </summary>
         internal static string Warning_SomeFieldsContainInvalidData {

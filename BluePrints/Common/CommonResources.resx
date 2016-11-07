@@ -192,4 +192,7 @@
   <data name="View_Restored" xml:space="preserve">
     <value> has been restored</value>
   </data>
+  <data name="Warning_ParentViewMissing" xml:space="preserve">
+    <value>has been removed, this view can't be accessed until it is restored</value>
+  </data>
 </root>

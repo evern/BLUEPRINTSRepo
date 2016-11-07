@@ -3404,7 +3404,6 @@
             this.barButtonResetTemplate.Id = 124;
             this.barButtonResetTemplate.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonResetTemplate.LargeGlyph")));
             this.barButtonResetTemplate.Name = "barButtonResetTemplate";
-            this.barButtonResetTemplate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonResetTemplate_ItemClick);
             // 
             // REPORTDesigner
             // 
@@ -3419,7 +3418,6 @@
             this.Name = "REPORTDesigner";
             this.Text = "REPORTDesigner";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.REPORTDesigner_Load);
             ((System.ComponentModel.ISupportInitialize)(this.xrDesignRibbonController1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationMenu1)).EndInit();

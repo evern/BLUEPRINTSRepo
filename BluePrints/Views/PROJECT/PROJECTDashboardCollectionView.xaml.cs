@@ -12,7 +12,7 @@ namespace BluePrints.Views
         public PROJECTDashboardCollectionView()
         {
             InitializeComponent();
-            ((PROJECTDashboardCollectionViewModelWrapper)this.DataContext).ChangeViewMemberFieldNames = this.ChangeViewMemberFieldNames;
+            //((PROJECTDashboardCollectionViewModelWrapper)this.DataContext).ChangeViewMemberFieldNames = this.ChangeViewMemberFieldNames;
         }
 
         public void ChangeViewMemberFieldNames(DashboardViewType DashboardViewType)

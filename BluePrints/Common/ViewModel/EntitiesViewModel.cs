@@ -384,7 +384,8 @@ namespace BluePrints.Common.ViewModel
     /// The base interface for view models exposing a collection of entities of the given type.
     /// </summary>
     /// <typeparam name="TEntity">An entity type.</typeparam>
-    public interface IEntitiesViewModel<TEntity> : IDocumentContent where TEntity : class
+    public interface IEntitiesViewModel<TEntity> : IDocumentContent
+        where TEntity : class
     {
 
         /// <summary>
