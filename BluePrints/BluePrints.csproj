@@ -900,7 +900,6 @@
     <Compile Include="ViewModels\UOM\UOMViewModel.cs" />
     <Compile Include="ViewModels\USER\USERCollectionViewModel.cs" />
     <Compile Include="ViewModels\USER\USERViewModel.cs" />
-    <Compile Include="ViewModels\VARIATION\PROJECTVARIATIONDetailsCollectionViewModel.cs" />
     <Compile Include="ViewModels\VARIATION\VARIATIONCollectionViewModel.cs" />
     <Compile Include="ViewModels\VARIATION_ITEM\VARIATION_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\VARIATION_ITEM\VARIATION_ITEMViewModel.cs" />
@@ -1044,8 +1043,8 @@
     <Compile Include="Views\PROGRESS\PROJECTPROGRESSDetailsCollectionView.xaml.cs">
       <DependentUpon>PROJECTPROGRESSDetailsCollectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VARIATION\PROJECTVARIATIONDetailsCollectionView.xaml.cs">
-      <DependentUpon>PROJECTVARIATIONDetailsCollectionView.xaml</DependentUpon>
+    <Compile Include="Views\VARIATION\VARIATIONCollectionView.xaml.cs">
+      <DependentUpon>VARIATIONCollectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WORKPACK\PROJECTWORKPACKDetailsCollectionView.xaml.cs">
       <DependentUpon>PROJECTWORKPACKDetailsCollectionView.xaml</DependentUpon>
@@ -1097,9 +1096,6 @@
     </Compile>
     <Compile Include="Views\USER\USERView.xaml.cs">
       <DependentUpon>USERView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\VARIATION\VARIATIONCollectionView.xaml.cs">
-      <DependentUpon>VARIATIONCollectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VARIATION_ITEM\VARIATION_ITEMCollectionView.xaml.cs">
       <DependentUpon>VARIATION_ITEMCollectionView.xaml</DependentUpon>
@@ -1334,7 +1330,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\VARIATION\PROJECTVARIATIONDetailsCollectionView.xaml">
+    <Page Include="Views\VARIATION\VARIATIONCollectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1403,10 +1399,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\USER\USERView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\VARIATION\VARIATIONCollectionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

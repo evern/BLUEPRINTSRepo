@@ -82,7 +82,7 @@ namespace BluePrints.Data.Helpers
             return entitiesLoader.GetCollection;
         }
 
-        public IQueryable<TProjection> GetEntities<TProjection>()
+        public IQueryable<TProjection> GetCollection<TProjection>()
             where TProjection : class
         {
             Func<IQueryable<TProjection>> GetCollectionFunc = GetCollectionFunc<TProjection>();

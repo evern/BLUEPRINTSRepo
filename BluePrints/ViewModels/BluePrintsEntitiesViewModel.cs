@@ -135,7 +135,7 @@ namespace BluePrints.ViewModels
 
             TreeViewProperty PROJECTVARIATIONModuleTreeProperty = new TreeViewProperty() { Id = "VARIATIONDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
             moduleTitle = "[" + entity.NUMBER + "] VARIATIONS";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTVARIATIONDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTVARIATIONModuleTreeProperty));
+            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "VARIATIONCollectionView", TablesGroup, null, entity.GUID, PROJECTVARIATIONModuleTreeProperty));
 
             return moduleDescriptions.ToArray();
         }
