@@ -28,7 +28,7 @@ namespace BluePrints.ViewModels
     public partial class BASELINE_ITEMSViewModelWrapper : CollectionViewModelsWrapper<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork, CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork>>
     {
         /// <summary>
-        /// Creates a new instance of BASELINEViewModel as a POCO view model.
+        /// Creates a new instance of BASELINE_ITEMSViewModelWrapper as a POCO view model.
         /// </summary>
         /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
         public static BASELINE_ITEMSViewModelWrapper Create(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
@@ -64,19 +64,19 @@ namespace BluePrints.ViewModels
         {
             MainViewModel = null;
             loaderCollection = new EntitiesLoaderDescriptionCollection(this);
-            loaderCollection.AddEntitiesLoader<PROJECT, PROJECT, Guid, IBluePrintsEntitiesUnitOfWork>(0, bluePrintsUnitOfWorkFactory, x => x.PROJECTS, PROJECTProjectionFunc, null, isContinueLoadingPROJECT, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<BASELINE, BASELINE, Guid, IBluePrintsEntitiesUnitOfWork>(1, bluePrintsUnitOfWorkFactory, x => x.BASELINES, BASELINEProjectionFunc, typeof(PROJECT), isContinueLoadingBASELINE, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.WORKPACKS, WORKPACKProjectionFunc, typeof(BASELINE));
-            loaderCollection.AddEntitiesLoader<PHASE, PHASE, Guid, IBluePrintsEntitiesUnitOfWork>(3, bluePrintsUnitOfWorkFactory, x => x.PHASES, PHASEProjectionFunc, typeof(BASELINE));
-            loaderCollection.AddEntitiesLoader<AREA, AREA, Guid, IBluePrintsEntitiesUnitOfWork>(4, bluePrintsUnitOfWorkFactory, x => x.AREAS, AREAProjectionFunc, typeof(BASELINE));
+            loaderCollection.AddEntitiesLoader<PROJECT, PROJECT, Guid, IBluePrintsEntitiesUnitOfWork>(0, bluePrintsUnitOfWorkFactory, x => x.PROJECTS, PROJECTProjectionFunc, null, isContinueLoadingAfterPROJECT, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<BASELINE, BASELINE, Guid, IBluePrintsEntitiesUnitOfWork>(1, bluePrintsUnitOfWorkFactory, x => x.BASELINES, BASELINEProjectionFunc, typeof(PROJECT), isContinueLoadingAfterBASELINE, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.WORKPACKS, WORKPACKProjectionFunc, typeof(PROJECT));
+            loaderCollection.AddEntitiesLoader<PHASE, PHASE, Guid, IBluePrintsEntitiesUnitOfWork>(3, bluePrintsUnitOfWorkFactory, x => x.PHASES, PHASEProjectionFunc, typeof(PROJECT));
+            loaderCollection.AddEntitiesLoader<AREA, AREA, Guid, IBluePrintsEntitiesUnitOfWork>(4, bluePrintsUnitOfWorkFactory, x => x.AREAS, AREAProjectionFunc, typeof(PROJECT));
             loaderCollection.AddEntitiesLoader<DEPARTMENT, DEPARTMENT, Guid, IBluePrintsEntitiesUnitOfWork>(5, bluePrintsUnitOfWorkFactory, x => x.DEPARTMENTS);
             loaderCollection.AddEntitiesLoader<DISCIPLINE, DISCIPLINE, Guid, IBluePrintsEntitiesUnitOfWork>(6, bluePrintsUnitOfWorkFactory, x => x.DISCIPLINES);
             loaderCollection.AddEntitiesLoader<DOCTYPE, DOCTYPE, Guid, IBluePrintsEntitiesUnitOfWork>(7, bluePrintsUnitOfWorkFactory, x => x.DOCTYPES);
-            loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(8, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc);
+            loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(8, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
             InvokeEntitiesLoaderDescriptionLoading();
         }
 
-        bool isContinueLoadingPROJECT(IEnumerable<PROJECT> entities)
+        bool isContinueLoadingAfterPROJECT(IEnumerable<PROJECT> entities)
         {
             if(entities.Count() == 0)
             {
@@ -88,7 +88,7 @@ namespace BluePrints.ViewModels
             return true;
         }
 
-        bool isContinueLoadingBASELINE(IEnumerable<BASELINE> entities)
+        bool isContinueLoadingAfterBASELINE(IEnumerable<BASELINE> entities)
         {
             if (entities.Count() == 0)
             {
@@ -118,22 +118,22 @@ namespace BluePrints.ViewModels
 
         Func<IRepositoryQuery<WORKPACK>, IQueryable<WORKPACK>> WORKPACKProjectionFunc()
         {
-            return query => query.Where(x => x.GUID_PROJECT == loadBASELINE.GUID_PROJECT);
+            return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
         Func<IRepositoryQuery<PHASE>, IQueryable<PHASE>> PHASEProjectionFunc()
         {
-            return query => query.Where(x => x.GUID_PROJECT == loadBASELINE.GUID_PROJECT);
+            return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
         Func<IRepositoryQuery<AREA>, IQueryable<AREA>> AREAProjectionFunc()
         {
-            return query => query.Where(x => x.GUID_PROJECT == loadBASELINE.GUID_PROJECT);
+            return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
         Func<IRepositoryQuery<RATE>, IQueryable<RATE>> RATEProjectionFunc()
         {
-            return query => query.Where(x => x.GUID_PROJECT == loadBASELINE.GUID_PROJECT);
+            return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
         protected override void OnAllEntitiesCollectionLoaded()
@@ -158,9 +158,6 @@ namespace BluePrints.ViewModels
 
         protected override void OnEntitiesChanged(object key, Type changedType, EntityMessageType messageType, object sender)
         {
-            if (MainViewModel == null)
-                return;
-
             if (sender == MainViewModel)
                 return;
 
@@ -175,8 +172,8 @@ namespace BluePrints.ViewModels
 
             if (loadPROJECT != null || loadBASELINE != null)
             {
-                if (BASELINE_ITEMSJoinRATESCollectionViewModel != null)
-                    mainThreadDispatcher.BeginInvoke(new Action(() => BASELINE_ITEMSJoinRATESCollectionViewModel.Refresh()));
+                if (MainViewModel != null)
+                    mainThreadDispatcher.BeginInvoke(new Action(() => MainViewModel.Refresh()));
                 else if (loadPROJECT != null || loadBASELINE != null)
                     mainThreadDispatcher.BeginInvoke(new Action(() => InitializeAndLoadEntitiesLoaderDescription()));
             }
@@ -227,8 +224,8 @@ namespace BluePrints.ViewModels
                     var SelectedDOCTYPE = DOCTYPECollection.FirstOrDefault(x => x.GUID == chosenWORKPACK.GUID_DDOCTYPE);
                     var SelectedDISCIPLINE = DISCIPLINECollection.FirstOrDefault(x => x.GUID == chosenWORKPACK.GUID_DDISCIPLINE);
 
-                    activeBASELINE_ITEM.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadBASELINE.PROJECT, MainViewModel.Entities, SelectedAREA, SelectedDISCIPLINE, SelectedDOCTYPE);
-                    BASELINE_ITEMSJoinRATESCollectionViewModel.UpdateSelectedEntity();
+                    activeBASELINE_ITEM.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadPROJECT, MainViewModel.Entities, SelectedAREA, SelectedDISCIPLINE, SelectedDOCTYPE);
+                    MainViewModel.UpdateSelectedEntity();
                 }
             }
             else if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATE().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DOCTYPE))
@@ -237,7 +234,7 @@ namespace BluePrints.ViewModels
                 if (chosenDOCTYPE != null && chosenDOCTYPE.GUID_DDEPARTMENT != null)
                 {
                     activeBASELINE_ITEM.BASELINE_ITEM.GUID_DEPARTMENT = chosenDOCTYPE.DEPARTMENT.GUID;
-                    BASELINE_ITEMSJoinRATESCollectionViewModel.UpdateSelectedEntity();
+                    MainViewModel.UpdateSelectedEntity();
                 }
             }
         }
@@ -262,21 +259,10 @@ namespace BluePrints.ViewModels
         {
             get
             {
-                if (loadBASELINE == null || loadBASELINE.PROJECT.USELEGACYWORKPACK)
+                if (loadPROJECT == null || loadPROJECT.USELEGACYWORKPACK)
                     return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME1);
                 else
                     return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME2);
-            }
-        }
-
-        /// <summary>
-        /// The view model for the BASELINEBASELINE_ITEMS detail collection.
-        /// </summary>
-        public CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork> BASELINE_ITEMSJoinRATESCollectionViewModel
-        {
-            get
-            {
-                return MainViewModel;
             }
         }
 

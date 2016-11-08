@@ -50,7 +50,7 @@ namespace BluePrints.Common.Projections
 
     public static class BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSQueries
     {
-        public static IQueryable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM> JoinRATESAndPROGRESS_ITEMSOnBASELINE_ITEMS(IQueryable<BASELINE_ITEM> BASELINE_ITEMS, Func<PROGRESS> getPROGRESSFunc, Func<BASELINE> getBASELINEFunc, Func<IQueryable<PROGRESS_ITEM>> getPROGRESS_ITEMSFunc, Func<IQueryable<RATE>> getRATESFunc)
+        public static IQueryable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM> JoinRATESAndPROGRESS_ITEMSOnBASELINE_ITEMS(IQueryable<BASELINE_ITEM> BASELINE_ITEMS, Func<PROGRESS> getPROGRESSFunc, Func<BASELINE> getBASELINEFunc, Func<IQueryable<PROGRESS_ITEM>> getPROGRESS_ITEMSFunc, Func<IQueryable<RATE>> getRATESFunc, bool isBASELINEQueryProcessed = false)
         {
             BASELINE BASELINE = getBASELINEFunc();
             PROGRESS PROGRESS = getPROGRESSFunc();
@@ -65,9 +65,9 @@ namespace BluePrints.Common.Projections
 
             IQueryable<BASELINE_ITEMJoinRATE> BASELINE_ITEMJoinRATES;
             if (PROGRESS == null)
-                BASELINE_ITEMJoinRATES = BASELINE_ITEMSJoinRATESQueries.JoinRATESOnBASELINE_ITEMS(BASELINE_ITEMS.Where(x => x.GUID == Guid.Empty), getBASELINEFunc, getRATESFunc);
+                BASELINE_ITEMJoinRATES = BASELINE_ITEMSJoinRATESQueries.JoinRATESOnBASELINE_ITEMS(BASELINE_ITEMS.Where(x => x.GUID == Guid.Empty), getBASELINEFunc, getRATESFunc, true);
             else
-                BASELINE_ITEMJoinRATES = BASELINE_ITEMSJoinRATESQueries.JoinRATESOnBASELINE_ITEMS(BASELINE_ITEMS, getBASELINEFunc, getRATESFunc);
+                BASELINE_ITEMJoinRATES = BASELINE_ITEMSJoinRATESQueries.JoinRATESOnBASELINE_ITEMS(BASELINE_ITEMS, getBASELINEFunc, getRATESFunc, isBASELINEQueryProcessed);
 
             DateTime reportingDate = PROGRESS == null ? new DateTime() : PROGRESS.DATA_DATE;
             return BASELINE_ITEMJoinRATES.ToArray().AsQueryable().Select(x => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM() { GUID = x.GUID, BASELINE_ITEMJoinRATE = x, ReportingDataDate = reportingDate, PROGRESS_ITEMS = LoadPROGRESS_ITEMS.Where(y => y.GUID_ORIBASEITEM == x.BASELINE_ITEM.GUID_ORIGINAL).ToArray().AsEnumerable() });

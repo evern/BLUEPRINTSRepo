@@ -187,6 +187,15 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please add this record first before adjusting it&apos;s units.
+        /// </summary>
+        internal static string Notify_AddBASELINE_ITEMBeforeVARIATION_UNITS {
+            get {
+                return ResourceManager.GetString("Notify_AddBASELINE_ITEMBeforeVARIATION_UNITS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has been removed, this view can&apos;t be accessed until it is restored.
         /// </summary>
         internal static string Notify_View_Removed {

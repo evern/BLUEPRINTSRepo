@@ -87,14 +87,20 @@ namespace BluePrints.Common.Projections
 
     public static class BASELINE_ITEMSJoinRATESQueries
     {
-        public static IQueryable<BASELINE_ITEMJoinRATE> JoinRATESOnBASELINE_ITEMS(IQueryable<BASELINE_ITEM> BASELINE_ITEMS, Func<BASELINE> getBASELINEFunc, Func<IQueryable<RATE>> getRATES_ByProjectFunc = null)
+        public static IQueryable<BASELINE_ITEMJoinRATE> JoinRATESOnBASELINE_ITEMS(IQueryable<BASELINE_ITEM> BASELINE_ITEMS, Func<BASELINE> getBASELINEFunc, Func<IQueryable<RATE>> getRATES_ByProjectFunc = null, bool isBASELINEQueryProcessed = false)
         {
             BASELINE BASELINE = getBASELINEFunc();
             IQueryable<BASELINE_ITEM> contextBASELINE_ITEMS;
             if (BASELINE == null)
                 contextBASELINE_ITEMS = BASELINE_ITEMS.Where(x => x.GUID == Guid.Empty);
             else
-                contextBASELINE_ITEMS = BASELINE_ITEMS.Where(x => x.GUID_BASELINE == BASELINE.GUID);
+            {
+                if(isBASELINEQueryProcessed)
+                    contextBASELINE_ITEMS = BASELINE_ITEMS;
+                else
+                    contextBASELINE_ITEMS = BASELINE_ITEMS.Where(x => x.GUID_BASELINE == BASELINE.GUID);
+            }
+
 
             IQueryable<RATE> RATES = getRATES_ByProjectFunc();
             return contextBASELINE_ITEMS.ToArray().AsQueryable().Select(x => new BASELINE_ITEMJoinRATE() { GUID = x.GUID, BASELINE_ITEM = x, RATE = RATES.FirstOrDefault(y => y.GUID_DEPARTMENT == x.GUID_DEPARTMENT && y.GUID_DISCIPLINE == x.GUID_DISCIPLINE) });

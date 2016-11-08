@@ -492,6 +492,7 @@
             this.printPreviewStaticItem2 = new DevExpress.XtraPrinting.Preview.PrintPreviewStaticItem();
             this.zoomTrackBarEditItem1 = new DevExpress.XtraPrinting.Preview.ZoomTrackBarEditItem();
             this.repositoryItemZoomTrackBar1 = new DevExpress.XtraEditors.Repository.RepositoryItemZoomTrackBar();
+            this.barButtonResetTemplate = new DevExpress.XtraBars.BarButtonItem();
             this.xrToolboxPageCategory1 = new DevExpress.XtraReports.UserDesigner.XRToolboxPageCategory();
             this.ribbonPage2 = new DevExpress.XtraReports.UserDesigner.XRToolboxRibbonPage();
             this.ribbonPage1 = new DevExpress.XtraReports.UserDesigner.XRDesignRibbonPage();
@@ -532,7 +533,6 @@
             this.groupAndSortDockPanel1 = new DevExpress.XtraReports.UserDesigner.GroupAndSortDockPanel();
             this.groupAndSortDockPanel1_Container = new DevExpress.XtraReports.UserDesigner.DesignControlContainer();
             this.reportDesigner1 = new DevExpress.XtraReports.UserDesigner.XRDesignMdiController(this.components);
-            this.barButtonResetTemplate = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.xrDesignRibbonController1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationMenu1)).BeginInit();
@@ -2888,6 +2888,7 @@
             this.zoomTrackBarEditItem1.ContextSpecifier = this.xrDesignRibbonController1;
             this.zoomTrackBarEditItem1.Edit = this.repositoryItemZoomTrackBar1;
             this.zoomTrackBarEditItem1.EditWidth = 140;
+            this.zoomTrackBarEditItem1.Enabled = false;
             this.zoomTrackBarEditItem1.Id = 123;
             this.zoomTrackBarEditItem1.Name = "zoomTrackBarEditItem1";
             this.zoomTrackBarEditItem1.Range = new int[] {
@@ -2902,6 +2903,15 @@
             this.repositoryItemZoomTrackBar1.Maximum = 180;
             this.repositoryItemZoomTrackBar1.Name = "repositoryItemZoomTrackBar1";
             this.repositoryItemZoomTrackBar1.ScrollThumbStyle = DevExpress.XtraEditors.Repository.ScrollThumbStyle.ArrowDownRight;
+            // 
+            // barButtonResetTemplate
+            // 
+            this.barButtonResetTemplate.Caption = "Reset Template";
+            this.barButtonResetTemplate.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonResetTemplate.Glyph")));
+            this.barButtonResetTemplate.Id = 124;
+            this.barButtonResetTemplate.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonResetTemplate.LargeGlyph")));
+            this.barButtonResetTemplate.Name = "barButtonResetTemplate";
+            this.barButtonResetTemplate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonResetTemplate_ItemClick);
             // 
             // xrToolboxPageCategory1
             // 
@@ -3397,14 +3407,6 @@
             this.reportDesigner1.Form = this;
             this.reportDesigner1.SqlWizardSettings.QueryBuilderDiagramView = false;
             // 
-            // barButtonResetTemplate
-            // 
-            this.barButtonResetTemplate.Caption = "Reset Template";
-            this.barButtonResetTemplate.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonResetTemplate.Glyph")));
-            this.barButtonResetTemplate.Id = 124;
-            this.barButtonResetTemplate.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonResetTemplate.LargeGlyph")));
-            this.barButtonResetTemplate.Name = "barButtonResetTemplate";
-            // 
             // REPORTDesigner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3418,6 +3420,7 @@
             this.Name = "REPORTDesigner";
             this.Text = "REPORTDesigner";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.REPORTDesigner_Load);
             ((System.ComponentModel.ISupportInitialize)(this.xrDesignRibbonController1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationMenu1)).EndInit();

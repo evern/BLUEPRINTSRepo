@@ -6,18 +6,11 @@ using BluePrints.ViewModels;
 
 namespace BluePrints.Views
 {
-    public partial class PROGRESSView : UserControl
+    public partial class PROGRESS_ITEMCollectionView : UserControl
     {
-        public PROGRESSView()
+        public PROGRESS_ITEMCollectionView()
         {
             InitializeComponent();
-            //((PROGRESSViewModelWrapper)this.DataContext).ShowNewWorkpack = this.ShowNewWorkpack;
-        }
-
-        void ShowNewWorkpack()
-        {
-            columnWorkpack1.Visible = false;
-            columnWorkpack2.Visible = true;
         }
     }
 }

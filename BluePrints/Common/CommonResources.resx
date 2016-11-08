@@ -186,4 +186,7 @@
   <data name="Notify_View_Restored" xml:space="preserve">
     <value>{0} has been restored</value>
   </data>
+  <data name="Notify_AddBASELINE_ITEMBeforeVARIATION_UNITS" xml:space="preserve">
+    <value>Please add this record first before adjusting it's units</value>
+  </data>
 </root>

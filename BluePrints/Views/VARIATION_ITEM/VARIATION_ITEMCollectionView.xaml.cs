@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace BluePrints.Views
 {
-    public partial class VARIATION_ITEMSCollectionView : UserControl
+    public partial class VARIATION_ITEMCollectionView : UserControl
     {
-        public VARIATION_ITEMSCollectionView()
+        public VARIATION_ITEMCollectionView()
         {
             InitializeComponent();
         }

@@ -29,7 +29,7 @@
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <DockPanel>
-            <dxr:RibbonControl DataContext="{Binding BASELINE_ITEMSJoinRATESCollectionViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl DataContext="{Binding MainViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="BASELINE ITEM Tasks" >
@@ -50,12 +50,14 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="BASELINE_ITEMSJoinRATESGrid" DataContext="{Binding BASELINE_ITEMSJoinRATESCollectionViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="BASELINE_ITEMSJoinRATESGrid" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
                     <dxg:GridControl.Columns>
                         <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" >
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, ElementName=userControl, Mode=OneWay}" ValueMember="GUID"/>
-                            </dxg:GridColumn.EditSettings>
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, Mode=OneWay, ElementName=userControl}" ValueMember="GUID" />
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
                         </dxg:GridColumn>
                         <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_PHASE" Header="PHASE"  >
                             <dxg:GridColumn.EditSettings>

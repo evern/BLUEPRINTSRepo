@@ -136,16 +136,26 @@ namespace BluePrints.Common.ViewModel.Reporting
             }
             set 
             {
-                if (PROGRESS_ITEMcurrent == null)
-                    PROGRESS_ITEMcurrent = value.FirstOrDefault(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE == ReportingDataDate);
-                if (PROGRESS_ITEMSafterreportingdate == null)
-                    PROGRESS_ITEMSafterreportingdate = value.Where(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE > ReportingDataDate).ToList();
-                if (PROGRESS_ITEMSbeforereportingdate == null)
-                    PROGRESS_ITEMSbeforereportingdate = value.Where(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE < ReportingDataDate).ToList();
-                if (PROGRESS_ITEMSuptocurrentdate == null)
-                    PROGRESS_ITEMSuptocurrentdate = value.Where(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE <= ReportingDataDate).ToList();
+                if(value == null)
+                {
+                    PROGRESS_ITEMcurrent = new PROGRESS_ITEM();
+                    PROGRESS_ITEMSafterreportingdate = new List<PROGRESS_ITEM>();
+                    PROGRESS_ITEMSbeforereportingdate = new List<PROGRESS_ITEM>();
+                    PROGRESS_ITEMSuptocurrentdate = new List<PROGRESS_ITEM>();
+                }
+                else
+                {
+                    if (PROGRESS_ITEMcurrent == null)
+                        PROGRESS_ITEMcurrent = value.FirstOrDefault(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE == ReportingDataDate);
+                    if (PROGRESS_ITEMSafterreportingdate == null)
+                        PROGRESS_ITEMSafterreportingdate = value.Where(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE > ReportingDataDate).ToList();
+                    if (PROGRESS_ITEMSbeforereportingdate == null)
+                        PROGRESS_ITEMSbeforereportingdate = value.Where(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE < ReportingDataDate).ToList();
+                    if (PROGRESS_ITEMSuptocurrentdate == null)
+                        PROGRESS_ITEMSuptocurrentdate = value.Where(y => y.GUID_ORIBASEITEM == BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_ORIGINAL && y.EARNED_DATE <= ReportingDataDate).ToList();
 
-                progress_items = value; 
+                    progress_items = value; 
+                }
             }
         }
 
@@ -203,8 +213,8 @@ namespace BluePrints.Common.ViewModel.Reporting
                 {
                     if (this.PROGRESS_ITEMSBeforeReportingDate == null)
                         pastPROGRESS_ITEMS_UNITS = 0;
-
-                    pastPROGRESS_ITEMS_UNITS = this.PROGRESS_ITEMSBeforeReportingDate.Sum(progress => progress.EARNED_UNITS);
+                    else
+                        pastPROGRESS_ITEMS_UNITS = this.PROGRESS_ITEMSBeforeReportingDate.Sum(progress => progress.EARNED_UNITS);
                 }
 
                 return (decimal)pastPROGRESS_ITEMS_UNITS;
@@ -220,8 +230,8 @@ namespace BluePrints.Common.ViewModel.Reporting
                 {
                     if (this.PROGRESS_ITEMSAfterReportingDate == null)
                         futurePROGRESS_ITEMS_UNITS = 0;
-
-                    futurePROGRESS_ITEMS_UNITS = PROGRESS_ITEMSAfterReportingDate.Sum(x => x.EARNED_UNITS);
+                    else
+                        futurePROGRESS_ITEMS_UNITS = PROGRESS_ITEMSAfterReportingDate.Sum(x => x.EARNED_UNITS);
                 }
 
                 return (decimal)futurePROGRESS_ITEMS_UNITS;

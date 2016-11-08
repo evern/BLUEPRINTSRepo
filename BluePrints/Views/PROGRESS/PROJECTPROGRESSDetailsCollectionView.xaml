@@ -52,7 +52,7 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" DataContext="{Binding PROJECTPROGRESSESDetails}" ColumnsSource="{StaticResource PROGRESSColumns}" Style="{StaticResource DefaultGridTemplate}">
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="PROJECTPROGRESSESDetailsGrid" DataContext="{Binding PROJECTPROGRESSESDetails}" ColumnsSource="{StaticResource PROGRESSColumns}" Style="{StaticResource DefaultGridTemplate}">
                     <dxg:GridControl.TotalSummary>
                         <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
                     </dxg:GridControl.TotalSummary>

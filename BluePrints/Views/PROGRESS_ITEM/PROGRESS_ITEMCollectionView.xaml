@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="userControl" x:Class="BluePrints.Views.PROGRESSView"
+﻿<UserControl x:Name="userControl" x:Class="BluePrints.Views.PROGRESS_ITEMCollectionView"
         xmlns="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -29,7 +29,7 @@
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <DockPanel>
-            <dxr:RibbonControl DataContext="{Binding BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSCollectionViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl DataContext="{Binding MainViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="PROGRESS ITEM Tasks" >
@@ -66,11 +66,14 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="PROGRESSPROGRESS_ITEMSDetailsGrid" DataContext="{Binding BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSCollectionViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="PROGRESSPROGRESS_ITEMSDetailsGrid" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
                     <dxg:GridControl.Bands>
                         <dxg:GridControlBand Name="bandGeneral" Header="General">
-                            <dxg:GridColumn VisibleIndex ="0" Name="columnWorkpack1" FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.INTERNAL_NAME1" Header="WORKPACK" ReadOnly="True" IsEnabled="False" />
-                            <dxg:GridColumn VisibleIndex ="1" Name="columnWorkpack2" FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.INTERNAL_NAME2" Header="WORKPACK" ReadOnly="True" IsEnabled="False" Visible="False" />
+                            <dxg:GridColumn FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" >
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, ElementName=userControl, Mode=OneWay}" ValueMember="GUID"/>
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
                             <dxg:GridColumn Name="columnPhase" FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.PHASE.INTERNAL_NUM" Header="PHASE" ReadOnly="True" IsEnabled="False" />
                             <dxg:GridColumn Name="columnInternalNum" FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.AREA.INTERNAL_NUM" Header="AREA" ReadOnly="True" IsEnabled="False" />
                             <dxg:GridColumn FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.DOCTYPE.NAME" Header="DOCTYPE" ReadOnly="True" IsEnabled="False" />

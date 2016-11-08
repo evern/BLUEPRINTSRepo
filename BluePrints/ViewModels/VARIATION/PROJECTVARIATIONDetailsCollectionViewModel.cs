@@ -1,10 +1,13 @@
 ﻿using BluePrints.BluePrintsEntitiesDataModel;
 using BluePrints.Common;
 using BluePrints.Common.DataModel;
+using BluePrints.Common.Projections;
 using BluePrints.Common.ViewModel;
 using BluePrints.Common.ViewModel.Utils;
 using BluePrints.Data;
 using BluePrints.Data.Helpers;
+using DevExpress.Mvvm;
+using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Grid;
 using System;
 using System.Collections.Generic;
@@ -27,22 +30,53 @@ namespace BluePrints.ViewModels
         {
         }
 
+        public ISupportCustomDocumentVARIATIONCollectionViewModel collectionViewModel { get; set; }
         /// <summary>
         /// The view model for the PROJECTVARIATIONES detail collection.
         /// </summary>
-        public CollectionViewModel<VARIATION, Guid, IBluePrintsEntitiesUnitOfWork> PROJECTVARIATIONSDetails
+        public ISupportCustomDocumentVARIATIONCollectionViewModel PROJECTVARIATIONSDetails
         {
             get
             {
-                var collectionViewModel = GetDetailsCollectionViewModel((PROJECTVARIATIONDetailsCollectionViewModel x) => x.PROJECTVARIATIONSDetails, x => x.VARIATIONS, x => x.GUID_PROJECT, (x, key) => { x.GUID_PROJECT = key; });
-                collectionViewModel.OnBeforeEntitySavedCallBack = this.OnBeforeEntitySaved;
+                if (collectionViewModel == null && this.PrimaryKey != Guid.Empty)
+                {
+                    collectionViewModel = ISupportCustomDocumentVARIATIONCollectionViewModel.Create(this.Entity, query => query.Where(x => x.GUID_PROJECT == this.Entity.GUID));
+                    collectionViewModel.OnBeforeEntitySavedCallBack = this.OnBeforeEntitySaved;
+                    collectionViewModel.SetParentViewModel(this);
+                }
+
                 return collectionViewModel;
             }
         }
 
         BASELINECollectionViewModel LiveBASELINECollection { get; set; }
         PROGRESSCollectionViewModel LivePROGRESSCollection { get; set; }
-        BASELINE_ITEMSCollectionViewModel VariationAdditionBASELINEITEMSCollection { get; set; }
+        CollectionViewModel<BASELINE_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> VariationAdditionBASELINEITEMSCollection { get; set; }
+
+
+        public IEnumerable<BASELINE> BASELINECollection
+        {
+            get { return LiveBASELINECollection.Entities; }
+        }
+
+        protected override void OnParameterChanged(object parameter)
+        {
+            base.OnParameterChanged(parameter);
+            LiveBASELINECollection = BASELINECollectionViewModel.Create(this.UnitOfWorkFactory, query => query.Where(x => x.GUID_PROJECT == this.PrimaryKey && x.STATUS == BaselineStatus.Live));
+            LiveBASELINECollection.Entities.ToList();
+            LivePROGRESSCollection = PROGRESSCollectionViewModel.Create(this.UnitOfWorkFactory, query => query.Where(x => x.GUID_PROJECT == this.PrimaryKey && x.STATUS == ProgressStatus.Live));
+            LivePROGRESSCollection.Entities.ToList();
+            this.RaisePropertyChanged(x => x.PROJECTVARIATIONSDetails);
+        }
+
+        public void OnBeforeEntitySaved(VARIATION entity)
+        {
+            entity.GUID_PROJECT = this.Entity.GUID;
+            if (entity.APPROVED != null)
+                entity.GUID_ORIBASELINE = entity.GUID_ORIBASELINE ?? LiveBASELINECollection.Entities.First().GUID;
+            else
+                entity.GUID_ORIBASELINE = null;
+        }
 
         protected override void OnDestroy()
         {
@@ -51,39 +85,6 @@ namespace BluePrints.ViewModels
             VariationAdditionBASELINEITEMSCollection.OnDestroy();
             base.OnDestroy();
         }
-
-        /// <summary>
-        /// The view model that contains a look-up collection of BASELINES for the corresponding navigation property in the view.
-        /// </summary>
-        public IEntitiesViewModel<BASELINE> LookUpBASELINES
-        {
-            get { return GetLookUpEntitiesViewModel((PROJECTVARIATIONDetailsCollectionViewModel x) => x.LookUpBASELINES, x => x.BASELINES); }
-        }
-
-        protected override void OnParameterChanged(object parameter)
-        {
-            base.OnParameterChanged(parameter);
-        }
-
-        protected override void OnLookupCollectionsUpdated()
-        {
-            LiveBASELINECollection = BASELINECollectionViewModel.Create(this.UnitOfWorkFactory, query => query.Where(x => x.GUID_PROJECT == this.PrimaryKey && x.STATUS == BaselineStatus.Live));
-            LiveBASELINECollection.Entities.ToList();
-            LivePROGRESSCollection = PROGRESSCollectionViewModel.Create(this.UnitOfWorkFactory, query => query.Where(x => x.GUID_PROJECT == this.PrimaryKey && x.STATUS == ProgressStatus.Live));
-            LivePROGRESSCollection.Entities.ToList();
-            VariationAdditionBASELINEITEMSCollection = BASELINE_ITEMSCollectionViewModel.Create(this.UnitOfWorkFactory, query => query.Where(x => x.GUID_BASELINE == null && x.VARIATION.GUID_PROJECT == this.PrimaryKey));
-            VariationAdditionBASELINEITEMSCollection.Entities.ToList();
-            base.OnLookupCollectionsUpdated();
-        }
-
-        public void OnBeforeEntitySaved(VARIATION entity)
-        {
-            if (entity.APPROVED != null)
-                entity.GUID_ORIBASELINE = entity.GUID_ORIBASELINE ?? LiveBASELINECollection.Entities.First().GUID;
-            else
-                entity.GUID_ORIBASELINE = null;
-        }
-
         #region Commands
         /// <summary>
         /// Determines whether an entities can be approved
@@ -107,12 +108,23 @@ namespace BluePrints.ViewModels
         /// <param name="projectionEntity">An entity to approve.</param>
         public void Approve(VARIATION entity)
         {
-            if (entity == null || LiveBASELINECollection == null || LivePROGRESSCollection == null || LivePROGRESSCollection.Entities.Count == 0)
+            string errorMessage = string.Empty;
+            if (entity == null)
+                errorMessage = "Nothing within variation to approve";
+            else if (LiveBASELINECollection == null || LiveBASELINECollection.Entities.Count() == 0)
+                errorMessage = "Live baseline doesn't exists";
+            else if (LivePROGRESSCollection == null || LivePROGRESSCollection.Entities.Count() == 0)
+                errorMessage = "Live progress doesn't exists";
+
+            if (errorMessage != string.Empty)
+            {
+                MessageBoxService.ShowMessage(errorMessage);
                 return;
+            }
 
             BASELINE LiveBASELINE = LiveBASELINECollection.Entities.First();
-            IQueryable<VARIATION_ITEM> editVARIATION_ITEMS = entity.VARIATION_ITEMS.AsQueryable();
-            IQueryable<BASELINE_ITEM> addBASELINE_ITEMS = VariationAdditionBASELINEITEMSCollection.Entities.Where(x => x.GUID_VARIATION == entity.GUID).AsQueryable();
+            IEnumerable<VARIATION_ITEM> editVARIATION_ITEMS = BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory().CreateUnitOfWork().VARIATION_ITEMS.Where(x => x.GUID_VARIATION == entity.GUID).ToArray().AsEnumerable();
+            IEnumerable<BASELINE_ITEM> addBASELINE_ITEMS = BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory().CreateUnitOfWork().BASELINE_ITEMS.Where(x => x.GUID_VARIATION == entity.GUID && x.GUID_BASELINE == null).ToArray().AsEnumerable();
             IQueryable<BASELINE_ITEM> editBASELINE_ITEMS = LiveBASELINE.BASELINE_ITEMS.AsQueryable();
             IQueryable<PROGRESS_ITEM> livePROGRESS_ITEMS = LivePROGRESSCollection.Entities.First().PROGRESS_ITEMS.AsQueryable();
 
@@ -148,6 +160,9 @@ namespace BluePrints.ViewModels
                     }
                     else if(editVARIATION_ITEM.ACTION == VariationAction.Append)
                         copyBASELINE_ITEM.DC_HOURS += editVARIATION_ITEM.VARIATION_UNITS;
+
+                    if (editVARIATION_ITEM.ACTION != VariationAction.NoAction)
+                        copyBASELINE_ITEM.GUID_VARIATION = entity.GUID;
                 }
 
                 copyBASELINE_ITEM.GUID = Guid.Empty;
@@ -162,19 +177,69 @@ namespace BluePrints.ViewModels
                 newBASELINE_ITEM.GUID = Guid.Empty;
                 newBASELINE_ITEM.GUID_BASELINE = newBASELINE.GUID;
                 newBASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(this.Entity, newBASELINE_ITEM, newBASELINE_ITEMS, addBASELINE_ITEM.AREA, addBASELINE_ITEM.DISCIPLINE, addBASELINE_ITEM.DOCTYPE);
-                VARIATION_ITEM editVARIATION_ITEM = editVARIATION_ITEMS.FirstOrDefault(x => x.GUID_ORIBASEITEM == newBASELINE_ITEM.GUID_ORIGINAL);
-                if (editVARIATION_ITEM != null)
-                    newBASELINE_ITEM.DC_HOURS = editVARIATION_ITEM.VARIATION_UNITS;
+                VARIATION_ITEM editVARIATION_ITEM = editVARIATION_ITEMS.First(x => x.GUID_ORIBASEITEM == newBASELINE_ITEM.GUID_ORIGINAL);
+                newBASELINE_ITEM.DC_HOURS = editVARIATION_ITEM.VARIATION_UNITS;
+                newBASELINE_ITEM.GUID_VARIATION = entity.GUID;
 
                 newBASELINE_ITEMS.Add(newBASELINE_ITEM);
             }
 
-            VariationAdditionBASELINEITEMSCollection.BulkSave(newBASELINE_ITEMS);
+            foreach(BASELINE_ITEM newBASELINE_ITEM in newBASELINE_ITEMS)
+            {
+                VariationAdditionBASELINEITEMSCollection.Save(newBASELINE_ITEM);
+            }
+
             LiveBASELINE.STATUS = BaselineStatus.Superseded;
             LiveBASELINECollection.Save(LiveBASELINE);
             newBASELINE.STATUS = BaselineStatus.Live;
             LiveBASELINECollection.Save(newBASELINE);
             LiveBASELINECollection.Refresh();
+        }
+        #endregion
+    }
+
+    public class ISupportCustomDocumentVARIATIONCollectionViewModel : CollectionViewModel<VARIATION, Guid, IBluePrintsEntitiesUnitOfWork>, ISupportCustomDocumentTypeNameAndParameter
+    {
+        /// <summary>
+        /// Creates a new instance of VARIATIONCollectionViewModel as a POCO view model.
+        /// </summary>
+        /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
+        public static ISupportCustomDocumentVARIATIONCollectionViewModel Create(PROJECT project, Func<IRepositoryQuery<VARIATION>, IQueryable<VARIATION>> projection = null)
+        {
+            return ViewModelSource.Create(() => new ISupportCustomDocumentVARIATIONCollectionViewModel(project, projection));
+        }
+
+        PROJECT thisPROJECT;
+        /// <summary>
+        /// Initializes a new instance of the VARIATIONCollectionViewModel class.
+        /// This constructor is declared protected to avoid undesired instantiation of the VARIATIONCollectionViewModel type without the POCO proxy factory.
+        /// </summary>
+        /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
+        protected ISupportCustomDocumentVARIATIONCollectionViewModel(PROJECT project, Func<IRepositoryQuery<VARIATION>, IQueryable<VARIATION>> projection = null)
+            : base(BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory(), x => x.VARIATIONS, projection)
+        {
+            thisPROJECT = project;
+        }
+
+        #region ISupportCustomDocumentTypeNameAndParameter
+        public string GetCustomDocumentTypeName()
+        {
+            return "VARIATION_ITEMCollectionView";
+        }
+
+        public object GetCustomDocumentParameter()
+        {
+            return new OptionalEntitiesParameter<PROJECT, VARIATION>(this.thisPROJECT, SelectedEntity);
+        }
+
+        public string GetCustomDocumentTitle()
+        {
+            return "[" + thisPROJECT.NUMBER + "] VARIATION";
+        }
+
+        public bool IsCustomModeEnabled()
+        {
+            return true;
         }
         #endregion
     }

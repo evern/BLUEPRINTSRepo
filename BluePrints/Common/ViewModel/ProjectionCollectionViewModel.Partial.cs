@@ -1020,7 +1020,8 @@ namespace BluePrints.Common.ViewModel
         /// </summary>
         public virtual string EntityDisplayName { get { return typeof(TEntity).Name; } }
 
-        public Action<TProjection> HijackSaveOperation;
+        public Func<TProjection, bool> PreSave;
+        public Action<TProjection, bool> PostSave;
         /// <summary>
         /// Saves the given entity.
         /// Since CollectionViewModelBase is a POCO view model, the instance of this class will also expose the SaveCommand property that can be used as a binding source in views.
@@ -1029,11 +1030,9 @@ namespace BluePrints.Common.ViewModel
         [Display(AutoGenerateField = false)]
         public virtual void Save(TProjection projectionEntity)
         {
-            if(HijackSaveOperation != null)
-            {
-                HijackSaveOperation(projectionEntity);
-                return;
-            }
+            if(PreSave != null)
+                if(!PreSave(projectionEntity))
+                    return;
 
             bool isNewEntity;
             var entity = Repository.FindExistingOrAddNewEntity(projectionEntity, (p, e) => { ApplyProjectionPropertiesToEntity(p, e); }, out isNewEntity);
@@ -1049,16 +1048,18 @@ namespace BluePrints.Common.ViewModel
             {
                 MessageBoxService.ShowMessage(e.ErrorMessage, e.ErrorCaption, MessageButton.OK, MessageIcon.Error);
             }
+
+            if (PostSave != null)
+                PostSave(projectionEntity, isNewEntity);
         }
 
-        public Action<IEnumerable<TProjection>> HijackBulkSaveOperation;
+        public Func<IEnumerable<TProjection>, bool> BulkPreSave;
+        public Action<IEnumerable<TProjection>> BulkPostSave;
         public virtual void BaseBulkSave(IEnumerable<TProjection> projectionEntities)
         {
-            if(HijackBulkSaveOperation != null)
-            {
-                HijackBulkSaveOperation(projectionEntities);
-                return;
-            }
+            if (BulkPreSave != null)
+                if (!BulkPreSave(projectionEntities))
+                    return;
 
             List<KeyValuePair<int, TProjection>> projectionEntitiesWithTag = new List<KeyValuePair<int, TProjection>>();
             List<KeyValuePair<int, TEntity>> entitiesWithTag = new List<KeyValuePair<int, TEntity>>();
@@ -1097,6 +1098,9 @@ namespace BluePrints.Common.ViewModel
             {
                 MessageBoxService.ShowMessage(e.ErrorMessage, e.ErrorCaption, MessageButton.OK, MessageIcon.Error);
             }
+
+            if (BulkPostSave != null)
+                BulkPostSave(projectionEntities);
         }
 
 

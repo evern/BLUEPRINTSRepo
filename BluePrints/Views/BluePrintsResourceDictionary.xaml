@@ -23,7 +23,7 @@
     <converter:VariationActionToStringConverter x:Key="VariationActionToStringConverter" />
     <dxmvvm:StringToBooleanConverter x:Key="StringToBoolConverter" />
     <Style x:Key="GridCellVariationCancellation" TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}">
-        <Setter Property="IsEnabled" Value="{Binding Path=RowData.Row.CanToggleCancellation}" />
+        <Setter Property="IsEnabled" Value="{Binding Path=RowData.Row.CANTOGGLECANCELLATION}" />
     </Style>
     <!-- Baseline Start -->
     <ControlTemplate x:Key="Button_BASELINE_ASSIGN">
@@ -572,140 +572,8 @@
         </dxg:GridColumn>
         <dxg:GridColumn Header="TO BASELINE" FieldName="GUID_BASELINE" ReadOnly="True" AllowEditing="False">
             <dxg:GridColumn.EditSettings>
-                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.LookUpBASELINES.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="REVISION" ValueMember="GUID" />
+                <dxe:ComboBoxEditSettings ItemsSource="{Binding DataContext.BASELINECollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="REVISION" ValueMember="GUID" />
             </dxg:GridColumn.EditSettings>
-        </dxg:GridColumn>
-    </collections:ArrayList>
-    <collections:ArrayList x:Key="VARIATIONITEMColumns">
-        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.LookUpWORKPACKS.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, Mode=OneWay, ElementName=userControl}" ValueMember="GUID" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_PHASE" Header="PHASE" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.LookUpPHASES.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NUM" ValueMember="GUID" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_AREA" Header="AREA" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.LookUpAREAS.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NUM" ValueMember="GUID" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_DOCTYPE" Header="DOCTYPE" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.LookUpDOCTYPES.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="NAME" ValueMember="GUID" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_DISCIPLINE" Header="DISCIPLINE" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.LookUpDISCIPLINES.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="NAME" ValueMember="GUID" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_DEPARTMENT" Header="DEPARTMENT" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.LookUpDEPARTMENTS.Entities, ElementName=userControl}" IsTextEditable="False" DisplayMember="NAME" ValueMember="GUID" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.INTERNAL_NUM" Header="INTERNAL NUM">
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" IsReadOnly="{Binding RowData.Row.IsReadOnly}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.CLIENT_NUM" Header="CLIENT NUM">
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" IsReadOnly="{Binding RowData.Row.IsReadOnly}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.REVISION_NUMBER" Header="REVISION NUM" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" IsReadOnly="{Binding RowData.Row.IsReadOnly}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.DELIVERABLE_TYPE" Header="TYPE" >
-            <dxg:GridColumn.EditSettings>
-                <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:DeliverableType}}" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}"/>
-            </dxg:GridColumn.EditSettings>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.PRIMARY_TITLE" Header="PRIMARY TITLE" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" IsReadOnly="{Binding RowData.Row.IsReadOnly}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.SECONDARY_TITLE" Header="SECONDARY TITLE" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" IsReadOnly="{Binding RowData.Row.IsReadOnly}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.COMMENTS" Header="COMMENTS" >
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" IsReadOnly="{Binding RowData.Row.IsReadOnly}" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="BASELINE_ITEM.ESTIMATED_HOURS" Header="ESTIMATED HOURS" ReadOnly="True" IsEnabled="False" >
-            <dxg:GridColumn.EditSettings>
-                <dxe:SpinEditSettings MaskType="Numeric" Mask="n" MinValue="0" Increment="1" MaskUseAsDisplayFormat="True" />
-            </dxg:GridColumn.EditSettings>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="VARIATION_UNITS" Header="DC HOURS" >
-            <dxg:GridColumn.EditSettings>
-                <dxe:SpinEditSettings MaskType="Numeric" Mask="n" MinValue="0" Increment="1" MaskUseAsDisplayFormat="True" IsEnabled="{Binding RowData.Row.IsReadOnly, Converter={StaticResource BooleanNegationConverter}}"/>
-            </dxg:GridColumn.EditSettings>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="UNBOUND_TOTAL_COSTS" Header="TOTAL COSTS" UnboundType="Decimal" ReadOnly="True" IsEnabled="False">
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" MaskUseAsDisplayFormat="True" MaskType="Numeric" Mask="c" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>
-        <!--<dxg:GridColumn FieldName="BASELINE_ITEM.TOTAL_COSTS" Header="TOTAL COSTS" ReadOnly="True" IsEnabled="False">
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <dxe:TextEdit Name="PART_Editor" MaskUseAsDisplayFormat="True" MaskType="Numeric" Mask="c" />
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
-        </dxg:GridColumn>-->
-        <dxg:GridColumn FieldName="ACTION" ReadOnly="True" IsEnabled="False">
-            <dxg:GridColumn.EditSettings>
-                <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:VariationAction}}" AllowDrop="False"/>
-            </dxg:GridColumn.EditSettings>
-        </dxg:GridColumn>
-        <dxg:GridColumn FieldName="UNBOUND_CANCEL" Header="CANCEL" UnboundType="Boolean" AllowEditing="False" CellStyle="{StaticResource GridCellVariationCancellation}">
-            <dxg:GridColumn.CellTemplate>
-                <DataTemplate>
-                    <Button Height="18" Command="{Binding DataContext.CancelBASELINE_ITEMCommand, ElementName=userControl}" CommandParameter="{Binding RowData.Row}" >
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{Binding Path=RowData.Row.ACTION, Converter={StaticResource VariationActionToImageConverter}}" Margin="0, 0, 3, 0"/>
-                            <TextBlock Text="{Binding Path=RowData.Row.ACTION, Converter={StaticResource VariationActionToStringConverter}}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </DataTemplate>
-            </dxg:GridColumn.CellTemplate>
         </dxg:GridColumn>
     </collections:ArrayList>
     <collections:ArrayList x:Key="USERColumns">

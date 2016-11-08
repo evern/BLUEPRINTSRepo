@@ -25,7 +25,7 @@ namespace BluePrints.Common.ViewModel
         protected bool isSubEntitiesAdded;
         protected EntitiesLoaderDescriptionCollection loaderCollection = null;
         protected EntitiesLoaderDescription<TMainEntity, TMainProjectionEntity, TMainEntityPrimaryKey, TMainEntityUnitOfWork> mainEntityLoader;
-        protected TMainViewModel MainViewModel;
+        public TMainViewModel MainViewModel { get; set; }
         protected Dispatcher mainThreadDispatcher = Application.Current.Dispatcher;
 
         public virtual void InvokeEntitiesLoaderDescriptionLoading()
