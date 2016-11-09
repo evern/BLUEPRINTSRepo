@@ -89,28 +89,12 @@ namespace BluePrints.Data
 
         public virtual WORKPACK WORKPACK { get; set; }
 
-        #region BluePrints Customization
-        public decimal TOTAL_HOURS { get { return ESTIMATED_HOURS + DC_HOURS; } }
-
-        public decimal TOTAL_COSTS
-        {
-            get { return TOTAL_HOURS * RATE; }
-        }
-
-        public decimal ESTIMATED_COSTS
-        {
-            get { return ESTIMATED_HOURS * RATE; }
-        }
-
-        public decimal RATE
+        public decimal TOTAL_HOURS
         {
             get
             {
-                return 1;
+                return ESTIMATED_HOURS + DC_HOURS;
             }
         }
-
-        //public RATE BASELINE_ITEM_RATE;
-        #endregion
     }
 }

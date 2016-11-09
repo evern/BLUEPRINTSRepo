@@ -12,11 +12,11 @@ using BluePrints.Common.Projections;
 using BluePrints.Data.Attributes;
 namespace BluePrints.Common.ViewModel.Reporting
 {
-    public class DefaultSummaryCalculation : SummarizableObject
+    public class PROJECTSummary : SummarizableObject
     {
-        public static DefaultSummaryCalculation Create()
+        public static PROJECTSummary Create()
         {
-            return ViewModelSource.Create(() => new DefaultSummaryCalculation());
+            return ViewModelSource.Create(() => new PROJECTSummary());
         }
 
         public decimal GrossProfit { get; set; }
@@ -72,6 +72,8 @@ namespace BluePrints.Common.ViewModel.Reporting
         #endregion
 
         public IEnumerable<ReportableObject> ReportableObjects { get; set; }
+        public IEnumerable<RATE> RATES { get; set; }
+        public IEnumerable<VARIATION> VARIATIONS { get; set; }
         public BASELINE LiveBASELINE { get; set; }
         public PROGRESS LivePROGRESS { get; set; }
         public IBluePrintsEntitiesUnitOfWork BluePrintsUnitOfWork { get; set; }
@@ -83,9 +85,13 @@ namespace BluePrints.Common.ViewModel.Reporting
         public decimal Final_BudgetedUnits
         {
             get 
-            { 
-                if(final_budgetedunits == null)
-                    final_budgetedunits = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.TOTAL_HOURS);
+            {
+                if (final_budgetedunits == null)
+                    if (ReportableObjects == null)
+                        final_budgetedunits = 0;
+                    else
+                        final_budgetedunits = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS);
+
                 return (decimal)final_budgetedunits;
             }
         }
@@ -96,7 +102,11 @@ namespace BluePrints.Common.ViewModel.Reporting
             get 
             {
                 if (final_budgetedcosts == null)
-                    final_budgetedcosts = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.TOTAL_COSTS);
+                    if (ReportableObjects == null)
+                        final_budgetedcosts = 0;
+                    else
+                        final_budgetedcosts = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.TOTAL_COSTS);
+
                 return (decimal)final_budgetedcosts;
             }
         }
@@ -107,7 +117,11 @@ namespace BluePrints.Common.ViewModel.Reporting
             get 
             {
                 if (total_budgetedunits == null)
-                    total_budgetedunits = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.BASELINE_ITEM.ESTIMATED_HOURS);
+                    if (ReportableObjects == null)
+                        total_budgetedunits = 0;
+                    else
+                        total_budgetedunits = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.BASELINE_ITEM.ESTIMATED_HOURS);
+
                 return (decimal)total_budgetedunits;
             }
         }
@@ -118,7 +132,11 @@ namespace BluePrints.Common.ViewModel.Reporting
             get 
             {
                 if(total_budgetedcosts == null)
-                    total_budgetedcosts = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.ESTIMATED_COSTS);
+                    if (ReportableObjects == null)
+                        total_budgetedcosts = 0;
+                    else
+                        total_budgetedcosts = ReportableObjects.Sum(x => x.BASELINE_ITEMJoinRATE.ESTIMATED_COSTS);
+
                 return (decimal)total_budgetedcosts;
             }
         }
@@ -127,6 +145,8 @@ namespace BluePrints.Common.ViewModel.Reporting
     public abstract class ReportableObject : ProgressReportable
     {
         public BASELINE_ITEMJoinRATE BASELINE_ITEMJoinRATE { get; set; }
+        IEnumerable<VARIATION_ITEM> VARIATION_ITEMS { get; set; }
+
         IEnumerable<PROGRESS_ITEM> progress_items;
         public IEnumerable<PROGRESS_ITEM> PROGRESS_ITEMS
         {
@@ -195,7 +215,7 @@ namespace BluePrints.Common.ViewModel.Reporting
         {
             get
             {
-                return PROGRESS_ITEMSafterreportingdate;
+                return PROGRESS_ITEMSuptocurrentdate;
             }
         }
 
@@ -242,10 +262,10 @@ namespace BluePrints.Common.ViewModel.Reporting
         {
             get
             {
-                if (PROGRESS_ITEMSBeforeReportingDate == null || BASELINE_ITEMJoinRATE == null || BASELINE_ITEMJoinRATE.TOTAL_HOURS == 0)
+                if (PROGRESS_ITEMSBeforeReportingDate == null || BASELINE_ITEMJoinRATE == null || BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS == 0)
                     return 0;
                 else
-                    return PastPROGRESS_ITEMS_UNITS / BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                    return PastPROGRESS_ITEMS_UNITS / BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
             }
         }
 
@@ -255,10 +275,10 @@ namespace BluePrints.Common.ViewModel.Reporting
             {
                 if (BASELINE_ITEMJoinRATE == null)
                     return 0;
-                else if (PROGRESS_ITEMSBeforeReportingDate == null || BASELINE_ITEMJoinRATE.TOTAL_HOURS == 0)
+                else if (PROGRESS_ITEMSBeforeReportingDate == null || BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS == 0)
                     return 1;
                 else
-                    return (BASELINE_ITEMJoinRATE.TOTAL_HOURS - FuturePROGRESS_ITEMS_UNITS) / BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                    return (BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS - FuturePROGRESS_ITEMS_UNITS) / BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
 
             }
         }
@@ -281,7 +301,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 if (this.BASELINE_ITEMJoinRATE == null || this.BASELINE_ITEMJoinRATE.BASELINE_ITEM == null || this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.ESTIMATED_HOURS == 0)
                     return 0;
 
-                return TOTAL_EARNED_UNITS / this.BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                return TOTAL_EARNED_UNITS / this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
             }
         }
 
@@ -289,10 +309,10 @@ namespace BluePrints.Common.ViewModel.Reporting
         {
             get
             {
-                if (this.BASELINE_ITEMJoinRATE == null || this.PROGRESS_ITEMCurrent == null || this.BASELINE_ITEMJoinRATE.TOTAL_HOURS == 0)
+                if (this.BASELINE_ITEMJoinRATE == null || this.PROGRESS_ITEMCurrent == null || this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS == 0)
                     return 0;
 
-                return this.PROGRESS_ITEMCurrent.EARNED_UNITS / this.BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                return this.PROGRESS_ITEMCurrent.EARNED_UNITS / this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
             }
         }
 
@@ -326,7 +346,7 @@ namespace BluePrints.Common.ViewModel.Reporting
             {
                 if (total_earned_percentage == null)
                 {
-                    decimal totalUnits = this.BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                    decimal totalUnits = this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
                     if (totalUnits > 0)
                     {
                         decimal earnedUnits = TOTAL_EARNED_UNITS;
@@ -340,10 +360,10 @@ namespace BluePrints.Common.ViewModel.Reporting
             }
             set
             {
-                decimal totalUnits = this.BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                decimal totalUnits = this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
                 if (totalUnits > 0)
                 {
-                    decimal earnedUnits = value * this.BASELINE_ITEMJoinRATE.TOTAL_HOURS;
+                    decimal earnedUnits = value * this.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
                     earnedUnits -= PastPROGRESS_ITEMS_UNITS;
 
                     if (this.PROGRESS_ITEMcurrent == null)

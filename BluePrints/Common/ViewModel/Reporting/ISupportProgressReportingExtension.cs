@@ -551,9 +551,9 @@ namespace BluePrints.Common.ViewModel.Reporting
         public static void GenerateCumulativeSummaryDataPoints(ReportableObject reportableObject, DateTime firstAlignedDataDate, TimeSpan interval)
         {
             decimal totalBudgetedUnits = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.ESTIMATED_HOURS;
-            decimal totalBudgetedCosts = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.ESTIMATED_COSTS;
+            decimal totalBudgetedCosts = reportableObject.BASELINE_ITEMJoinRATE.ESTIMATED_COSTS;
             decimal finalBudgetedUnits = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
-            decimal finalBudgetedCosts = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_COSTS;
+            decimal finalBudgetedCosts = reportableObject.BASELINE_ITEMJoinRATE.TOTAL_COSTS;
             DateTime firstDataDate = firstAlignedDataDate;
             TimeSpan intervalPeriod = interval;
             bool isPOCOViewModel = (reportableObject as IPOCOViewModel) != null;
@@ -1005,8 +1005,8 @@ namespace BluePrints.Common.ViewModel.Reporting
         public static ObservableCollection<ProgressInfo> RemainingDataPointsGenerator(SummarizableObject summaryObject, ReportableObject reportableObject, DateTime firstAlignedWeekEndingDataDate, List<Period> exceptionPeriod, decimal remainingUnits, decimal unitsPerHour, decimal firstPeriodProRate, decimal currencyConversion, DateTime? limitDate = null)
         {
             ObservableCollection<ProgressInfo> remainingDataPoints = new ObservableCollection<ProgressInfo>();
-            BASELINE_ITEMJoinRATE baseItem = reportableObject.BASELINE_ITEMJoinRATE;
-            if (baseItem.TOTAL_HOURS == 0 || unitsPerHour == 0)
+            BASELINE_ITEMJoinRATE currentBASELINE_ITEM = reportableObject.BASELINE_ITEMJoinRATE;
+            if (currentBASELINE_ITEM.BASELINE_ITEM.TOTAL_HOURS == 0 || unitsPerHour == 0)
                 return remainingDataPoints;
 
             decimal unitsPerDay = unitsPerHour * Int32.Parse(CommonResources.ProgressReporting_DefaultHoursADay);
@@ -1048,14 +1048,14 @@ namespace BluePrints.Common.ViewModel.Reporting
 
                     ProgressInfo newDataPoint = new ProgressInfo()
                     {
-                        BudgetedCosts = baseItem.TOTAL_COSTS,
-                        BudgetedUnits = baseItem.TOTAL_HOURS,
+                        BudgetedCosts = currentBASELINE_ITEM.TOTAL_COSTS,
+                        BudgetedUnits = currentBASELINE_ITEM.BASELINE_ITEM.TOTAL_HOURS,
                         Units = periodUnits,
                         ProgressDate = remainingCountDataDate,
-                        BaselineItemGuid = baseItem.BASELINE_ITEM.GUID_ORIGINAL
+                        BaselineItemGuid = currentBASELINE_ITEM.BASELINE_ITEM.GUID_ORIGINAL
                     };
 
-                    newDataPoint.Costs = baseItem.ITEMRATE * currencyConversion;
+                    newDataPoint.Costs = currentBASELINE_ITEM.ITEMRATE * currencyConversion;
                     remainingDataPoints.Add(newDataPoint);
                     remainingUnits -= periodUnits;
                 }
@@ -1063,12 +1063,12 @@ namespace BluePrints.Common.ViewModel.Reporting
                 {
                     ProgressInfo newDataPoint = new ProgressInfo()
                     {
-                        BudgetedCosts = baseItem.TOTAL_COSTS,
-                        BudgetedUnits = baseItem.TOTAL_HOURS,
+                        BudgetedCosts = currentBASELINE_ITEM.TOTAL_COSTS,
+                        BudgetedUnits = currentBASELINE_ITEM.BASELINE_ITEM.TOTAL_HOURS,
                         Units = 0,
                         Costs = 0,
                         ProgressDate = remainingCountDataDate,
-                        BaselineItemGuid = baseItem.BASELINE_ITEM.GUID_ORIGINAL
+                        BaselineItemGuid = currentBASELINE_ITEM.BASELINE_ITEM.GUID_ORIGINAL
                     };
 
                     remainingDataPoints.Add(newDataPoint);

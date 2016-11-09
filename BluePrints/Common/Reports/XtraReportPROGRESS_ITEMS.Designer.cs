@@ -1474,7 +1474,7 @@
             // 
             // objectDataSource1
             // 
-            this.objectDataSource1.DataSource = typeof(BluePrints.Common.ViewModel.Reporting.DefaultSummaryCalculation);
+            this.objectDataSource1.DataSource = typeof(BluePrints.Common.ViewModel.Reporting.PROJECTSummary);
             this.objectDataSource1.Name = "objectDataSource1";
             // 
             // XtraReportPROGRESS_ITEMS

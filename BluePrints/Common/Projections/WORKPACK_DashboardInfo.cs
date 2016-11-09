@@ -22,15 +22,15 @@ namespace BluePrints.Data
 
         }
 
-        public WORKPACK_DashboardInfo(WORKPACK WORKPACK, DefaultSummaryCalculation SummaryObject)
+        public WORKPACK_DashboardInfo(WORKPACK WORKPACK, PROJECTSummary SummaryObject)
         {
             DataUtils.ShallowCopy(this, WORKPACK, true);
             SummaryRollUp summaryManufacturer = new SummaryRollUp();
 
             if (SummaryObject != null)
             {
-                ReportableObjectRollUp summaryBuilder = new ReportableObjectRollUp(DefaultSummaryCalculation.Create(), WORKPACK, SummaryObject);
-                this.SummarizablePrincipal = (DefaultSummaryCalculation)summaryBuilder.SummaryObject;
+                ReportableObjectRollUp summaryBuilder = new ReportableObjectRollUp(PROJECTSummary.Create(), WORKPACK, SummaryObject);
+                this.SummarizablePrincipal = (PROJECTSummary)summaryBuilder.SummaryObject;
                 if (this.SummarizablePrincipal.ReportableObjects.Count() > 0)
                 {
                     summaryManufacturer.Manufacture(summaryBuilder);
@@ -121,7 +121,7 @@ namespace BluePrints.Data
 
         [FilterNameAttribute]
         public virtual PROJECT PROJECT { get; set; }
-        public DefaultSummaryCalculation SummarizablePrincipal { get; set; }
+        public PROJECTSummary SummarizablePrincipal { get; set; }
         bool IsGetModifiedWORKPACK_ASSIGNMENTS { get; set; }
         public virtual ICollection<WORKPACK_ASSIGNMENT> WORKPACK_ASSIGNMENTS { get; set; }
 
@@ -138,11 +138,6 @@ namespace BluePrints.Data
         public decimal ASSIGNED_UNITS
         {
             get { return ObservableWORKPACK_ASSIGNMENTS.Sum(x => (x.HIGH_VALUE - x.LOW_VALUE) + 1); }
-        }
-
-        public decimal BUDGETED_UNITS
-        {
-            get { return BASELINE_ITEMS.Sum(x => x.TOTAL_HOURS); }
         }
     }
 }

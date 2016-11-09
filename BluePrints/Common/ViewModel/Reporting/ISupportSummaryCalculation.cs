@@ -8,6 +8,6 @@ namespace BluePrints.Common.ViewModel.Reporting
 {
     public interface ISupportSummaryCalculation
     {
-        DefaultSummaryCalculation SummarizablePrincipal { get; set; }
+        PROJECTSummary SummarizablePrincipal { get; set; }
     }
 }

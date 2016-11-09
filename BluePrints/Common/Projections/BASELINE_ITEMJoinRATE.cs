@@ -32,17 +32,6 @@ namespace BluePrints.Common.Projections
             }
         }
 
-        public decimal TOTAL_HOURS 
-        { 
-            get
-            {
-                if (BASELINE_ITEM == null)
-                    return 0;
-
-                return BASELINE_ITEM.ESTIMATED_HOURS + BASELINE_ITEM.DC_HOURS; 
-            } 
-        }
-
         public decimal ESTIMATED_COSTS
         {
             get
@@ -57,33 +46,8 @@ namespace BluePrints.Common.Projections
             }
         }
 
-        public decimal TOTAL_COSTS { get { return TOTAL_HOURS * ITEMRATE; } }
+        public decimal TOTAL_COSTS { get { return BASELINE_ITEM.TOTAL_HOURS * ITEMRATE; } }
     }
-
-    ///// <summary>
-    ///// Represents the BASELINE_ITEMS collection view model.
-    ///// </summary>
-    //public partial class BASELINE_ITEMSJoinRATESCollectionViewModel : CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork>
-    //{
-    //    /// <summary>
-    //    /// Creates a new instance of BASELINE_ITEMSCollectionViewModel as a POCO view model.
-    //    /// </summary>
-    //    /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-    //    public static BASELINE_ITEMSJoinRATESCollectionViewModel Create(IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null, Func<IRepositoryQuery<BASELINE_ITEM>, IQueryable<BASELINE_ITEMJoinRATE>> projection)
-    //    {
-    //        return ViewModelSource.Create(() => new BASELINE_ITEMSJoinRATESCollectionViewModel(projection, unitOfWorkFactory));
-    //    }
-
-    //    /// <summary>
-    //    /// Initializes a new instance of the BASELINE_ITEMSCollectionViewModel class.
-    //    /// This constructor is declared protected to avoid undesired instantiation of the BASELINE_ITEMSCollectionViewModel type without the POCO proxy factory.
-    //    /// </summary>
-    //    /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-    //    public BASELINE_ITEMSJoinRATESCollectionViewModel(Func<IRepositoryQuery<BASELINE_ITEM>, IQueryable<BASELINE_ITEMJoinRATE>> projection, IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> unitOfWorkFactory = null)
-    //        : base(unitOfWorkFactory ?? BluePrintsEntitiesUnitOfWorkSource.GetUnitOfWorkFactory(), x => x.BASELINE_ITEMS, projection)
-    //    {
-    //    }
-    //}
 
     public static class BASELINE_ITEMSJoinRATESQueries
     {

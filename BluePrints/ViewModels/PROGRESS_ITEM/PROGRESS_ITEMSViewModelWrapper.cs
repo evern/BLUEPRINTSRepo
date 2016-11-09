@@ -168,16 +168,25 @@ namespace BluePrints.ViewModels
             return query => BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSQueries.JoinRATESAndPROGRESS_ITEMSOnBASELINE_ITEMS(query, getPROGRESSFunc, getBASELINEFunc, getPROGRESS_ITEMSFunc, getRATESFunc);
         }
 
-        ProjectSummaryBuilder projectSummaryBuilder; //used for report too
+        PROJECTSummaryBuilder projectSummaryBuilder; //used for report
         protected override void AssignCallBacksAndRaisePropertyChange(CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> mainViewModel)
         {
             mainViewModel.PreSave = this.MainEntityPreSave;
             mainViewModel.BulkPreSave = this.MainEntityBulkPreSave;
             mainViewModel.ValidateFillDownCallBack = this.ValidateFillDownCallBack;
-            projectSummaryBuilder = new ProjectSummaryBuilder(DefaultSummaryCalculation.Create(), mainViewModel.Entities, loaderCollection.GetObject<PROGRESS>(), loaderCollection.GetObject<BASELINE>());
+            mainThreadDispatcher.BeginInvoke(new Action(() => this.CalculatePROGRESS_ITEMSStats()));
+        }
+
+        void CalculatePROGRESS_ITEMSStats()
+        {
+            PROJECTSummary currentPROJECTSummary = PROJECTSummary.Create();
+            currentPROJECTSummary.LiveBASELINE = loaderCollection.GetObject<BASELINE>();
+            currentPROJECTSummary.LivePROGRESS = loaderCollection.GetObject<PROGRESS>();
+            currentPROJECTSummary.ReportableObjects = MainViewModel.Entities;
+
+            projectSummaryBuilder = new PROJECTSummaryBuilder(currentPROJECTSummary);
             PROGRESS_ITEMSummaryManufacturer summaryRollUp = new PROGRESS_ITEMSummaryManufacturer();
             summaryRollUp.Manufacture(projectSummaryBuilder);
-
             mainThreadDispatcher.BeginInvoke(new Action(() => this.RaisePropertiesChanged()));
         }
 

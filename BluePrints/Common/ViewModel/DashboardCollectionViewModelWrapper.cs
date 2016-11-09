@@ -21,66 +21,73 @@ using DevExpress.Xpf.Bars;
 
 namespace BluePrints.Common.ViewModel
 {
-    public abstract class DashboardCollectionViewModelWrapper<TEntity, TDashboardEntity> : ISupportLogicalLayout
+    public abstract class DashboardViewModelWrapper<TEntity, TProjection, TPrimaryKey, TUnitOfWork> : CollectionViewModelsWrapper<TEntity, TProjection, TPrimaryKey, TUnitOfWork, CollectionViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork>>
         where TEntity : class
-        where TDashboardEntity : class, ISupportSummaryCalculation, new()
+        where TUnitOfWork : IUnitOfWork
+        where TProjection : SummarizableObject, new()
     {
         protected IUnitOfWorkFactory<IBluePrintsEntitiesUnitOfWork> UnitOfWorkFactory;
-        protected virtual CollectionViewModel<TEntity, TDashboardEntity, Guid, IBluePrintsEntitiesUnitOfWork> dashboardCollectionViewModel { get; set; }
-        public abstract CollectionViewModel<TEntity, TDashboardEntity, Guid, IBluePrintsEntitiesUnitOfWork> DashboardCollection { get; }
-
-        public void InitializeDashboardCollectionViewModel(CollectionViewModel<TEntity, TDashboardEntity, Guid, IBluePrintsEntitiesUnitOfWork> dashboardCollectionViewModel)
+        DispatcherTimer dispatchTimer;
+        public DashboardViewModelWrapper()
         {
-            dashboardCollectionViewModel.OnSelectedEntitiesChangedCallBack = this.OnSelectedEntityChanged;
+            dispatchTimer = new DispatcherTimer();
+            dispatchTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
         }
 
-        public ISupportSummaryCalculation EntitiesSummary { get; set; }
-        public void OnSelectedEntityChanged(IEnumerable<TDashboardEntity> entities)
+        protected override bool OnMainViewModelLoaded(IEnumerable<TProjection> entities)
+        {
+            MainViewModel.OnSelectedEntitiesChangedCallBack = this.DelayedProcessForSelectedEntitiesCompletion;
+            return true;
+        }
+        
+        void DelayedProcessForSelectedEntitiesCompletion()
+        {
+            dispatchTimer.Tick -= dispatchTimer_Tick;
+            dispatchTimer.Tick += dispatchTimer_Tick;
+            dispatchTimer.Start();
+        }
+
+        void dispatchTimer_Tick(object sender, EventArgs e)
+        {
+            OnSelectedEntityChanged(MainViewModel.SelectedEntities);
+            dispatchTimer.Stop();
+        }
+
+        public TProjection SummaryEntity { get; set; }
+        public void OnSelectedEntityChanged(IEnumerable<TProjection> entities)
         {
             if (entities.Count() == 0)
                 return;
 
             if (entities.Count() == 1)
-                EntitiesSummary = entities.First();
+                SummaryEntity = entities.First();
             else
             {
-                TDashboardEntity newDashboardInfo = new TDashboardEntity();
-                DateTime earliestDataDate = entities.Min(x => x.SummarizablePrincipal.ReportingDataDate);
-                var earliestLiveProgress = entities.First(x => x.SummarizablePrincipal.LivePROGRESS.DATA_DATE == earliestDataDate).SummarizablePrincipal.LivePROGRESS;
-                newDashboardInfo.SummarizablePrincipal = DefaultSummaryCalculation.Create();
-                newDashboardInfo.SummarizablePrincipal.LivePROGRESS = earliestLiveProgress;
-                newDashboardInfo.SummarizablePrincipal.IntervalPeriod = ISupportProgressReportingExtensions.ConvertProgressIntervalToPeriod(earliestLiveProgress);
-                newDashboardInfo.SummarizablePrincipal.ReportableObjects = entities.SelectMany(x => x.SummarizablePrincipal.ReportableObjects);
-                newDashboardInfo.SummarizablePrincipal.FirstAlignedDataDate = entities.Min(x => x.SummarizablePrincipal.FirstAlignedDataDate);
-                newDashboardInfo.SummarizablePrincipal.ReportingDataDate = earliestLiveProgress.DATA_DATE;
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_VariationAdjustments = new ObservableCollection<VariationAdjustment>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_VariationAdjustments));
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_ActualDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_ActualDataPoints));
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_BurnedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_BurnedDataPoints));
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_EarnedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_EarnedDataPoints));
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_OriginalDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_OriginalDataPoints));
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_PlannedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_PlannedDataPoints));
-                newDashboardInfo.SummarizablePrincipal.NonCumulative_RemainingPlannedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.SummarizablePrincipal.NonCumulative_RemainingPlannedDataPoints));
-                ISupportProgressReportingExtensions.GenerateCumulativeSummaryDataPoints(newDashboardInfo.SummarizablePrincipal);
-                EntitiesSummary = newDashboardInfo;
+                TProjection newEntity = ViewModelSource.Create(() => new TProjection());
+                DateTime earliestDataDate = entities.Min(x => x.ReportingDataDate);
+                var earliestLiveProgress = entities.First(x => x.LivePROGRESS.DATA_DATE == earliestDataDate).LivePROGRESS;
+                newEntity.LivePROGRESS = earliestLiveProgress;
+                newEntity.IntervalPeriod = ISupportProgressReportingExtensions.ConvertProgressIntervalToPeriod(earliestLiveProgress);
+                newEntity.ReportableObjects = entities.SelectMany(x => x.ReportableObjects);
+                newEntity.FirstAlignedDataDate = entities.Min(x => x.FirstAlignedDataDate);
+                newEntity.ReportingDataDate = earliestLiveProgress.DATA_DATE;
+                newEntity.NonCumulative_VariationAdjustments = new ObservableCollection<VariationAdjustment>(entities.SelectMany(x => x.NonCumulative_VariationAdjustments));
+                newEntity.NonCumulative_ActualDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.NonCumulative_ActualDataPoints));
+                newEntity.NonCumulative_BurnedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.NonCumulative_BurnedDataPoints));
+                newEntity.NonCumulative_EarnedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.NonCumulative_EarnedDataPoints));
+                newEntity.NonCumulative_OriginalDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.NonCumulative_OriginalDataPoints));
+                newEntity.NonCumulative_PlannedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.NonCumulative_PlannedDataPoints));
+                newEntity.NonCumulative_RemainingPlannedDataPoints = new ObservableCollection<ProgressInfo>(entities.SelectMany(x => x.NonCumulative_RemainingPlannedDataPoints));
+                ISupportProgressReportingExtensions.GenerateCumulativeSummaryDataPoints(newEntity);
+                SummaryEntity = newEntity;
             }
 
-            this.RaisePropertyChanged(x => x.EntitiesSummary);
-        }
-
-        public virtual void OnLoaded()
-        {
-            DashboardCollection.OnLoaded();
-        }
-
-        public virtual void OnUnloaded()
-        {
-            DashboardCollection.OnUnloaded();
-            DashboardCollection.Destroy();
+            this.RaisePropertyChanged(x => x.SummaryEntity);
         }
 
         public virtual bool CanChangeStatsType(object checkButton)
         {
-            return (DashboardCollection != null && !DashboardCollection.IsLoading);
+            return (MainViewModel != null && !MainViewModel.IsLoading);
         }
 
         public Action<DashboardViewType> ChangeViewMemberFieldNames { get; set; }
@@ -91,33 +98,33 @@ namespace BluePrints.Common.ViewModel
             if (ChangeViewMemberFieldNames != null)
                 ChangeViewMemberFieldNames(calculationType);
 
-            foreach (var PROJECT_DashboardInfo in this.DashboardCollection.Entities)
+            foreach (var summaryEntity in this.MainViewModel.Entities)
             {
-                PROJECT_DashboardInfo.SummarizablePrincipal.RecalculateStats(calculationType == DashboardViewType.Costs);
+                summaryEntity.RecalculateStats(calculationType == DashboardViewType.Costs);
             }
         }
 
-        #region ISupportLogicalLayout
-        bool ISupportLogicalLayout.CanSerialize
-        {
-            get { return true; }
-        }
+        //#region ISupportLogicalLayout
+        //bool ISupportLogicalLayout.CanSerialize
+        //{
+        //    get { return true; }
+        //}
 
-        public IDocumentManagerService ReturnDocumentManagerService()
-        {
-            return DocumentManagerService;
-        }
+        //public IDocumentManagerService ReturnDocumentManagerService()
+        //{
+        //    return DocumentManagerService;
+        //}
 
-        protected IDocumentManagerService DocumentManagerService { get { return this.GetService<IDocumentManagerService>(); } }
-        IDocumentManagerService ISupportLogicalLayout.DocumentManagerService
-        {
-            get { return DocumentManagerService; }
-        }
+        //protected IDocumentManagerService DocumentManagerService { get { return this.GetService<IDocumentManagerService>(); } }
+        //IDocumentManagerService ISupportLogicalLayout.DocumentManagerService
+        //{
+        //    get { return DocumentManagerService; }
+        //}
 
-        IEnumerable<object> ISupportLogicalLayout.LookupViewModels
-        {
-            get { return null; }
-        }
-        #endregion
+        //IEnumerable<object> ISupportLogicalLayout.LookupViewModels
+        //{
+        //    get { return null; }
+        //}
+        //#endregion
     }
 }

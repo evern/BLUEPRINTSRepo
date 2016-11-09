@@ -198,8 +198,10 @@
     <Compile Include="Common\Projections\BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM.cs" />
     <Compile Include="Common\Projections\BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION.cs" />
     <Compile Include="Common\Projections\OptionalEntitiesParameter.cs" />
+    <Compile Include="Common\Projections\PROJECT_Dashboard.cs" />
     <Compile Include="Common\Projections\ROLE_PERMISSIONInfo.cs" />
     <Compile Include="Common\Projections\TASK_AppointmentInfo.cs" />
+    <Compile Include="Common\Projections\WORKPACK_Dashboard.cs" />
     <Compile Include="Common\Reports\XtraReportBASELINE_ITEMS.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -221,7 +223,6 @@
     <Compile Include="Common\ViewModel\Reporting\SummaryBuilder.cs" />
     <Compile Include="Common\ViewModel\Reporting\SummaryManufacturer.cs" />
     <Compile Include="Common\Attributes\ProjectionPropertyAttribute.cs" />
-    <Compile Include="Common\Projections\BASELINE_ITEMInfo.cs" />
     <Compile Include="Common\Projections\WORKPACK_DashboardInfo.cs" />
     <Compile Include="Common\ViewModel\Settings\XMLSettings.cs" />
     <Compile Include="EntityFramework\BluePrintsEntitiesDataModel\BluePrintsEntitiesUnitOfWork.cs" />
@@ -306,8 +307,6 @@
     <Compile Include="Common\Interceptors\CreatedAndUpdatedDateInterceptor.cs" />
     <Compile Include="Common\Interceptors\Extensions.cs" />
     <Compile Include="Common\Interceptors\SoftDeleteInterceptor.cs" />
-    <Compile Include="Common\Projections\PROJECT_DashboardInfo.cs" />
-    <Compile Include="Common\Projections\VARIATION_ITEMInfo.cs" />
     <Compile Include="EntityFramework\P6Data\ACCOUNT.cs" />
     <Compile Include="EntityFramework\P6Data\ACTVCODE.cs" />
     <Compile Include="EntityFramework\P6Data\ACTVTYPE.cs" />
@@ -879,8 +878,8 @@
     <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\PROGRESS\PROJECTPROGRESSDetailsCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROGRESS_ITEM\PROGRESS_ITEMViewModel.cs" />
-    <Compile Include="ViewModels\WORKPACK\PROJECTWORKPACKDashboardCollectionViewModel.cs" />
-    <Compile Include="ViewModels\PROJECT\PROJECTDashboardCollectionViewModel.cs" />
+    <Compile Include="ViewModels\WORKPACK\PROJECTWORKPACKDashboardViewModelWrapper.cs" />
+    <Compile Include="ViewModels\PROJECT\PROJECTDashboardViewModelWrapper.cs" />
     <Compile Include="ViewModels\PROJECT\PROJECTCollectionViewModel.cs" />
     <Compile Include="ViewModels\PROJECT\PROJECTViewModel.cs" />
     <Compile Include="ViewModels\PROJECT_REPORT\PROJECT_REPORTCollectionViewModel.cs" />
@@ -944,8 +943,8 @@
     <Compile Include="Views\BASELINE\PROJECTBASELINEDetailsCollectionView.xaml.cs">
       <DependentUpon>PROJECTBASELINEDetailsCollectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WORKPACK\PROJECTWORKPACKDashboardCollectionView.xaml.cs">
-      <DependentUpon>PROJECTWORKPACKDashboardCollectionView.xaml</DependentUpon>
+    <Compile Include="Views\WORKPACK\PROJECTWORKPACKDashboardView.xaml.cs">
+      <DependentUpon>PROJECTWORKPACKDashboardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PROJECT\PROJECTDashboardCollectionView.xaml.cs">
       <DependentUpon>PROJECTDashboardCollectionView.xaml</DependentUpon>
@@ -1194,7 +1193,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\WORKPACK\PROJECTWORKPACKDashboardCollectionView.xaml">
+    <Page Include="Views\WORKPACK\PROJECTWORKPACKDashboardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

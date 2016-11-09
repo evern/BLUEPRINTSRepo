@@ -55,27 +55,6 @@ namespace BluePrints.Common.ViewModel.Utils
             EndDate = ReviewEndDate.Date;
         }
 
-        /// <summary>
-        /// Generate internal number1 when all required fields are populated
-        /// </summary>
-        public static string BASELINEITEM_Generate_InternalNumber(PROJECT fromPROJECT, BASELINE_ITEMInfo fromBASELINE_ITEM, IEnumerable<BASELINE_ITEMInfo> BASELINE_ITEMEntities, AREA selectedAREA, DISCIPLINE selectedDISCIPLINE, DOCTYPE selectedDOCTYPE)
-        {
-            if (selectedAREA != null && selectedDISCIPLINE != null && selectedDOCTYPE != null)
-            {
-                string InternalNum = fromPROJECT.NUMBER;
-                InternalNum += "-" + selectedAREA.INTERNAL_NUM;
-                InternalNum += selectedDOCTYPE.CODE;
-                InternalNum += selectedDISCIPLINE.CODE;
-
-                int InternalNameCount = BASELINE_ITEMEntities.Count(obj => obj.INTERNAL_NUM != null && obj.INTERNAL_NUM.Contains(InternalNum)) + 1;
-
-                InternalNum += InternalNameCount.ToString();
-
-                return InternalNum;
-            }
-            else
-                return string.Empty;
-        }
 
         /// <summary>
         /// Generate internal number1 when all required fields are populated

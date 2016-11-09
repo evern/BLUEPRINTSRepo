@@ -7,12 +7,12 @@ using BluePrints.Common;
 
 namespace BluePrints.Views
 {
-    public partial class PROJECTWORKPACKDashboardCollectionView : UserControl
+    public partial class PROJECTWORKPACKDashboardView : UserControl
     {
-        public PROJECTWORKPACKDashboardCollectionView()
+        public PROJECTWORKPACKDashboardView()
         {
             InitializeComponent();
-            ((PROJECTWORKPACKDashboardCollectionViewModelWrapper)this.DataContext).ChangeViewMemberFieldNames = this.ChangeViewMemberFieldNames;
+            ((PROJECTWORKPACKDashboardViewModelWrapper)this.DataContext).ChangeViewMemberFieldNames = this.ChangeViewMemberFieldNames;
         }
         public void ChangeViewMemberFieldNames(DashboardViewType DashboardViewType)
         {

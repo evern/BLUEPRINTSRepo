@@ -82,10 +82,11 @@ namespace BluePrints.Common.ViewModel
             SelectedEntities.CollectionChanged += SelectedEntities_CollectionChanged;
         }
 
-        public Action<IEnumerable<TProjection>> OnSelectedEntitiesChangedCallBack;
+        public Action OnSelectedEntitiesChangedCallBack;
         protected virtual void SelectedEntities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-
+            if (OnSelectedEntitiesChangedCallBack != null)
+                OnSelectedEntitiesChangedCallBack();
         }
 
         #region Selected Entities
@@ -604,17 +605,6 @@ namespace BluePrints.Common.ViewModel
         }
 
         /// <summary>
-        /// Deletes a collection of entities from the repository.
-        /// Since CollectionViewModelBase is a POCO view model, an the instance of this class will also expose the DeleteCommand property that can be used as a binding source in views.
-        /// </summary>
-        /// <param name="projectionEntity">An entity to edit.</param>
-        public virtual void TestDelete(object entities)
-        {
-            string s = entities.ToString();
-
-        }
-
-        /// <summary>
         /// Deletes a given entity from the repository and saves changes if confirmed by the user.
         /// Since CollectionViewModelBase is a POCO view model, an the instance of this class will also expose the DeleteCommand property that can be used as a binding source in views.
         /// </summary>
@@ -1012,7 +1002,7 @@ namespace BluePrints.Common.ViewModel
         /// <param name="projectionEntity">An entity to edit.</param>
         public virtual bool CanDelete(TProjection projectionEntity)
         {
-            return projectionEntity != null && !IsLoading;
+            return projectionEntity != null && !IsLoading && SelectedEntity != null;
         }
 
         /// <summary>

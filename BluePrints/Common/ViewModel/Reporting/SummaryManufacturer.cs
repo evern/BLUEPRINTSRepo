@@ -56,7 +56,7 @@ namespace BluePrints.Common.ViewModel.Reporting
         public void Build(SummaryBuilder summaryBuilder)
         {
             summaryBuilder.BuildOriginalPlannedDataPoints();
-            summaryBuilder.SummarizeIndividualSummaryObjectsDataPoints();
+            summaryBuilder.SummarizeNestedSummaryObjectDataPoints();
         }
     }
 }
