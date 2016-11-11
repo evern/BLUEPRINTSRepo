@@ -543,6 +543,14 @@ namespace BluePrints.Common.ViewModel
                 OnFillDownCompletedCallBack();
         }
 
+        public void SetNestedValueWithUndo(TProjection entity, string propertyName, object newValue)
+        {
+            object oldValue = DataUtils.GetNestedValue(propertyName, entity);
+            DataUtils.SetNestedValue(propertyName, entity, newValue);
+            EntitiesUndoRedoManager.AddUndo(entity, propertyName, oldValue, newValue, EntityMessageType.Changed);
+            this.RaisePropertyChanged(x => x.SelectedEntity);
+        }
+
         public bool AllowEdit = true;
         public override void Edit(TProjection projectionEntity)
         {

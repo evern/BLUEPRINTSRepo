@@ -157,7 +157,8 @@ namespace BluePrints.Common.ViewModel
 
             void OnEntityDeleted(TPrimaryKey primaryKey)
             {
-                Entities.Remove(FindLocalProjectionByKey(primaryKey));
+                if (!owner.IsPersistentView)
+                    Entities.Remove(FindLocalProjectionByKey(primaryKey));
             }
         }
         #endregion

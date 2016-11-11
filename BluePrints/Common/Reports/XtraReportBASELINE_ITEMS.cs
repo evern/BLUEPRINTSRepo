@@ -3,6 +3,9 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraReports.Parameters;
+using System.Collections.Generic;
+using BluePrints.Common.Projections;
+using BluePrints.Data;
 
 
 namespace BluePrints.Reports
@@ -15,13 +18,13 @@ namespace BluePrints.Reports
             this.ParametersRequestSubmit += rptBaselineItem_ParametersRequestSubmit;
         }
 
-        //public void AssignProperties(BaseViewModel_BaselineItem BaselineItem)
-        //{
-        //    objectDataSource1.DataSource = BaselineItem.Items;
-        //    title1.Value = BaselineItem.Principal_Baseline.Baseline_Name;
-        //    projectName.Value = BaselineItem.Principal_Project.Project_Name;
-        //    date1.Value = DateTime.Now;
-        //}
+        public void AssignProperties(PROJECT PROJECT, BASELINE BASELINE, IEnumerable<BASELINE_ITEMProjection> BASELINE_ITEMS)
+        {
+            objectDataSource1.DataSource = BASELINE_ITEMS;
+            title1.Value = BASELINE.NAME;
+            projectName.Value = PROJECT.NAME;
+            date1.Value = DateTime.Now;
+        }
 
         #region Parameter Events
         private void rptBaselineItem_ParametersRequestSubmit(object sender, DevExpress.XtraReports.Parameters.ParametersRequestEventArgs e)

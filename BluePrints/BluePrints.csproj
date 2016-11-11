@@ -194,9 +194,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PermissionResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Common\Projections\BASELINE_ITEMJoinRATE.cs" />
-    <Compile Include="Common\Projections\BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM.cs" />
-    <Compile Include="Common\Projections\BASELINE_ITEMJoinRATEJoinPROGRESS_ITEMJoinVARIATION.cs" />
+    <Compile Include="Common\Projections\BASELINE_ITEMProjection.cs" />
+    <Compile Include="Common\Projections\PROGRESS_ITEMProjection.cs" />
+    <Compile Include="Common\Projections\ROLE_PERMISSIONProjection.cs" />
+    <Compile Include="Common\Projections\VARIATION_ITEMProjection.cs" />
     <Compile Include="Common\Projections\OptionalEntitiesParameter.cs" />
     <Compile Include="Common\Projections\PROJECT_Dashboard.cs" />
     <Compile Include="Common\Projections\ROLE_PERMISSIONInfo.cs" />
@@ -223,7 +224,6 @@
     <Compile Include="Common\ViewModel\Reporting\SummaryBuilder.cs" />
     <Compile Include="Common\ViewModel\Reporting\SummaryManufacturer.cs" />
     <Compile Include="Common\Attributes\ProjectionPropertyAttribute.cs" />
-    <Compile Include="Common\Projections\WORKPACK_DashboardInfo.cs" />
     <Compile Include="Common\ViewModel\Settings\XMLSettings.cs" />
     <Compile Include="EntityFramework\BluePrintsEntitiesDataModel\BluePrintsEntitiesUnitOfWork.cs" />
     <Compile Include="EntityFramework\BluePrintsEntitiesDataModel\DesignTimeBluePrintsEntitiesUnitOfWork.cs" />
@@ -848,13 +848,10 @@
     <Compile Include="ViewModels\BASELINE\BASELINECollectionViewModel.cs" />
     <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\P6PROJECTCollectionViewModel.cs" />
-    <Compile Include="ViewModels\P6PROJWBSCollectionViewModel.cs" />
-    <Compile Include="ViewModels\P6TASKCollectionViewModel.cs" />
     <Compile Include="ViewModels\USER\SelectDetailUSERSViewModel.cs" />
     <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKAssignmentViewModel.cs" />
-    <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKMappingCollectionViewModelWrapper.cs" />
-    <Compile Include="ViewModels\BASELINE\PROJECTBASELINEDetailsCollectionViewModel.cs" />
+    <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKSMappingViewModelWrapper.cs" />
+    <Compile Include="ViewModels\BASELINE\BASELINECollectionViewModelWrapper.cs" />
     <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMViewModel.cs" />
     <Compile Include="ViewModels\BluePrintsEntitiesViewModel.cs" />
     <Compile Include="ViewModels\COMMODITY\COMMODITYCollectionViewModel.cs" />
@@ -891,7 +888,7 @@
     <Compile Include="ViewModels\REGISTER\REGISTERViewModel.cs" />
     <Compile Include="ViewModels\ROLE\ROLECollectionViewModel.cs" />
     <Compile Include="ViewModels\ROLE\ROLEViewModel.cs" />
-    <Compile Include="ViewModels\ROLE_PERMISSION\ROLE_PERMISSIONCollectionViewModel.cs" />
+    <Compile Include="ViewModels\ROLE_PERMISSION\ROLE_PERMISSIONSCollectionViewModelWrapper.cs" />
     <Compile Include="ViewModels\ROLE_PERMISSION\ROLE_PERMISSIONViewModel.cs" />
     <Compile Include="ViewModels\SETTINGS_GLOBAL\SETTINGS_GLOBALCollectionViewModel.cs" />
     <Compile Include="ViewModels\SETTINGS_GLOBAL\SETTINGS_GLOBALViewModel.cs" />
@@ -940,8 +937,8 @@
     <Compile Include="Views\WORKPACK_ASSIGNMENT\PROJECTWORKPACKDetailsMappingViewXMLVersion\PROJECTWORKPACKDetailsMappingView_Unused.xaml.cs">
       <DependentUpon>PROJECTWORKPACKDetailsMappingView_Unused.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\BASELINE\PROJECTBASELINEDetailsCollectionView.xaml.cs">
-      <DependentUpon>PROJECTBASELINEDetailsCollectionView.xaml</DependentUpon>
+    <Compile Include="Views\BASELINE\BASELINECollectionView.xaml.cs">
+      <DependentUpon>BASELINECollectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WORKPACK\PROJECTWORKPACKDashboardView.xaml.cs">
       <DependentUpon>PROJECTWORKPACKDashboardView.xaml</DependentUpon>
@@ -1189,7 +1186,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\BASELINE\PROJECTBASELINEDetailsCollectionView.xaml">
+    <Page Include="Views\BASELINE\BASELINECollectionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1452,6 +1449,9 @@
     <EmbeddedResource Include="Common\PermissionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PermissionResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Common\Reports\XtraReportBASELINE_ITEMS.resx">
+      <DependentUpon>XtraReportBASELINE_ITEMS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Common\Reports\XtraReportPROGRESS_ITEMS.resx">
       <DependentUpon>XtraReportPROGRESS_ITEMS.cs</DependentUpon>

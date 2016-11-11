@@ -117,11 +117,11 @@ namespace BluePrints.Common.ViewModel
         protected virtual bool OnMainViewModelLoaded(IEnumerable<TMainProjectionEntity> entities)
         {
             MainViewModel = (TMainViewModel)mainEntityLoader.GetViewModel();
-            AssignCallBacksAndRaisePropertyChange(MainViewModel);
+            AssignCallBacksAndRaisePropertyChange(entities);
             return true;
         }
 
-        protected virtual void AssignCallBacksAndRaisePropertyChange(TMainViewModel mainViewModel)
+        protected virtual void AssignCallBacksAndRaisePropertyChange(IEnumerable<TMainProjectionEntity> entities)
         {
             throw new NotImplementedException("Override this method to assign call backs and also notify the view.");
         }

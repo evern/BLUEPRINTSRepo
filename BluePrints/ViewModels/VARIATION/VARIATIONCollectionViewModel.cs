@@ -136,10 +136,10 @@ namespace BluePrints.ViewModels
             return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
-        protected override void AssignCallBacksAndRaisePropertyChange(CollectionViewModel<VARIATION, VARIATION, Guid, IBluePrintsEntitiesUnitOfWork> mainViewModel)
+        protected override void AssignCallBacksAndRaisePropertyChange(IEnumerable<VARIATION> entities)
         {
-            mainViewModel.OnBeforeEntitySavedCallBack = this.OnBeforeEntitySaved;
-            mainViewModel.PreSave = this.BeforeSaveValidation;
+            MainViewModel.OnBeforeEntitySavedCallBack = this.OnBeforeEntitySaved;
+            MainViewModel.PreSave = this.BeforeSaveValidation;
             mainThreadDispatcher.BeginInvoke(new Action(() => this.RaisePropertiesChanged()));
         }
 

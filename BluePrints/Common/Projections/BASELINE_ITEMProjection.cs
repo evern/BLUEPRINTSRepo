@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace BluePrints.Common.Projections
 {
-    public class BASELINE_ITEMJoinRATE
+    public class BASELINE_ITEMProjection
     {
-        public BASELINE_ITEMJoinRATE()
+        public BASELINE_ITEMProjection()
         {
             BASELINE_ITEM = new BASELINE_ITEM();
         }
@@ -49,9 +49,9 @@ namespace BluePrints.Common.Projections
         public decimal TOTAL_COSTS { get { return BASELINE_ITEM.TOTAL_HOURS * ITEMRATE; } }
     }
 
-    public static class BASELINE_ITEMSJoinRATESQueries
+    public static class BASELINE_ITEMProjectionQueries
     {
-        public static IQueryable<BASELINE_ITEMJoinRATE> JoinRATESOnBASELINE_ITEMS(IQueryable<BASELINE_ITEM> BASELINE_ITEMS, Func<BASELINE> getBASELINEFunc, Func<IQueryable<RATE>> getRATES_ByProjectFunc = null, bool isBASELINEQueryProcessed = false)
+        public static IQueryable<BASELINE_ITEMProjection> JoinRATESOnBASELINE_ITEMS(IQueryable<BASELINE_ITEM> BASELINE_ITEMS, Func<BASELINE> getBASELINEFunc, Func<IQueryable<RATE>> getRATES_ByProjectFunc = null, bool isBASELINEQueryProcessed = false)
         {
             BASELINE BASELINE = getBASELINEFunc();
             IQueryable<BASELINE_ITEM> contextBASELINE_ITEMS;
@@ -67,7 +67,7 @@ namespace BluePrints.Common.Projections
 
 
             IQueryable<RATE> RATES = getRATES_ByProjectFunc();
-            return contextBASELINE_ITEMS.ToArray().AsQueryable().Select(x => new BASELINE_ITEMJoinRATE() { GUID = x.GUID, BASELINE_ITEM = x, RATE = RATES.FirstOrDefault(y => y.GUID_DEPARTMENT == x.GUID_DEPARTMENT && y.GUID_DISCIPLINE == x.GUID_DISCIPLINE) });
+            return contextBASELINE_ITEMS.ToArray().AsQueryable().Select(x => new BASELINE_ITEMProjection() { GUID = x.GUID, BASELINE_ITEM = x, RATE = RATES.FirstOrDefault(y => y.GUID_DEPARTMENT == x.GUID_DEPARTMENT && y.GUID_DISCIPLINE == x.GUID_DISCIPLINE) });
         }
     }
 }

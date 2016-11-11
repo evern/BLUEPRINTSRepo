@@ -20,8 +20,6 @@ namespace BluePrints.Data.Helpers
 {
     public static class QueriesHelper
     {
-
-
         public static IQueryable<ROLE_PERMISSIONInfo> MorphROLE_PERMISSIONInfo(IQueryable<ROLE_PERMISSION> ROLE_PERMISSION, Func<Guid> GetROLEKeyFunc, IQueryable<ROLE_PERMISSION> SYSTEM_PERMISSIONS)
         {
             var finalizedROLE_PERMISSION = ROLE_PERMISSION.ToArray().AsQueryable();
@@ -29,8 +27,6 @@ namespace BluePrints.Data.Helpers
             var currentAssignedROLE_PERMISSIONS = finalizedROLE_PERMISSION.Where(x => x.GUID_ROLE == roleKey && x.ASSIGNED == true).ToArray().AsEnumerable();
             return SYSTEM_PERMISSIONS.Select(x => new ROLE_PERMISSIONInfo(x, currentAssignedROLE_PERMISSIONS));
         }
-
-
     }
 }
 

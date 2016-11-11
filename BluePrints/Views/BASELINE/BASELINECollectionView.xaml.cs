@@ -18,9 +18,9 @@ namespace BluePrints.Views
     /// <summary>
     /// Interaction logic for AREADetailsCollectionView.xaml
     /// </summary>
-    public partial class PROJECTBASELINEDetailsCollectionView : UserControl
+    public partial class BASELINECollectionView : UserControl
     {
-        public PROJECTBASELINEDetailsCollectionView()
+        public BASELINECollectionView()
         {
             InitializeComponent();
         }

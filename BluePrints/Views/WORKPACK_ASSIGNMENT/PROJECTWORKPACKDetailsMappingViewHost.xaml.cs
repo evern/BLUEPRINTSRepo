@@ -1,4 +1,7 @@
-﻿using BluePrints.Data;
+﻿using BluePrints.BluePrintsEntitiesDataModel;
+using BluePrints.Common.Projections;
+using BluePrints.Common.ViewModel;
+using BluePrints.Data;
 using BluePrints.P6Data;
 using BluePrints.P6EntitiesDataModel;
 using BluePrints.ViewModels;
@@ -32,12 +35,15 @@ namespace BluePrints.Views
         public PROJECTWORKPACKDetailsMappingViewHost()
         {
             InitializeComponent();
-            //((PROJECTWORKPACKMappingCollectionViewModelWrapper)this.DataContext).windowsFormHostViewInitialization = this.windowsFormHostViewInitialization;
+            ((PROJECTWORKPACKSMappingViewModelWrapper)this.DataContext).windowsFormHostViewInitialization = this.windowsFormHostViewInitialization;
         }
 
-        public void windowsFormHostViewInitialization(Func<IQueryable<TASK>> getTASKsFunc, Func<IQueryable<PROJWBS>> getWBSSFunc, PROJECTWORKPACKMappingCollectionViewModel WORKPACKSMappingCollectionViewModel, WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACKS_ASSIGNMENTSViewModel, bool IsModified)
+        public void windowsFormHostViewInitialization(Func<IQueryable<TASK>> getTASKsFunc, Func<IQueryable<PROJWBS>> getWBSSFunc,
+            Func<IQueryable<WORKPACK_Dashboard>> getWORKPACK_DashboardFunc, 
+            CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACKS_ASSIGNMENTSViewModel, 
+            bool IsModified)
         {
-            winFormHost.Child = new PROJECTWORKPACKDetailsMappingView(getTASKsFunc, getWBSSFunc, WORKPACKSMappingCollectionViewModel, WORKPACKS_ASSIGNMENTSViewModel, IsModified);
+            winFormHost.Child = new PROJECTWORKPACKDetailsMappingView(getTASKsFunc, getWBSSFunc, getWORKPACK_DashboardFunc, WORKPACKS_ASSIGNMENTSViewModel, IsModified);
         }
     }
 }

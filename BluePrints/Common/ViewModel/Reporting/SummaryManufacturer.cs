@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BluePrints.Common.ViewModel.Reporting
 {
-    public class SummaryManufacturer
+    public class BuildProjectStats
     {
         public void Manufacture(SummaryBuilder summaryBuilder)
         {
@@ -24,6 +24,35 @@ namespace BluePrints.Common.ViewModel.Reporting
             summaryBuilder.BuildRemainingDataPoints();
             summaryBuilder.SummarizeDataPoints();
             summaryBuilder.RecalculateStats();
+        }
+    }
+
+    public class BuildMinimalStatsForCurrentPercentage
+    {
+        public void Manufacture(SummaryBuilder summaryBuilder)
+        {
+            Build(summaryBuilder);
+        }
+
+        public void Build(SummaryBuilder summaryBuilder)
+        {
+            summaryBuilder.BuildOriginalPlannedDataPoints();
+            summaryBuilder.SummarizeDataPoints();
+        }
+    }
+
+    public class BuildFullStatsIncludingPROGRESS_ITEM
+    {
+        BuildProjectStats buildProjectStats = new BuildProjectStats();
+        public void Manufacture(SummaryBuilder summaryBuilder)
+        {
+            buildProjectStats.Build(summaryBuilder);
+            Build(summaryBuilder);
+        }
+
+        public void Build(SummaryBuilder summaryBuilder)
+        {
+            summaryBuilder.SummarizeNestedSummaryObjectDataPoints();
         }
     }
 
@@ -56,6 +85,9 @@ namespace BluePrints.Common.ViewModel.Reporting
         public void Build(SummaryBuilder summaryBuilder)
         {
             summaryBuilder.BuildOriginalPlannedDataPoints();
+            summaryBuilder.BuildEarnedDataPoints();
+            summaryBuilder.BuildRemainingDataPoints();
+            summaryBuilder.SummarizeDataPoints();
             summaryBuilder.SummarizeNestedSummaryObjectDataPoints();
         }
     }

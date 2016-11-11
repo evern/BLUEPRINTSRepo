@@ -4,6 +4,7 @@ using BluePrints.Common.Projections;
 using BluePrints.Common.ViewModel;
 using BluePrints.Common.ViewModel.Utils;
 using BluePrints.Data;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Grid;
 using System;
@@ -71,6 +72,8 @@ namespace BluePrints.ViewModels
             base.OnDestroy();
         }
     }
+
+
 
     public class ISupportCustomDocumentPROGRESSCollectionViewModel : CollectionViewModel<PROGRESS, Guid, IBluePrintsEntitiesUnitOfWork>, ISupportCustomDocumentTypeNameAndParameter
     {

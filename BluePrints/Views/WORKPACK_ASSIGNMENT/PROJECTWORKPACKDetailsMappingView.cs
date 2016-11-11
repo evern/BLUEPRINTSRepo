@@ -18,6 +18,9 @@ using DevExpress.XtraScheduler.Drawing;
 using System.Reflection;
 using DevExpress.XtraTreeList.Menu;
 using System.Collections.ObjectModel;
+using BluePrints.BluePrintsEntitiesDataModel;
+using BluePrints.Common.Projections;
+using BluePrints.Common.ViewModel;
 
 namespace BluePrints.Views
 {
@@ -25,25 +28,27 @@ namespace BluePrints.Views
     {
         IQueryable<TASK> TASKS;
         IQueryable<PROJWBS> WBSS;
-        IEnumerable<WORKPACK_DashboardInfo> WORKPACK_DashboardInfos;
-        WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACK_ASSIGNMENTSViewModel;
+        IEnumerable<WORKPACK_Dashboard> WORKPACK_Dashboards;
+        CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTSViewModel;
         IEnumerable<TASK_AppointmentInfo> TASK_Appointments;
         IEnumerable<TASK_AppointmentInfo> WBS_Appointments;
         IEnumerable<TASK_AppointmentInfo> TASK_WBSAppointments;
         bool ISMODIFIED; //Specify whether the context is a original or modified P6BASELINE
-        public PROJECTWORKPACKDetailsMappingView(Func<IQueryable<TASK>> getTASKsFunc, Func<IQueryable<PROJWBS>> getWBSSFunc, PROJECTWORKPACKMappingCollectionViewModel WORKPACKSMappingCollectionViewModel, WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACK_ASSIGNMENTSViewModel, bool IsModified)
+        public PROJECTWORKPACKDetailsMappingView(Func<IQueryable<TASK>> getTASKsFunc, Func<IQueryable<PROJWBS>> getWBSSFunc,
+            Func<IQueryable<WORKPACK_Dashboard>> getWORKPACK_DashboardFunc,
+            CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTSViewModel, bool IsModified)
         {
             InitializeComponent();
             this.TASKS = getTASKsFunc();
             this.WBSS = getWBSSFunc();
-            this.WORKPACK_DashboardInfos = WORKPACKSMappingCollectionViewModel.Entities;
+            this.WORKPACK_Dashboards = getWORKPACK_DashboardFunc();
             this.ISMODIFIED = IsModified;
             this.WORKPACK_ASSIGNMENTSViewModel = WORKPACK_ASSIGNMENTSViewModel;
             this.TASK_Appointments = this.TASKS.OrderBy(x => x.task_id).Select(x => new TASK_AppointmentInfo(x)).ToArray().AsEnumerable();
             this.WBS_Appointments = this.WBSS.OrderBy(x => x.wbs_id).Select(x => new TASK_AppointmentInfo(x)).ToArray().AsEnumerable();
             this.TASK_WBSAppointments = this.TASK_Appointments.Concat(this.WBS_Appointments);
 
-            SetDataBinding(this.TASK_Appointments, this.TASK_WBSAppointments, this.WORKPACK_DashboardInfos);
+            SetDataBinding(this.TASK_Appointments, this.TASK_WBSAppointments, this.WORKPACK_Dashboards);
             SubscribeEvents();
             CalculateAppointmentsUnits();
         }
@@ -62,11 +67,11 @@ namespace BluePrints.Views
             gridControlWorkpack.DoubleClick += new System.EventHandler(gridControlWorkpack_DoubleClick);
         }
 
-        private void SetDataBinding(IEnumerable<TASK_AppointmentInfo> TASK_Appointments, IEnumerable<TASK_AppointmentInfo> TASK_WBSAppointments, IEnumerable<WORKPACK_DashboardInfo> WORKPACK_DashboardInfos)
+        private void SetDataBinding(IEnumerable<TASK_AppointmentInfo> TASK_Appointments, IEnumerable<TASK_AppointmentInfo> TASK_WBSAppointments, IEnumerable<WORKPACK_Dashboard> WORKPACK_Dashboards)
         {
             schedulerControl1.Start = TASK_WBSAppointments.Where(x => x.StartDate.Year > 1800).Min(x => x.StartDate);
             this.schedulerBindingSource.DataSource = TASK_WBSAppointments;
-            this.gridBindingSource.DataSource = WORKPACK_DashboardInfos;
+            this.gridBindingSource.DataSource = WORKPACK_Dashboards;
         }
 
         private void schedulerControl1_InitAppointmentDisplayText(object sender, AppointmentDisplayTextEventArgs e)
@@ -121,7 +126,7 @@ namespace BluePrints.Views
 
         object GetDragData(GridView view)
         {
-            WORKPACK_DashboardInfo dragWorkpack = (WORKPACK_DashboardInfo)view.GetFocusedRow();
+            WORKPACK_Dashboard dragWorkpack = (WORKPACK_Dashboard)view.GetFocusedRow();
             return dragWorkpack;
         }
 
@@ -129,7 +134,7 @@ namespace BluePrints.Views
         {
             try
             {
-                WORKPACK_DashboardInfo dragEnterWorkpack = (WORKPACK_DashboardInfo)((DataObject)e.Data).GetData(typeof(WORKPACK_DashboardInfo));
+                WORKPACK_Dashboard dragEnterWorkpack = (WORKPACK_Dashboard)((DataObject)e.Data).GetData(typeof(WORKPACK_Dashboard));
             }
             catch
             {
@@ -142,13 +147,13 @@ namespace BluePrints.Views
 
         private void schedulerControl1_DragDrop(object sender, DragEventArgs e)
         {
-            WORKPACK_DashboardInfo dragDropWorkpack = (WORKPACK_DashboardInfo)((DataObject)e.Data).GetData(typeof(WORKPACK_DashboardInfo));
+            WORKPACK_Dashboard dragDropWorkpack = (WORKPACK_Dashboard)((DataObject)e.Data).GetData(typeof(WORKPACK_Dashboard));
             Point pt = schedulerControl1.PointToClient(Control.MousePosition);
             SchedulerHitInfo schHitInfo = schedulerControl1.ActiveView.ViewInfo.CalcHitInfo(pt, false);
             if (schHitInfo.HitTest == SchedulerHitTest.AppointmentContent)
             {
                 var dropAppointment = ((AppointmentViewInfo)schHitInfo.ViewInfo).Appointment;
-                PROJECTWORKPACKDetailsWorkpackAssignment view = new PROJECTWORKPACKDetailsWorkpackAssignment(TASK_WBSAppointments, WORKPACK_DashboardInfos, WORKPACK_ASSIGNMENTSViewModel, ISMODIFIED, dropAppointment, dragDropWorkpack);
+                PROJECTWORKPACKDetailsWorkpackAssignment view = new PROJECTWORKPACKDetailsWorkpackAssignment(TASK_WBSAppointments, WORKPACK_Dashboards, WORKPACK_ASSIGNMENTSViewModel, ISMODIFIED, dropAppointment, dragDropWorkpack);
                 view.ShowDialog();
                 view.Dispose();
 
@@ -164,7 +169,7 @@ namespace BluePrints.Views
                 if (WBSTASKAppointmentInfo.Subject == null || WBSTASKAppointmentInfo.Subject == string.Empty)
                     continue;
 
-                decimal P6ActivityAssignedUnits = WORKPACK_DashboardInfos.Sum(x => x.ObservableWORKPACK_ASSIGNMENTS.Where(obj2 => obj2.P6_ACTIVITYID == WBSTASKAppointmentInfo.Subject).Sum(obj3 => (obj3.HIGH_VALUE - obj3.LOW_VALUE) + 1));
+                decimal P6ActivityAssignedUnits = WORKPACK_Dashboards.Sum(x => x.ObservableWORKPACK_ASSIGNMENTS.Where(obj2 => obj2.P6_ACTIVITYID == WBSTASKAppointmentInfo.Subject).Sum(obj3 => (obj3.HIGH_VALUE - obj3.LOW_VALUE) + 1));
                 WBSTASKAppointmentInfo.AssignedUnits = P6ActivityAssignedUnits;
             }
 
@@ -210,10 +215,10 @@ namespace BluePrints.Views
 
         private void gridControlWorkpack_DoubleClick(object sender, EventArgs e)
         {
-            WORKPACK_DashboardInfo selectedWORKPACK = (WORKPACK_DashboardInfo)gridViewWorkpack.GetFocusedRow();
+            WORKPACK_Dashboard selectedWORKPACK = (WORKPACK_Dashboard)gridViewWorkpack.GetFocusedRow();
             if (selectedWORKPACK != null)
             {
-                PROJECTWORKPACKDetailsWorkpackAssignment view = new PROJECTWORKPACKDetailsWorkpackAssignment(TASK_WBSAppointments, WORKPACK_DashboardInfos, WORKPACK_ASSIGNMENTSViewModel, ISMODIFIED, null, selectedWORKPACK);
+                PROJECTWORKPACKDetailsWorkpackAssignment view = new PROJECTWORKPACKDetailsWorkpackAssignment(TASK_WBSAppointments, WORKPACK_Dashboards, WORKPACK_ASSIGNMENTSViewModel, ISMODIFIED, null, selectedWORKPACK);
                 view.ShowDialog();
                 view.Dispose();
 
@@ -228,7 +233,7 @@ namespace BluePrints.Views
             if (schHitInfo.HitTest == SchedulerHitTest.AppointmentContent)
             {
                 Appointment dropAppointment = ((AppointmentViewInfo)schHitInfo.ViewInfo).Appointment;
-                PROJECTWORKPACKDetailsActivityAssignment view = new PROJECTWORKPACKDetailsActivityAssignment(TASK_WBSAppointments, WORKPACK_DashboardInfos, WORKPACK_ASSIGNMENTSViewModel, ISMODIFIED, dropAppointment);
+                PROJECTWORKPACKDetailsActivityAssignment view = new PROJECTWORKPACKDetailsActivityAssignment(TASK_WBSAppointments, WORKPACK_Dashboards, WORKPACK_ASSIGNMENTSViewModel, ISMODIFIED, dropAppointment);
                 view.ShowDialog();
                 view.Dispose();
 

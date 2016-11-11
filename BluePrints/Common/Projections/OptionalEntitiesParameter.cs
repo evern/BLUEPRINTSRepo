@@ -6,6 +6,30 @@ using System.Threading.Tasks;
 
 namespace BluePrints.Common.Projections
 {
+    public class EntitiesParameter<TEntity>
+        where TEntity : class
+    {
+        TEntity entity;
+
+        public EntitiesParameter(TEntity entity)
+        {
+            this.entity = entity;
+        }
+
+        public TEntity GetEntity()
+        {
+            return this.entity;
+        }
+
+        public override string ToString()
+        {
+            if (entity != null)
+                return entity.GetType().GetProperty("GUID").GetValue(entity).ToString();
+            else
+                return string.Empty;
+        }
+    }
+
     public class OptionalEntitiesParameter<TEntity, TSecondEntity>
         where TEntity : class
         where TSecondEntity : class

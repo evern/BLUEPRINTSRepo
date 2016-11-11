@@ -43,8 +43,7 @@ namespace BluePrints.ViewModels
             ROLECollection.OnSelectedEntityChangedCallBack = this.OnSelectedEntityChangedCallBack;
             ROLECollection.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
 
-            var SYSTEM_ROLE_PERMISSIONS = GetSystemPermissions();
-            ROLE_PERMISSIONCollection = ROLE_PERMISSIONSProjectionCollectionViewModel.Create(null, query => QueriesHelper.MorphROLE_PERMISSIONInfo(query, GetROLE_KEYFunc, SYSTEM_ROLE_PERMISSIONS));
+            ROLE_PERMISSIONCollection = ROLE_PERMISSIONSProjectionCollectionViewModel.Create(null, query => QueriesHelper.MorphROLE_PERMISSIONInfo(query, GetROLE_KEYFunc, GetSystemPermissions()));
             ROLE_PERMISSIONCollection.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntityCallBack;
             ROLE_PERMISSIONCollection.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
             ROLE_PERMISSIONCollection.IsPersistentView = true;
@@ -52,6 +51,13 @@ namespace BluePrints.ViewModels
             selectFirstRoleDispatcher = new DispatcherTimer();
             selectFirstRoleDispatcher.Interval = new TimeSpan(0, 0, 0, 0, 1);
             selectFirstRoleDispatcher.Tick += selectFirstRoleDispatcher_Tick;
+        }
+
+        public void OnEntitiesLoaded(IEnumerable<object> entities)
+        {
+            detailedEntitiesLoaded += 1;
+            if (detailedEntitiesLoaded == 2)
+                selectFirstRoleDispatcher.Start();
         }
 
         void selectFirstRoleDispatcher_Tick(object sender, EventArgs e)
@@ -65,13 +71,6 @@ namespace BluePrints.ViewModels
         }
 
         int detailedEntitiesLoaded = 0;
-        public void OnEntitiesLoaded(IEnumerable<object> entities)
-        {
-            detailedEntitiesLoaded += 1;
-            if (detailedEntitiesLoaded == 2)
-                selectFirstRoleDispatcher.Start();
-        }
-
         public void dragDropManager_Dropped(object sender, DevExpress.Xpf.Grid.DragDrop.TreeListDroppedEventArgs e)
         {
             if (e.TargetNode != null)
@@ -116,11 +115,16 @@ namespace BluePrints.ViewModels
             DataUtils.ShallowCopy(ROLEPERMISSION, ROLEPERMISSIONInfo, false);
         }
 
-        Dictionary<string, string> permissionLookUp = new Dictionary<string, string>();
+        Dictionary<string, string> permissionLookUp;
         public Dictionary<string, string> PermissionLookUp
         {
-            get { return permissionLookUp; }
-            set { permissionLookUp = value; }
+            get 
+            { 
+                if(permissionLookUp == null)
+                    permissionLookUp = GetPermissionLookUpInDictionary();
+
+                return permissionLookUp; 
+            }
         }
         private IQueryable<ROLE_PERMISSION> GetSystemPermissions()
         {
@@ -129,10 +133,21 @@ namespace BluePrints.ViewModels
             foreach (System.Collections.DictionaryEntry permission in resourceSet)
             {
                 permissions.Add(new ROLE_PERMISSION() { PERMISSION = permission.Key.ToString() });
-                permissionLookUp.Add(permission.Key.ToString(), permission.Value.ToString());
             }
 
             return permissions.AsQueryable();
+        }
+
+        Dictionary<string, string> GetPermissionLookUpInDictionary()
+        {
+            Dictionary<string, string> returnPermissions = new Dictionary<string, string>();
+            ResourceSet resourceSet = PermissionResources.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            foreach (System.Collections.DictionaryEntry permission in resourceSet)
+            {
+                returnPermissions.Add(permission.Key.ToString(), permission.Value.ToString());
+            }
+
+            return returnPermissions;
         }
 
 

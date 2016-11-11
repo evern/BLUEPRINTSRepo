@@ -1,4 +1,7 @@
-﻿using BluePrints.Data;
+﻿using BluePrints.BluePrintsEntitiesDataModel;
+using BluePrints.Common.Projections;
+using BluePrints.Common.ViewModel;
+using BluePrints.Data;
 using BluePrints.ViewModels;
 using DevExpress.Xpf.Core;
 using DevExpress.XtraScheduler;
@@ -24,7 +27,13 @@ namespace BluePrints.Views
     /// </summary>
     public partial class PROJECTWORKPACKDetailsWorkpackAssignment : DXWindow, IDisposable
     {
-        public PROJECTWORKPACKDetailsWorkpackAssignment(IEnumerable<TASK_AppointmentInfo> ALLTASK_Appointments, IEnumerable<WORKPACK_DashboardInfo> WORKPACKS, WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACK_ASSIGNMENTSViewModel, bool IsModified, Appointment SelectedTASK_Appointment = null, WORKPACK_DashboardInfo SelectedWORKPACK = null)
+        public PROJECTWORKPACKDetailsWorkpackAssignment(
+            IEnumerable<TASK_AppointmentInfo> ALLTASK_Appointments, 
+            IEnumerable<WORKPACK_Dashboard> WORKPACKS,
+            CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTSViewModel, 
+            bool IsModified, 
+            Appointment SelectedTASK_Appointment = null, 
+            WORKPACK_Dashboard SelectedWORKPACK = null)
         {
             InitializeComponent();
             this.DataContext = PROJECTWORKPACKAssignmentViewModel.Create(ALLTASK_Appointments, WORKPACKS, WORKPACK_ASSIGNMENTSViewModel, IsModified, SelectedTASK_Appointment, SelectedWORKPACK);

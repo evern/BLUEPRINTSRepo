@@ -59,18 +59,21 @@ namespace BluePrints.Common.ViewModel.Utils
         /// <summary>
         /// Generate internal number1 when all required fields are populated
         /// </summary>
-        public static string BASELINEITEM_Generate_InternalNumber(PROJECT fromPROJECT, IEnumerable<BASELINE_ITEMJoinRATE> BASELINE_ITEMEntities, AREA selectedAREA, DISCIPLINE selectedDISCIPLINE, DOCTYPE selectedDOCTYPE)
+        public static string BASELINEITEM_Generate_InternalNumber(PROJECT fromPROJECT, IEnumerable<BASELINE_ITEMProjection> BASELINE_ITEMEntities, AREA selectedAREA, DISCIPLINE selectedDISCIPLINE, DOCTYPE selectedDOCTYPE, Guid? excludeGUID = null)
         {
             if (selectedAREA != null && selectedDISCIPLINE != null && selectedDOCTYPE != null)
             {
                 string InternalNum = fromPROJECT.NUMBER;
-                InternalNum += "-" + selectedAREA.INTERNAL_NUM;
-                InternalNum += selectedDOCTYPE.CODE;
-                InternalNum += selectedDISCIPLINE.CODE;
+                if(selectedAREA != null)
+                    InternalNum += "-" + selectedAREA.INTERNAL_NUM;
+                if (selectedDOCTYPE != null)
+                    InternalNum += selectedDOCTYPE.CODE;
+                if (selectedDISCIPLINE != null)
+                    InternalNum += selectedDISCIPLINE.CODE;
 
-                int InternalNameCount = BASELINE_ITEMEntities.Count(obj => obj.BASELINE_ITEM.INTERNAL_NUM != null && obj.BASELINE_ITEM.INTERNAL_NUM.Contains(InternalNum)) + 1;
-
-                InternalNum += InternalNameCount.ToString();
+                int internalNameCount = BASELINE_ITEMEntities.Where(x => x.GUID != excludeGUID).Count(x => x.BASELINE_ITEM.INTERNAL_NUM != null && x.BASELINE_ITEM.INTERNAL_NUM.Contains(InternalNum));
+                internalNameCount += 1;
+                InternalNum += internalNameCount.ToString();
 
                 return InternalNum;
             }

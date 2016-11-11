@@ -144,7 +144,7 @@ namespace BluePrints.Common.ViewModel.Reporting
 
     public abstract class ReportableObject : ProgressReportable
     {
-        public BASELINE_ITEMJoinRATE BASELINE_ITEMJoinRATE { get; set; }
+        public BASELINE_ITEMProjection BASELINE_ITEMJoinRATE { get; set; }
         IEnumerable<VARIATION_ITEM> VARIATION_ITEMS { get; set; }
 
         IEnumerable<PROGRESS_ITEM> progress_items;

@@ -19,13 +19,19 @@ using BluePrints.Common.Helpers;
 using BluePrints.Common.Projections;
 using System.Windows.Threading;
 using System.Windows;
+using DevExpress.Xpf.Bars;
+using BluePrints.Common.ViewModel.Reporting;
+using BluePrints.Views;
+using BluePrints.Reports;
+using System.IO;
+using DevExpress.Xpf.Printing;
 
 namespace BluePrints.ViewModels
 {
     /// <summary>
     /// Represents the single BASELINE object view model.
     /// </summary>
-    public partial class BASELINE_ITEMSViewModelWrapper : CollectionViewModelsWrapper<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork, CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork>>
+    public partial class BASELINE_ITEMSViewModelWrapper : CollectionViewModelsWrapper<BASELINE_ITEM, BASELINE_ITEMProjection, Guid, IBluePrintsEntitiesUnitOfWork, CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMProjection, Guid, IBluePrintsEntitiesUnitOfWork>>
     {
         /// <summary>
         /// Creates a new instance of BASELINE_ITEMSViewModelWrapper as a POCO view model.
@@ -66,13 +72,15 @@ namespace BluePrints.ViewModels
             loaderCollection = new EntitiesLoaderDescriptionCollection(this);
             loaderCollection.AddEntitiesLoader<PROJECT, PROJECT, Guid, IBluePrintsEntitiesUnitOfWork>(0, bluePrintsUnitOfWorkFactory, x => x.PROJECTS, PROJECTProjectionFunc, null, isContinueLoadingAfterPROJECT, OnEntitiesChanged);
             loaderCollection.AddEntitiesLoader<BASELINE, BASELINE, Guid, IBluePrintsEntitiesUnitOfWork>(1, bluePrintsUnitOfWorkFactory, x => x.BASELINES, BASELINEProjectionFunc, typeof(PROJECT), isContinueLoadingAfterBASELINE, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.WORKPACKS, WORKPACKProjectionFunc, typeof(PROJECT));
+            loaderCollection.AddEntitiesLoader<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.WORKPACKS, WORKPACKProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
             loaderCollection.AddEntitiesLoader<PHASE, PHASE, Guid, IBluePrintsEntitiesUnitOfWork>(3, bluePrintsUnitOfWorkFactory, x => x.PHASES, PHASEProjectionFunc, typeof(PROJECT));
             loaderCollection.AddEntitiesLoader<AREA, AREA, Guid, IBluePrintsEntitiesUnitOfWork>(4, bluePrintsUnitOfWorkFactory, x => x.AREAS, AREAProjectionFunc, typeof(PROJECT));
             loaderCollection.AddEntitiesLoader<DEPARTMENT, DEPARTMENT, Guid, IBluePrintsEntitiesUnitOfWork>(5, bluePrintsUnitOfWorkFactory, x => x.DEPARTMENTS);
             loaderCollection.AddEntitiesLoader<DISCIPLINE, DISCIPLINE, Guid, IBluePrintsEntitiesUnitOfWork>(6, bluePrintsUnitOfWorkFactory, x => x.DISCIPLINES);
             loaderCollection.AddEntitiesLoader<DOCTYPE, DOCTYPE, Guid, IBluePrintsEntitiesUnitOfWork>(7, bluePrintsUnitOfWorkFactory, x => x.DOCTYPES);
             loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(8, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>(9, bluePrintsUnitOfWorkFactory, x => x.PROJECT_REPORTS, PROJECT_REPORTProjectionFunc, typeof(BluePrints.Data.PROJECT));
+            
             InvokeEntitiesLoaderDescriptionLoading();
         }
 
@@ -136,30 +144,42 @@ namespace BluePrints.ViewModels
             return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
+        Func<IRepositoryQuery<PROJECT_REPORT>, IQueryable<PROJECT_REPORT>> PROJECT_REPORTProjectionFunc()
+        {
+            return query => query.Where(x => x.GUID_PROJECT == loadPROJECT.GUID && x.REPORT_TYPE == ReportType.Baseline_Report.ToString());
+        }
+
         protected override void OnAllEntitiesCollectionLoaded()
         {
             CreateMainViewModel(this.bluePrintsUnitOfWorkFactory, x => x.BASELINE_ITEMS);
             mainThreadDispatcher.BeginInvoke(new Action(() => mainEntityLoader.CreateCollectionViewModel()));
         }
 
-        protected override Func<IRepositoryQuery<BASELINE_ITEM>, IQueryable<BASELINE_ITEMJoinRATE>> ConstructMainViewModelProjection()
+        protected override Func<IRepositoryQuery<BASELINE_ITEM>, IQueryable<BASELINE_ITEMProjection>> ConstructMainViewModelProjection()
         {
             Func<IQueryable<RATE>> getRATESFunc = loaderCollection.GetCollectionFunc<RATE>();
             Func<BASELINE> getBASELINEFunc = loaderCollection.GetObjectFunc<BASELINE>();
-            return query => BASELINE_ITEMSJoinRATESQueries.JoinRATESOnBASELINE_ITEMS(query, getBASELINEFunc, getRATESFunc);
+            return query => BASELINE_ITEMProjectionQueries.JoinRATESOnBASELINE_ITEMS(query, getBASELINEFunc, getRATESFunc);
         }
 
-        protected override void AssignCallBacksAndRaisePropertyChange(CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATE, Guid, IBluePrintsEntitiesUnitOfWork> mainViewModel)
+        protected override void AssignCallBacksAndRaisePropertyChange(IEnumerable<BASELINE_ITEMProjection> entities)
         {
-            mainViewModel.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntity;
-            mainViewModel.OnEntitySavedCallBack = this.OnEntitiesSavedCallBack;
+            MainViewModel.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntity;
+            MainViewModel.OnEntitySavedCallBack = this.OnEntitiesSavedCallBack;
             mainThreadDispatcher.BeginInvoke(new Action(() => this.RaisePropertiesChanged()));
         }
+
 
         protected override void OnEntitiesChanged(object key, Type changedType, EntityMessageType messageType, object sender)
         {
             if (sender == MainViewModel)
                 return;
+
+            if (changedType == typeof(WORKPACK))
+            {
+                this.RaisePropertyChanged(x => x.WORKPACKCollection);
+                return;
+            }
 
             if (loadBASELINE != null && changedType == typeof(BASELINE) && loadBASELINE.GUID.ToString() == key.ToString() ||
                 loadPROJECT != null && changedType == typeof(PROJECT) && loadPROJECT.GUID.ToString() == key.ToString())
@@ -180,7 +200,7 @@ namespace BluePrints.ViewModels
         }
 
         #region Collection Call Backs
-        public void ApplyProjectionPropertiesToEntity(BASELINE_ITEMJoinRATE projectionEntity, BASELINE_ITEM entity)
+        public void ApplyProjectionPropertiesToEntity(BASELINE_ITEMProjection projectionEntity, BASELINE_ITEM entity)
         {
             projectionEntity.BASELINE_ITEM.GUID_BASELINE = loadBASELINE.GUID;
             DataUtils.ShallowCopy(entity, projectionEntity.BASELINE_ITEM);
@@ -191,7 +211,7 @@ namespace BluePrints.ViewModels
             entity.CREATED = projectionEntity.BASELINE_ITEM.CREATED;
         }
 
-        public void OnEntitiesSavedCallBack(Guid primaryKey, BASELINE_ITEMJoinRATE projectionEntity, BASELINE_ITEM entity, bool isNewEntity)
+        public void OnEntitiesSavedCallBack(Guid primaryKey, BASELINE_ITEMProjection projectionEntity, BASELINE_ITEM entity, bool isNewEntity)
         {
             projectionEntity.GUID = entity.GUID;
             projectionEntity.BASELINE_ITEM.GUID = entity.GUID;
@@ -209,8 +229,8 @@ namespace BluePrints.ViewModels
             if (e.RowHandle != GridControl.NewItemRowHandle)
                 return;
 
-            BASELINE_ITEMJoinRATE activeBASELINE_ITEM = (BASELINE_ITEMJoinRATE)e.Row;
-            if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATE().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_WORKPACK))
+            BASELINE_ITEMProjection activeBASELINE_ITEM = (BASELINE_ITEMProjection)e.Row;
+            if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_WORKPACK))
             {
                 WORKPACK chosenWORKPACK = WORKPACKCollection.FirstOrDefault(entity => entity.GUID == (Guid)e.Value);
                 if (chosenWORKPACK != null)
@@ -228,7 +248,7 @@ namespace BluePrints.ViewModels
                     MainViewModel.UpdateSelectedEntity();
                 }
             }
-            else if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATE().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DOCTYPE))
+            else if (e.Column.FieldName == BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DOCTYPE))
             {
                 DOCTYPE chosenDOCTYPE = DOCTYPECollection.FirstOrDefault(entity => entity.GUID == (Guid)e.Value);
                 if (chosenDOCTYPE != null && chosenDOCTYPE.GUID_DDEPARTMENT != null)
@@ -237,6 +257,104 @@ namespace BluePrints.ViewModels
                     MainViewModel.UpdateSelectedEntity();
                 }
             }
+        }
+        #endregion
+
+        #region View Commands
+        public bool CanAutoPopulate(object button)
+        {
+            if (MainViewModel == null || MainViewModel.SelectedEntities.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        public void AutoPopulate(object button)
+        {
+            MainViewModel.EntitiesUndoRedoManager.PauseActionId();
+            var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
+
+            string departmentFieldName = BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DEPARTMENT);
+            string disciplineFieldName = BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DISCIPLINE);
+            string docTypeFieldName = BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_DOCTYPE);
+            string areaFieldName = BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_AREA);
+            string workpackFieldName = BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().GUID_WORKPACK);
+            string internalNumberFieldName = BindableBase.GetPropertyName(() => new BASELINE_ITEMProjection().BASELINE_ITEM) + "." + BindableBase.GetPropertyName(() => new BASELINE_ITEM().INTERNAL_NUM);
+
+            List<BASELINE_ITEMProjection> entitiesToSave = new List<BASELINE_ITEMProjection>();
+            if (info.Column.FieldName == internalNumberFieldName)
+            {
+                foreach(BASELINE_ITEMProjection entity in MainViewModel.SelectedEntities)
+                {
+                    entity.BASELINE_ITEM.INTERNAL_NUM = string.Empty;
+                }
+            }
+
+            foreach(BASELINE_ITEMProjection entity in MainViewModel.SelectedEntities)
+            {
+                WORKPACK entityWORKPACK = WORKPACKCollection.FirstOrDefault(x => x.GUID == entity.BASELINE_ITEM.GUID_WORKPACK);
+                if (info.Column.FieldName == internalNumberFieldName)
+                {
+                    string internalNum = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadPROJECT, MainViewModel.Entities, entity.BASELINE_ITEM.AREA, entity.BASELINE_ITEM.DISCIPLINE, entity.BASELINE_ITEM.DOCTYPE, entity.GUID);
+                    MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, internalNum);
+                    entitiesToSave.Add(entity);
+                }
+                else if(info.Column.FieldName == departmentFieldName || info.Column.FieldName == disciplineFieldName || info.Column.FieldName == docTypeFieldName || info.Column.FieldName == areaFieldName)
+                {
+                    if(entityWORKPACK == null)
+                        continue;
+
+                    if (info.Column.FieldName == departmentFieldName)
+                        MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, entityWORKPACK.GUID_DDEPARTMENT);
+                    else if (info.Column.FieldName == disciplineFieldName)
+                        MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, entityWORKPACK.GUID_DDISCIPLINE);
+                    else if (info.Column.FieldName == docTypeFieldName)
+                        MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, entityWORKPACK.GUID_DDOCTYPE);
+                    else if (info.Column.FieldName == areaFieldName)
+                        MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, entityWORKPACK.GUID_DAREA);
+
+                    entitiesToSave.Add(entity);
+                }
+                else if(info.Column.FieldName == workpackFieldName)
+                {
+                    if (entity.BASELINE_ITEM.GUID_DISCIPLINE == Guid.Empty || entity.BASELINE_ITEM.GUID_DEPARTMENT == Guid.Empty ||
+                       entity.BASELINE_ITEM.GUID_DOCTYPE == Guid.Empty || entity.BASELINE_ITEM.GUID_AREA == Guid.Empty)
+                        continue;
+
+                    WORKPACK findWORKPACK = WORKPACKCollection.FirstOrDefault(x => x.GUID_DDEPARTMENT == entity.BASELINE_ITEM.GUID_DEPARTMENT && x.GUID_DDISCIPLINE == entity.BASELINE_ITEM.GUID_DISCIPLINE);
+                    if (findWORKPACK == null)
+                    {
+                        WORKPACK newWORKPACK = new WORKPACK();
+                        newWORKPACK.GUID_PROJECT = loadPROJECT.GUID;
+                        newWORKPACK.GUID_DAREA = (Guid)entity.BASELINE_ITEM.GUID_AREA;
+                        newWORKPACK.GUID_DPHASE = (Guid)entity.BASELINE_ITEM.GUID_PHASE;
+                        newWORKPACK.GUID_DDISCIPLINE = (Guid)entity.BASELINE_ITEM.GUID_DISCIPLINE;
+                        newWORKPACK.GUID_DDEPARTMENT = (Guid)entity.BASELINE_ITEM.GUID_DEPARTMENT;
+                        newWORKPACK.GUID_DDOCTYPE = (Guid)entity.BASELINE_ITEM.GUID_DOCTYPE;
+                        newWORKPACK.INTERNAL_NAME1 = BluePrintDataUtils.WORKPACK_Generate_InternalNumber1(loadPROJECT, newWORKPACK, WORKPACKCollection, loaderCollection.GetViewModel<AREA>(), loaderCollection.GetViewModel<DISCIPLINE>(), loaderCollection.GetViewModel<DOCTYPE>());
+                        newWORKPACK.INTERNAL_NAME2 = BluePrintDataUtils.WORKPACK_Generate_InternalNumber2(loadPROJECT, newWORKPACK, WORKPACKCollection, loaderCollection.GetViewModel<AREA>(), loaderCollection.GetViewModel<DISCIPLINE>(), loaderCollection.GetViewModel<PHASE>());
+                       
+                        newWORKPACK.STARTDATE = DateTime.Now;
+                        newWORKPACK.ENDDATE = BluePrintDataUtils.WORKPACK_Calculate_EndDate(newWORKPACK.STARTDATE, loadPROJECT);
+                        DateTime reviewStartDate = newWORKPACK.STARTDATE;
+                        DateTime reviewEndDate = newWORKPACK.ENDDATE;
+                        BluePrintDataUtils.WORKPACK_Calculate_ReviewPeriod(ref reviewStartDate, ref reviewEndDate, loadPROJECT, false);
+                        newWORKPACK.REVIEWSTARTDATE = reviewStartDate;
+                        newWORKPACK.REVIEWENDDATE = reviewEndDate;
+                        newWORKPACK.AUTOGENERATED = true;
+                        ((CollectionViewModel<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<WORKPACK>()).Save(newWORKPACK);
+
+                        MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, newWORKPACK.GUID);
+                    }
+                    else
+                        MainViewModel.SetNestedValueWithUndo(entity, info.Column.FieldName, findWORKPACK.GUID);
+
+                    entitiesToSave.Add(entity);
+                }
+            }
+
+            MainViewModel.BulkSave(entitiesToSave);
+            MainViewModel.EntitiesUndoRedoManager.UnpauseActionId();
         }
         #endregion
 
@@ -315,6 +433,57 @@ namespace BluePrints.ViewModels
         }
         #endregion
 
+        #region Reporting
+        public bool CanEditReport()
+        {
+            if (MainViewModel == null || MainViewModel.Entities.Count == 0)
+                return false;
 
+            return true;
+        }
+
+        public bool CanViewReport()
+        {
+            if (MainViewModel == null || MainViewModel.Entities.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        public void EditReport()
+        {
+            REPORTDesigner reportDesigner = new REPORTDesigner(loadPROJECT, (CollectionViewModel<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<PROJECT_REPORT>(), ReportType.Baseline_Report);
+            if (reportDesigner.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                reportDesigner.Dispose();
+            else
+                reportDesigner.Dispose();
+        }
+
+        public void ViewReport()
+        {
+            XtraReportBASELINE_ITEMS baselineReport = new XtraReportBASELINE_ITEMS();
+            PROJECT_REPORT dbProjectReport = loaderCollection.GetObject<PROJECT_REPORT>();
+            if (dbProjectReport != null)
+            {
+                string reportString = dbProjectReport.REPORT.ToString();
+                using (StreamWriter sw = new StreamWriter(new MemoryStream()))
+                {
+                    sw.Write(reportString);
+                    sw.Flush();
+                    baselineReport.LoadLayout(sw.BaseStream);
+                }
+            }
+
+
+            baselineReport.AssignProperties(loadPROJECT, loadBASELINE, MainViewModel.Entities);
+            DocumentPreviewWindow previewWindow = new DocumentPreviewWindow();
+            previewWindow.PreviewControl.DocumentSource = baselineReport;
+            previewWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            previewWindow.WindowState = WindowState.Maximized;
+            baselineReport.RequestParameters = false;
+            baselineReport.CreateDocument(true);
+            previewWindow.ShowDialog();
+        }
+        #endregion
     }
 }

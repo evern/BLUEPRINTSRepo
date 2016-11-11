@@ -27,7 +27,7 @@
     </Style>
     <!-- Baseline Start -->
     <ControlTemplate x:Key="Button_BASELINE_ASSIGN">
-        <Button Command="{Binding DataContext.PROJECTBASELINESDetails.P6BASELINE_ASSIGNCommand, ElementName=userControl}" IsEnabled="{Binding Path=RowData.Row.P6BASELINE_NAME, Converter={StaticResource StringToBoolConverter}, ConverterParameter=false, FallbackValue=false}">
+        <Button Command="{Binding DataContext.P6BASELINE_ASSIGNCommand, ElementName=userControl}" IsEnabled="{Binding Path=RowData.Row.P6BASELINE_NAME, Converter={StaticResource StringToBoolConverter}, ConverterParameter=false, FallbackValue=false}">
             <StackPanel Orientation="Horizontal">
                 <Image Source="{dx:DXImageOffice2013 Image=Edit_16x16.png}" Width="16" Height="16" Margin="0, 0, 3, 0"/>
                 <TextBlock Text="Edit" VerticalAlignment="Center" />
@@ -35,7 +35,7 @@
         </Button>
     </ControlTemplate>
     <ControlTemplate x:Key="Button_MODBASELINE_ASSIGN">
-        <Button Command="{Binding DataContext.PROJECTBASELINESDetails.P6MODBASELINE_ASSIGNCommand, ElementName=userControl}" IsEnabled="{Binding Path=RowData.Row.P6MODBASELINE_NAME, Converter={StaticResource StringToBoolConverter}, ConverterParameter=false, FallbackValue=false}">
+        <Button Command="{Binding DataContext.P6MODBASELINE_ASSIGNCommand, ElementName=userControl}" IsEnabled="{Binding Path=RowData.Row.P6MODBASELINE_NAME, Converter={StaticResource StringToBoolConverter}, ConverterParameter=false, FallbackValue=false}">
             <StackPanel Orientation="Horizontal">
                 <Image Source="{dx:DXImageOffice2013 Image=Edit_16x16.png}" Width="16" Height="16" Margin="0, 0, 3, 0"/>
                 <TextBlock Text="Edit" VerticalAlignment="Center" />
@@ -265,10 +265,10 @@
                 <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:BaselineStatus}}"/>
             </dxg:GridColumn.EditSettings>
         </dxg:GridColumn>
-        <dxg:GridColumn FieldName="P6BASELINE_NAME" />
+        <!--<dxg:GridColumn FieldName="P6BASELINE_NAME" />
         <dxg:GridColumn FieldName="UNBOUND_ORIGINALBASELINE" Header="ORIGINAL BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_BASELINE_ASSIGN}" EditTemplate="{StaticResource Button_BASELINE_ASSIGN}"/>
         <dxg:GridColumn FieldName="P6MODBASELINE_NAME" />
-        <dxg:GridColumn FieldName="UNBOUND_MODBASELINE" Header="MODIFIED BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_MODBASELINE_ASSIGN}" EditTemplate="{StaticResource Button_MODBASELINE_ASSIGN}"/>
+        <dxg:GridColumn FieldName="UNBOUND_MODBASELINE" Header="MODIFIED BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_MODBASELINE_ASSIGN}" EditTemplate="{StaticResource Button_MODBASELINE_ASSIGN}"/>-->
     </collections:ArrayList>
     <collections:ArrayList x:Key="BASELINEITEMColumns">
         <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" DataContext="{Binding DataContext, ElementName=userControl}" >
@@ -469,6 +469,7 @@
                 <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:ProgressStatus}}"/>
             </dxg:GridColumn.EditSettings>
         </dxg:GridColumn>
+        <!--<dxg:GridColumn FieldName="P6PROGRESS_NAME" />-->
         <dxg:GridColumn FieldName="COMMENTS" />
         <!--<dxg:GridColumn FieldName="P6PROGRESS_NAME" />-->
     </collections:ArrayList>

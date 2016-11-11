@@ -16,7 +16,7 @@
         xmlns:dxschi="http://schemas.devexpress.com/winfx/2008/xaml/scheduler/internal"
         xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
         xmlns:viewmodel="clr-namespace:BluePrints.ViewModels"
-        mc:Ignorable="d" d:DesignHeight="1200" d:DesignWidth="800" DataContext="{dxmvvm:ViewModelSource viewmodel:PROJECTWORKPACKMappingCollectionViewModelWrapper}">
+        mc:Ignorable="d" d:DesignHeight="1200" d:DesignWidth="800" DataContext="{dxmvvm:ViewModelSource viewmodel:PROJECTWORKPACKSMappingViewModelWrapper}">
     <UserControl.Resources>
         <ResourceDictionary>
             <dxsch:SchedulerUICommand x:Key="commands" />

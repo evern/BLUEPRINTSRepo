@@ -109,7 +109,22 @@ namespace BluePrints.ViewModels
         #endregion
 
         #region View Properties
-        protected IDocumentManagerService DocumentManagerService { get { return this.GetService<IDocumentManagerService>(); } }
+        public bool CanEditReport()
+        {
+            if (MainViewModel == null || MainViewModel.Entities.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        public bool CanViewReport()
+        {
+            if (MainViewModel == null || MainViewModel.Entities.Count == 0)
+                return false;
+
+            return true;
+        }
+
         public bool CanEdit(PROJECT_Dashboard entity)
         {
             if (MainViewModel == null || MainViewModel.SelectedEntity == null)
@@ -118,6 +133,7 @@ namespace BluePrints.ViewModels
             return true;
         }
 
+        protected IDocumentManagerService DocumentManagerService { get { return this.GetService<IDocumentManagerService>(); } }
         public void Edit(PROJECT_Dashboard entity)
         {
             if (entity == null)

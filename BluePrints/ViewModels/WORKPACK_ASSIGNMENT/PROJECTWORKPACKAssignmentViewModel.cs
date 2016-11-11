@@ -1,5 +1,6 @@
 ﻿using BluePrints.BluePrintsEntitiesDataModel;
 using BluePrints.Common;
+using BluePrints.Common.Projections;
 using BluePrints.Common.ViewModel;
 using BluePrints.Data;
 using BluePrints.P6Data;
@@ -17,13 +18,13 @@ namespace BluePrints.ViewModels
 {
     public class PROJECTWORKPACKAssignmentViewModel : IDisposable
     {
-        public static PROJECTWORKPACKAssignmentViewModel Create(IEnumerable<TASK_AppointmentInfo> ALLTASK_Appointments, IEnumerable<WORKPACK_DashboardInfo> WORKPACKS, WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACK_ASSIGNMENTSViewModel, bool IsModified, Appointment SelectedTASK_Appointment = null, WORKPACK_DashboardInfo SelectedWORKPACK = null)
+        public static PROJECTWORKPACKAssignmentViewModel Create(IEnumerable<TASK_AppointmentInfo> ALLTASK_Appointments, IEnumerable<WORKPACK_Dashboard> WORKPACKS, CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTSViewModel, bool IsModified, Appointment SelectedTASK_Appointment = null, WORKPACK_Dashboard SelectedWORKPACK = null)
         {
             return ViewModelSource.Create(() => new PROJECTWORKPACKAssignmentViewModel(ALLTASK_Appointments, WORKPACKS, WORKPACK_ASSIGNMENTSViewModel, IsModified, SelectedTASK_Appointment, SelectedWORKPACK));
         }
 
         bool IsModified { get; set; }
-        protected PROJECTWORKPACKAssignmentViewModel(IEnumerable<TASK_AppointmentInfo> ALLTASK_Appointments, IEnumerable<WORKPACK_DashboardInfo> WORKPACKS, WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACK_ASSIGNMENTSViewModel, bool IsModified, Appointment SelectedTASK_Appointment = null, WORKPACK_DashboardInfo SelectedWORKPACK = null)
+        protected PROJECTWORKPACKAssignmentViewModel(IEnumerable<TASK_AppointmentInfo> ALLTASK_Appointments, IEnumerable<WORKPACK_Dashboard> WORKPACKS, CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTSViewModel, bool IsModified, Appointment SelectedTASK_Appointment = null, WORKPACK_Dashboard SelectedWORKPACK = null)
         {
             this.TASKSItemSource = ALLTASK_Appointments.ToArray().AsEnumerable();
             this.WORKPACKSItemSource = WORKPACKS;
@@ -34,7 +35,7 @@ namespace BluePrints.ViewModels
         }
 
         #region Public Properties
-        WORKPACK_ASSIGNMENTSCollectionViewModel WORKPACK_ASSIGNMENTSViewModel { get; set; }
+        CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTSViewModel { get; set; }
         decimal assignmenthighvalue { get; set; }
         public decimal AssignmentHighValue
         {
@@ -81,10 +82,10 @@ namespace BluePrints.ViewModels
         {
             get 
             {
-                if (SelectedWORKPACK == null || SelectedWORKPACK.SummarizablePrincipal == null)
+                if (SelectedWORKPACK == null)
                     return 0;
 
-                return SelectedWORKPACK.SummarizablePrincipal.Final_BudgetedUnits; 
+                return SelectedWORKPACK.Final_BudgetedUnits; 
             }
         }
 
@@ -112,8 +113,8 @@ namespace BluePrints.ViewModels
             }
         }
 
-        WORKPACK_DashboardInfo selectedWORKPACK { get; set; }
-        public WORKPACK_DashboardInfo SelectedWORKPACK
+        WORKPACK_Dashboard selectedWORKPACK { get; set; }
+        public WORKPACK_Dashboard SelectedWORKPACK
         {
             get { return selectedWORKPACK; }
             set
@@ -146,7 +147,7 @@ namespace BluePrints.ViewModels
 
         #region Item Source
         public IEnumerable<TASK_AppointmentInfo> TASKSItemSource { get; set; }
-        public IEnumerable<WORKPACK_DashboardInfo> WORKPACKSItemSource { get; set; }
+        public IEnumerable<WORKPACK_Dashboard> WORKPACKSItemSource { get; set; }
         #endregion
 
         #region Commands
@@ -190,7 +191,7 @@ namespace BluePrints.ViewModels
             };
 
             WORKPACK_ASSIGNMENTSViewModel.Save(newWORKPACK_ASSIGNMENT);
-            this.SelectedWORKPACK.WORKPACK_ASSIGNMENTS.Add(newWORKPACK_ASSIGNMENT);
+            this.SelectedWORKPACK.WORKPACK.WORKPACK_ASSIGNMENTS.Add(newWORKPACK_ASSIGNMENT);
             this.SelectedWORKPACK_ASSIGNMENT = newWORKPACK_ASSIGNMENT;
 
             if (this.AssignmentMinValue == 0)
@@ -239,11 +240,11 @@ namespace BluePrints.ViewModels
         private void RemoveWorkpackAssignment(WORKPACK_ASSIGNMENT removeWORKPACK_ASSIGNMENT)
         {
             decimal removingWORKPACK_ASSIGNMENTLowValue = removeWORKPACK_ASSIGNMENT.LOW_VALUE;
-            WORKPACK_DashboardInfo activeWORKPACK = WORKPACKSItemSource.FirstOrDefault(x => x.GUID == removeWORKPACK_ASSIGNMENT.GUID_WORKPACK);
+            WORKPACK_Dashboard activeWORKPACK = WORKPACKSItemSource.FirstOrDefault(x => x.WORKPACK.GUID == removeWORKPACK_ASSIGNMENT.GUID_WORKPACK);
             if (activeWORKPACK == null)
                 return;
 
-            activeWORKPACK.WORKPACK_ASSIGNMENTS.Remove(removeWORKPACK_ASSIGNMENT);
+            activeWORKPACK.WORKPACK.WORKPACK_ASSIGNMENTS.Remove(removeWORKPACK_ASSIGNMENT);
             WORKPACK_ASSIGNMENTSViewModel.Delete(removeWORKPACK_ASSIGNMENT);
 
             List<WORKPACK_ASSIGNMENT> workpackAssignmentsInOrder = activeWORKPACK.ObservableWORKPACK_ASSIGNMENTS.Where(x => x.LOW_VALUE > removingWORKPACK_ASSIGNMENTLowValue).OrderBy(x => x.PRIORITY).ToList();

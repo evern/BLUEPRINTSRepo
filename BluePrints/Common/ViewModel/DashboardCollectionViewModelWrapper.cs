@@ -103,28 +103,5 @@ namespace BluePrints.Common.ViewModel
                 summaryEntity.RecalculateStats(calculationType == DashboardViewType.Costs);
             }
         }
-
-        //#region ISupportLogicalLayout
-        //bool ISupportLogicalLayout.CanSerialize
-        //{
-        //    get { return true; }
-        //}
-
-        //public IDocumentManagerService ReturnDocumentManagerService()
-        //{
-        //    return DocumentManagerService;
-        //}
-
-        //protected IDocumentManagerService DocumentManagerService { get { return this.GetService<IDocumentManagerService>(); } }
-        //IDocumentManagerService ISupportLogicalLayout.DocumentManagerService
-        //{
-        //    get { return DocumentManagerService; }
-        //}
-
-        //IEnumerable<object> ISupportLogicalLayout.LookupViewModels
-        //{
-        //    get { return null; }
-        //}
-        //#endregion
     }
 }

@@ -29,11 +29,12 @@ namespace BluePrints.Views
         PROJECT_REPORT currentPROJECT_REPORT;
         ReportType currentReportType;
         CollectionViewModel<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork> collectionViewModel;
-        public REPORTDesigner(CollectionViewModel<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork> collectionViewModel, ReportType currentReportType)
+        public REPORTDesigner(PROJECT currentPROJECT, CollectionViewModel<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork> collectionViewModel, ReportType currentReportType)
         {
             InitializeComponent();
             this.currentReportType = currentReportType;
             this.collectionViewModel = collectionViewModel;
+            this.currentPROJECT = currentPROJECT;
 
             reportDesigner1.DesignPanelLoaded += new DesignerLoadedEventHandler(reportDesigner1_DesignPanelLoaded);
         }
@@ -44,25 +45,40 @@ namespace BluePrints.Views
             panel.AddCommandHandler(new SaveCommandHandler(panel, SaveReport));
         }
 
+        private void barButtonDefault_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            barButtonResetTemplate_ItemClick(null, null);
+            if (currentPROJECT_REPORT != null)
+                collectionViewModel.Delete(currentPROJECT_REPORT);
+        }
+
         private void REPORTDesigner_Load(object sender, EventArgs e)
         {
-            currentPROJECT_REPORT = collectionViewModel.Entities.First();
-            if (currentPROJECT_REPORT != null)
+            if (collectionViewModel.Entities.Count > 0)
             {
-                using (StreamWriter sw = new StreamWriter(new MemoryStream()))
-                {
-                    sw.Write(currentPROJECT_REPORT.REPORT);
-                    sw.Flush();
-                    currentREPORT = XtraReport.FromStream(sw.BaseStream, true);
-                }
-            }
-            else
-            {
-                if (currentReportType == ReportType.Progress_Report)
-                    currentREPORT = new XtraReportPROGRESS_ITEMS();
+                currentPROJECT_REPORT = collectionViewModel.Entities.First();
+                if (currentPROJECT_REPORT != null)
+                    using (StreamWriter sw = new StreamWriter(new MemoryStream()))
+                    {
+                        sw.Write(currentPROJECT_REPORT.REPORT);
+                        sw.Flush();
+                        currentREPORT = XtraReport.FromStream(sw.BaseStream, true);
+
+                        reportDesigner1.OpenReport(currentREPORT);
+                        return;
+                    }
             }
 
-            reportDesigner1.OpenReport(currentREPORT);
+            if (currentReportType == ReportType.Progress_Report)
+            {
+                currentREPORT = new XtraReportPROGRESS_ITEMS();
+                reportDesigner1.OpenReport(currentREPORT);
+            }
+            else if(currentReportType == ReportType.Baseline_Report)
+            {
+                currentREPORT = new XtraReportBASELINE_ITEMS();
+                reportDesigner1.OpenReport(currentREPORT);
+            }
         }
 
         private void SaveReport()
@@ -129,7 +145,7 @@ namespace BluePrints.Views
                     SaveDelegate();
 
                 // Prevent the "Report has been changed" dialog from being shown.
-                //panel.ReportState = ReportState.Saved;
+                panel.ReportState = ReportState.Saved;
             }
         }
 
@@ -137,6 +153,8 @@ namespace BluePrints.Views
         {
             if (currentReportType == ReportType.Progress_Report)
                 currentREPORT = new XtraReportPROGRESS_ITEMS();
+            else if (currentReportType == ReportType.Baseline_Report)
+                currentREPORT = new XtraReportBASELINE_ITEMS();
 
             reportDesigner1.OpenReport(currentREPORT);
         }

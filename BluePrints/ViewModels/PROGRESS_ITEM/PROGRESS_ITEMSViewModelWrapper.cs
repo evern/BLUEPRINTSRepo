@@ -24,13 +24,15 @@ using System.Windows;
 using System.Threading.Tasks;
 using BluePrints.Common.Projections;
 using System.ComponentModel;
+using BluePrints.P6Data;
+using BluePrints.P6EntitiesDataModel;
 
 namespace BluePrints.ViewModels
 {
     /// <summary>
     /// Represents the single PROGRESS object view model.
     /// </summary>
-    public partial class PROGRESS_ITEMSViewModelWrapper : CollectionViewModelsWrapper<BASELINE_ITEM, BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork, CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork>>
+    public partial class PROGRESS_ITEMSViewModelWrapper : CollectionViewModelsWrapper<BASELINE_ITEM, PROGRESS_ITEMProjection, Guid, IBluePrintsEntitiesUnitOfWork, CollectionViewModel<BASELINE_ITEM, PROGRESS_ITEMProjection, Guid, IBluePrintsEntitiesUnitOfWork>>
     {
         /// <summary>
         /// Creates a new instance of PROGRESS_ITEMSViewModelWrapper as a POCO view model.
@@ -42,7 +44,7 @@ namespace BluePrints.ViewModels
         }
 
         #region Database Operation
-        PROJECT loadPROJECT;
+        BluePrints.Data.PROJECT loadPROJECT;
         PROGRESS loadPROGRESS;
         BASELINE loadBASELINE;
         bool isQueryForLiveStatus;
@@ -50,7 +52,7 @@ namespace BluePrints.ViewModels
 
         protected override void InitializeParameters(object parameter)
         {
-            OptionalEntitiesParameter<PROJECT, PROGRESS> receiveParameter = (OptionalEntitiesParameter<PROJECT, PROGRESS>)parameter;
+            OptionalEntitiesParameter<BluePrints.Data.PROJECT, PROGRESS> receiveParameter = (OptionalEntitiesParameter<BluePrints.Data.PROJECT, PROGRESS>)parameter;
             this.loadPROJECT = receiveParameter.GetFirstEntity();
             this.loadPROGRESS = receiveParameter.GetSecondEntity();
 
@@ -62,20 +64,22 @@ namespace BluePrints.ViewModels
         {
             MainViewModel = null;
             loaderCollection = new EntitiesLoaderDescriptionCollection(this);
-            loaderCollection.AddEntitiesLoader<PROJECT, PROJECT, Guid, IBluePrintsEntitiesUnitOfWork>(0, bluePrintsUnitOfWorkFactory, x => x.PROJECTS, PROJECTProjectionFunc, null, isContinueLoadingAfterPROJECT, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<BASELINE, BASELINE, Guid, IBluePrintsEntitiesUnitOfWork>(1, bluePrintsUnitOfWorkFactory, x => x.BASELINES, BASELINEProjectionFunc, typeof(PROJECT), isContinueLoadingAfterBASELINE, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<BluePrints.Data.PROJECT, BluePrints.Data.PROJECT, Guid, IBluePrintsEntitiesUnitOfWork>(0, bluePrintsUnitOfWorkFactory, x => x.PROJECTS, PROJECTProjectionFunc, null, isContinueLoadingAfterPROJECT, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<BASELINE, BASELINE, Guid, IBluePrintsEntitiesUnitOfWork>(1, bluePrintsUnitOfWorkFactory, x => x.BASELINES, BASELINEProjectionFunc, typeof(BluePrints.Data.PROJECT), isContinueLoadingAfterBASELINE, OnEntitiesChanged);
             loaderCollection.AddEntitiesLoader<PROGRESS, PROGRESS, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.PROGRESSES, PROGRESSProjectionFunc, typeof(BASELINE), isContinueLoadingAfterPROGRESS, OnEntitiesChanged);
             loaderCollection.AddEntitiesLoader<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>(3, bluePrintsUnitOfWorkFactory, x => x.WORKPACKS, WORKPACKProjectionFunc, typeof(BASELINE));
             loaderCollection.AddEntitiesLoader<PROGRESS_ITEM, PROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork>(4, bluePrintsUnitOfWorkFactory, x => x.PROGRESS_ITEMS, PROGRESS_ITEMProjectionFunc, typeof(PROGRESS), null, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>(5, bluePrintsUnitOfWorkFactory, x => x.PROJECT_REPORTS, PROJECT_REPORTProjectionFunc, typeof(PROJECT));
+            loaderCollection.AddEntitiesLoader<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>(5, bluePrintsUnitOfWorkFactory, x => x.PROJECT_REPORTS, PROJECT_REPORTProjectionFunc, typeof(BluePrints.Data.PROJECT));
             loaderCollection.AddEntitiesLoader<DEPARTMENT, DEPARTMENT, Guid, IBluePrintsEntitiesUnitOfWork>(6, bluePrintsUnitOfWorkFactory, x => x.DEPARTMENTS);
             loaderCollection.AddEntitiesLoader<DISCIPLINE, DISCIPLINE, Guid, IBluePrintsEntitiesUnitOfWork>(7, bluePrintsUnitOfWorkFactory, x => x.DISCIPLINES);
             loaderCollection.AddEntitiesLoader<DOCTYPE, DOCTYPE, Guid, IBluePrintsEntitiesUnitOfWork>(8, bluePrintsUnitOfWorkFactory, x => x.DOCTYPES);
-            loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(9, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(9, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc, typeof(BluePrints.Data.PROJECT), null, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<VARIATION, VARIATION, Guid, IBluePrintsEntitiesUnitOfWork>(10, bluePrintsUnitOfWorkFactory, x => x.VARIATIONS, VARIATIONProjectionFunc, typeof(BluePrints.Data.PROJECT), null, OnEntitiesChanged);
+            
             InvokeEntitiesLoaderDescriptionLoading();
         }
 
-        bool isContinueLoadingAfterPROJECT(IEnumerable<PROJECT> entities)
+        bool isContinueLoadingAfterPROJECT(IEnumerable<BluePrints.Data.PROJECT> entities)
         {
             if (entities.Count() == 0)
             {
@@ -111,12 +115,17 @@ namespace BluePrints.ViewModels
             return true;
         }
 
-        Func<IRepositoryQuery<PROJECT>, IQueryable<PROJECT>> PROJECTProjectionFunc()
+        Func<IRepositoryQuery<BluePrints.Data.PROJECT>, IQueryable<BluePrints.Data.PROJECT>> PROJECTProjectionFunc()
         {
             if (isQueryForLiveStatus)
                 return query => query.Where(x => x.GUID == this.loadPROJECT.GUID);
             else
                 return query => query.Where(x => x.GUID == this.loadPROGRESS.GUID_PROJECT);
+        }
+
+        Func<IRepositoryQuery<VARIATION>, IQueryable<VARIATION>> VARIATIONProjectionFunc()
+        {
+            return query => query.Where(x => x.APPROVED != null && x.GUID_PROJECT == loadPROJECT.GUID);
         }
 
         Func<IRepositoryQuery<PROGRESS>, IQueryable<PROGRESS>> PROGRESSProjectionFunc()
@@ -158,36 +167,49 @@ namespace BluePrints.ViewModels
             mainThreadDispatcher.BeginInvoke(new Action(() => mainEntityLoader.CreateCollectionViewModel()));
         }
 
-        protected override Func<IRepositoryQuery<BASELINE_ITEM>, IQueryable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM>> ConstructMainViewModelProjection()
+        protected override Func<IRepositoryQuery<BASELINE_ITEM>, IQueryable<PROGRESS_ITEMProjection>> ConstructMainViewModelProjection()
         {
             Func<BASELINE> getBASELINEFunc = loaderCollection.GetObjectFunc<BASELINE>();
             Func<PROGRESS> getPROGRESSFunc = loaderCollection.GetObjectFunc<PROGRESS>();
             Func<IQueryable<PROGRESS_ITEM>> getPROGRESS_ITEMSFunc = loaderCollection.GetCollectionFunc<PROGRESS_ITEM>();
             Func<IQueryable<RATE>> getRATESFunc = loaderCollection.GetCollectionFunc<RATE>();
 
-            return query => BASELINE_ITEMSJoinRATESJoinPROGRESS_ITEMSQueries.JoinRATESAndPROGRESS_ITEMSOnBASELINE_ITEMS(query, getPROGRESSFunc, getBASELINEFunc, getPROGRESS_ITEMSFunc, getRATESFunc);
+            return query => PROGRESS_ITEMProjectionQueries.JoinRATESAndPROGRESS_ITEMSOnBASELINE_ITEMS(query, getPROGRESSFunc, getBASELINEFunc, getPROGRESS_ITEMSFunc, getRATESFunc);
         }
 
-        PROJECTSummaryBuilder projectSummaryBuilder; //used for report
-        protected override void AssignCallBacksAndRaisePropertyChange(CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> mainViewModel)
+        PROJECTSummary currentPROJECTSummary;
+        protected override void AssignCallBacksAndRaisePropertyChange(IEnumerable<PROGRESS_ITEMProjection> entities)
         {
-            mainViewModel.PreSave = this.MainEntityPreSave;
-            mainViewModel.BulkPreSave = this.MainEntityBulkPreSave;
-            mainViewModel.ValidateFillDownCallBack = this.ValidateFillDownCallBack;
-            mainThreadDispatcher.BeginInvoke(new Action(() => this.CalculatePROGRESS_ITEMSStats()));
+            MainViewModel.PreSave = this.MainEntityPreSave;
+            MainViewModel.BulkPreSave = this.MainEntityBulkPreSave;
+            MainViewModel.ValidateFillDownCallBack = this.ValidateFillDownCallBack;
+            mainThreadDispatcher.BeginInvoke(new Action(() => this.InitializePROJECTSummary(entities)));
         }
 
-        void CalculatePROGRESS_ITEMSStats()
+        void InitializePROJECTSummary(IEnumerable<PROGRESS_ITEMProjection> entities)
         {
-            PROJECTSummary currentPROJECTSummary = PROJECTSummary.Create();
-            currentPROJECTSummary.LiveBASELINE = loaderCollection.GetObject<BASELINE>();
-            currentPROJECTSummary.LivePROGRESS = loaderCollection.GetObject<PROGRESS>();
-            currentPROJECTSummary.ReportableObjects = MainViewModel.Entities;
+            currentPROJECTSummary = PROJECTSummary.Create();
+            currentPROJECTSummary.LiveBASELINE = loadBASELINE;
+            currentPROJECTSummary.LivePROGRESS = loadPROGRESS;
+            currentPROJECTSummary.VARIATIONS = loaderCollection.GetCollection<VARIATION>();
+            currentPROJECTSummary.ReportingDataDate = loadPROGRESS.DATA_DATE;
+            currentPROJECTSummary.RATES = loaderCollection.GetCollection<RATE>();
+            currentPROJECTSummary.ReportableObjects = entities;
+            PROJECTSummaryBuilder projectSummaryBuilder = new PROJECTSummaryBuilder(currentPROJECTSummary);
+            CalculateMinimalStats(projectSummaryBuilder);
+        }
 
-            projectSummaryBuilder = new PROJECTSummaryBuilder(currentPROJECTSummary);
-            PROGRESS_ITEMSummaryManufacturer summaryRollUp = new PROGRESS_ITEMSummaryManufacturer();
-            summaryRollUp.Manufacture(projectSummaryBuilder);
+        void CalculateMinimalStats(PROJECTSummaryBuilder summaryBuilder)
+        {
+            BuildMinimalStatsForCurrentPercentage summaryManufacturer = new BuildMinimalStatsForCurrentPercentage();
+            summaryManufacturer.Manufacture(summaryBuilder);
             mainThreadDispatcher.BeginInvoke(new Action(() => this.RaisePropertiesChanged()));
+        }
+
+        void CalculateStatsForReport(PROJECTSummaryBuilder summaryBuilder)
+        {
+            BuildFullStatsIncludingPROGRESS_ITEM summaryManufacturer = new BuildFullStatsIncludingPROGRESS_ITEM();
+            summaryManufacturer.Manufacture(summaryBuilder);
         }
 
         protected override void OnEntitiesChanged(object key, Type changedType, EntityMessageType messageType, object sender)
@@ -195,7 +217,7 @@ namespace BluePrints.ViewModels
             //Map the changes from PROGRESS_ITEM to BASELINE_ITEM so undo/redo operation is valid
             if (changedType == typeof(PROGRESS_ITEM))
             {
-                BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM mappedEntity = MainViewModel.Entities.FirstOrDefault(x => x.PROGRESS_ITEMCurrent != null && x.PROGRESS_ITEMCurrent.GUID.ToString() == key.ToString());
+                PROGRESS_ITEMProjection mappedEntity = MainViewModel.Entities.FirstOrDefault(x => x.PROGRESS_ITEMCurrent != null && x.PROGRESS_ITEMCurrent.GUID.ToString() == key.ToString());
                 mainThreadDispatcher.BeginInvoke(new Action(() => Messenger.Default.Send(new EntityMessage<BASELINE_ITEM, Guid>(mappedEntity.GUID, EntityMessageType.Changed, this))));
                 return;
             }
@@ -205,7 +227,7 @@ namespace BluePrints.ViewModels
 
             if (loadPROGRESS != null && changedType == typeof(PROGRESS) && loadPROGRESS.GUID.ToString() == key.ToString() ||
                 loadBASELINE != null && changedType == typeof(BASELINE) && loadBASELINE.GUID.ToString() == key.ToString() ||
-                loadPROJECT != null && changedType == typeof(PROJECT) && loadPROJECT.GUID.ToString() == key.ToString())
+                loadPROJECT != null && changedType == typeof(BluePrints.Data.PROJECT) && loadPROJECT.GUID.ToString() == key.ToString())
             {
                 if (messageType == EntityMessageType.Added)
                     MessageBoxService.ShowMessage(string.Format(CommonResources.Notify_View_Restored, StringFormatUtils.GetEntityNameByType(changedType)));
@@ -223,7 +245,7 @@ namespace BluePrints.ViewModels
         }
 
         #region Collection Call Backs
-        private bool MainEntityBulkPreSave(IEnumerable<BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM> entities)
+        private bool MainEntityBulkPreSave(IEnumerable<PROGRESS_ITEMProjection> entities)
         {
             foreach (var entity in entities)
             {
@@ -233,7 +255,7 @@ namespace BluePrints.ViewModels
             return false;
         }
 
-        bool MainEntityPreSave(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM projectionEntity)
+        bool MainEntityPreSave(PROGRESS_ITEMProjection projectionEntity)
         {
             CollectionViewModel<PROGRESS_ITEM, PROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> PROGRESS_ITEMSCollectionViewModel = (CollectionViewModel<PROGRESS_ITEM, PROGRESS_ITEM, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<PROGRESS_ITEM>();
             PROGRESS_ITEM savePROGRESS_ITEM = projectionEntity.PROGRESS_ITEMCurrent;
@@ -249,9 +271,9 @@ namespace BluePrints.ViewModels
             return false;
         }
 
-        public bool ValidateFillDownCallBack(BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM fillDownEntity, string fieldName, object fillValue)
+        public bool ValidateFillDownCallBack(PROGRESS_ITEMProjection fillDownEntity, string fieldName, object fillValue)
         {
-            if (fieldName != BindableBase.GetPropertyName(() => new BASELINE_ITEMJoinRATEJoinPROGRESS_ITEM().TOTAL_EARNED_PERCENTAGE))
+            if (fieldName != BindableBase.GetPropertyName(() => new PROGRESS_ITEMProjection().TOTAL_EARNED_PERCENTAGE))
                 return false;
 
             decimal newPercentage = (decimal)fillValue;
@@ -348,12 +370,86 @@ namespace BluePrints.ViewModels
             PROGRESSCollectionViewModel.Save(loadPROGRESS);
             this.RaisePropertyChanged(x => x.DataDate);
         }
+
+        PROJECTWORKPACKSMappingViewModelWrapper WORKPACK_DashboardViewModel;
+        public bool CanPushToP6()
+        {
+            if (loadPROGRESS == null || loadPROGRESS.P6PROGRESS_NAME == string.Empty)
+                return false;
+
+            return true;
+        }
+
+        public void PushToP6()
+        {
+            if (WORKPACK_DashboardViewModel == null)
+            {
+                WORKPACK_DashboardViewModel = PROJECTWORKPACKSMappingViewModelWrapper.Create();
+                WORKPACK_DashboardViewModel.OnPROJECTWORKPACKSMappingViewModelLoaded = this.OnPROJECTWORKPACKSMappingViewModelLoaded;
+                ISupportParameter ParameterObj = WORKPACK_DashboardViewModel as ISupportParameter;
+                ParameterObj.Parameter = new object[] { this.loadPROGRESS, null };
+            }
+            else
+                WORKPACK_DashboardViewModel.MainViewModel.Refresh();
+        }
+
+        void OnPROJECTWORKPACKSMappingViewModelLoaded(IEnumerable<WORKPACK_Dashboard> entities)
+        {
+            IEnumerable<TASK> PROJECTTASK = WORKPACK_DashboardViewModel.P6TASKCollection;
+            IEnumerable<ProgressInfo> cumulativeEarnedDataPoints = WORKPACK_DashboardViewModel.MainViewModel.Entities.Where(x => x.Summary_CumulativeEarnedDataPoints != null).SelectMany(x => x.Summary_CumulativeEarnedDataPoints);
+            cumulativeEarnedDataPoints = cumulativeEarnedDataPoints.OrderBy(x => x.ProgressDate).ToList();
+            TimeSpan intervalTimeSpan = ISupportProgressReportingExtensions.ConvertProgressIntervalToPeriod(loadPROGRESS);
+            CollectionViewModel<TASK, int, IP6EntitiesUnitOfWork> P6TASKCollectionViewModel = WORKPACK_DashboardViewModel.P6TASKCollectionViewModel;
+
+            foreach(WORKPACK_Dashboard workpack in WORKPACK_DashboardViewModel.MainViewModel.Entities)
+            {
+                ProgressInfo fWorkpackEarnedDataPoint = cumulativeEarnedDataPoints.FirstOrDefault(dataPoint => dataPoint.WorkpackGuid == workpack.WORKPACK.GUID && dataPoint.Units > 0);
+                if (fWorkpackEarnedDataPoint != null)
+                {
+                    ProgressInfo lWorkpackEarnedDataPoint = cumulativeEarnedDataPoints.LastOrDefault(dataPoint => dataPoint.WorkpackGuid == workpack.WORKPACK.GUID && dataPoint.ProgressDate <= loadPROGRESS.DATA_DATE);
+                    List<WORKPACK_ASSIGNMENT> workpackAssignments = workpack.WORKPACK.WORKPACK_ASSIGNMENTS.Where(assignment => assignment.LOW_VALUE <= lWorkpackEarnedDataPoint.Units).OrderBy(assignment => assignment.LOW_VALUE).ToList();
+                    for (int i = 0; i < workpackAssignments.Count; i++)
+                    {
+                        WORKPACK_ASSIGNMENT workpackAssignment = workpackAssignments[i];
+                        TASK P6TASK = PROJECTTASK.FirstOrDefault(P6Task => P6Task.task_code == workpackAssignment.P6_ACTIVITYID);
+                        if (P6TASK != null)
+                        {
+                            DateTime proposedStartDate = fWorkpackEarnedDataPoint.ProgressDate.AddDays(-1 * intervalTimeSpan.Days).AddSeconds(1);
+                            if (P6TASK.act_start_date == null || P6TASK.act_start_date > proposedStartDate)
+                                P6TASK.act_start_date = proposedStartDate;
+
+                            decimal actUnits = lWorkpackEarnedDataPoint.Units < workpackAssignment.HIGH_VALUE ? lWorkpackEarnedDataPoint.Units : workpackAssignment.HIGH_VALUE;
+                            decimal actWorkUnitNormalize = i == 0 ? actUnits : (actUnits - workpackAssignments[i - 1].HIGH_VALUE);
+                            P6TASK.act_work_qty = actWorkUnitNormalize;
+                            if (P6TASK.remain_work_qty >= 0)
+                                P6TASK.remain_work_qty = P6TASK.target_work_qty - P6TASK.act_work_qty;
+                            P6TASK.remain_drtn_hr_cnt = P6TASK.target_drtn_hr_cnt * (P6TASK.remain_work_qty / P6TASK.target_work_qty);
+
+                            if (P6TASK.remain_work_qty == 0)
+                            {
+                                P6TASK.status_code = P6TASKSTATUS.TK_Complete.ToString();
+                                P6TASK.act_end_date = lWorkpackEarnedDataPoint.ProgressDate;
+                            }
+                            else if (P6TASK.remain_work_qty > 0)
+                            {
+                                P6TASK.status_code = P6TASKSTATUS.TK_Active.ToString();
+                                P6TASK.act_end_date = null;
+                            }
+                            else if (P6TASK.status_code == P6TASKSTATUS.TK_NotStart.ToString())
+                                P6TASK.status_code = P6TASKSTATUS.TK_Active.ToString();
+
+                            P6TASKCollectionViewModel.Save(P6TASK);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Reporting
         public void EditReport()
         {
-            REPORTDesigner reportDesigner = new REPORTDesigner((CollectionViewModel<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<PROJECT_REPORT>(), ReportType.Progress_Report);
+            REPORTDesigner reportDesigner = new REPORTDesigner(loadPROJECT, (CollectionViewModel<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<PROJECT_REPORT>(), ReportType.Progress_Report);
             if (reportDesigner.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 reportDesigner.Dispose();
             else
@@ -362,30 +458,29 @@ namespace BluePrints.ViewModels
 
         public void ViewReport()
         {
-            SummaryManufacturer summaryManufacturer = new SummaryManufacturer();
-            summaryManufacturer.Build(projectSummaryBuilder);
-            var report = projectSummaryBuilder.SummaryObject;
             XtraReportPROGRESS_ITEMS progressReport = new XtraReportPROGRESS_ITEMS();
-            PROJECT_REPORT projectReport = loaderCollection.GetObject<PROJECT_REPORT>();
-            if (projectReport != null)
+            PROJECT_REPORT dbProjectReport = loaderCollection.GetObject<PROJECT_REPORT>();
+            if (dbProjectReport != null)
             {
-                string reportString = projectReport.REPORT.ToString();
+                string reportString = dbProjectReport.REPORT.ToString();
                 using (StreamWriter sw = new StreamWriter(new MemoryStream()))
                 {
                     sw.Write(reportString);
                     sw.Flush();
                     progressReport.LoadLayout(sw.BaseStream);
                 }
-
-                progressReport.AssignProperties(report, loadPROGRESS.PROJECT.NAME);
-                DocumentPreviewWindow previewWindow = new DocumentPreviewWindow();
-                previewWindow.PreviewControl.DocumentSource = progressReport;
-                previewWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                previewWindow.WindowState = WindowState.Maximized;
-                progressReport.RequestParameters = false;
-                progressReport.CreateDocument(true);
-                previewWindow.ShowDialog();
             }
+
+            PROJECTSummaryBuilder projectSummaryBuilder = new PROJECTSummaryBuilder(currentPROJECTSummary);
+            CalculateStatsForReport(projectSummaryBuilder);
+            progressReport.AssignProperties(currentPROJECTSummary, loadPROGRESS.PROJECT.NAME);
+            DocumentPreviewWindow previewWindow = new DocumentPreviewWindow();
+            previewWindow.PreviewControl.DocumentSource = progressReport;
+            previewWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            previewWindow.WindowState = WindowState.Maximized;
+            progressReport.RequestParameters = false;
+            progressReport.CreateDocument(true);
+            previewWindow.ShowDialog();
         }
         #endregion
     }

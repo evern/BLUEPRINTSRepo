@@ -132,4 +132,11 @@ namespace BluePrints.Common
         Progress_Report,
         Baseline_Report
     }
+
+    public enum P6TASKSTATUS
+    {
+        TK_NotStart = 0,
+        TK_Active = 1,
+        TK_Complete = 2
+    }
 }

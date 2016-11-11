@@ -1,4 +1,5 @@
-﻿namespace BluePrints.Views
+﻿using BluePrints.Common.Projections;
+namespace BluePrints.Views
 {
     partial class PROJECTWORKPACKDetailsMappingView
     {
@@ -173,7 +174,7 @@
             // 
             // gridBindingSource
             // 
-            this.gridBindingSource.DataSource = typeof(BluePrints.Data.WORKPACK_DashboardInfo);
+            this.gridBindingSource.DataSource = typeof(BluePrints.Common.Projections.WORKPACK_Dashboard);
             // 
             // gridViewWorkpack
             // 
@@ -221,7 +222,7 @@
             // colINTERNAL_NAME1
             // 
             this.colINTERNAL_NAME1.Caption = "Internal Name";
-            this.colINTERNAL_NAME1.FieldName = "INTERNAL_NAME1";
+            this.colINTERNAL_NAME1.FieldName = "WORKPACK.INTERNAL_NAME1";
             this.colINTERNAL_NAME1.Name = "colINTERNAL_NAME1";
             this.colINTERNAL_NAME1.OptionsColumn.AllowEdit = false;
             this.colINTERNAL_NAME1.OptionsColumn.ReadOnly = true;
@@ -231,7 +232,7 @@
             // colINTERNAL_NAME2
             // 
             this.colINTERNAL_NAME2.Caption = "Internal Name";
-            this.colINTERNAL_NAME2.FieldName = "INTERNAL_NAME2";
+            this.colINTERNAL_NAME2.FieldName = "WORKPACK.INTERNAL_NAME2";
             this.colINTERNAL_NAME2.Name = "colINTERNAL_NAME2";
             this.colINTERNAL_NAME2.OptionsColumn.AllowEdit = false;
             this.colINTERNAL_NAME2.OptionsColumn.ReadOnly = true;
@@ -241,7 +242,7 @@
             // colPHASE
             // 
             this.colPHASE.Caption = "Phase";
-            this.colPHASE.FieldName = "PHASE.INTERNAL_NUM";
+            this.colPHASE.FieldName = "WORKPACK.PHASE.INTERNAL_NUM";
             this.colPHASE.Name = "colPHASE";
             this.colPHASE.OptionsColumn.AllowEdit = false;
             this.colPHASE.OptionsColumn.ReadOnly = true;
@@ -251,7 +252,7 @@
             // colAREA
             // 
             this.colAREA.Caption = "Area";
-            this.colAREA.FieldName = "AREA.TITLE";
+            this.colAREA.FieldName = "WORKPACK.AREA.TITLE";
             this.colAREA.Name = "colAREA";
             this.colAREA.OptionsColumn.AllowEdit = false;
             this.colAREA.OptionsColumn.ReadOnly = true;
@@ -261,7 +262,7 @@
             // colDOCTYPE
             // 
             this.colDOCTYPE.Caption = "Doc Type";
-            this.colDOCTYPE.FieldName = "DOCTYPE.NAME";
+            this.colDOCTYPE.FieldName = "WORKPACK.DOCTYPE.NAME";
             this.colDOCTYPE.Name = "colDOCTYPE";
             this.colDOCTYPE.OptionsColumn.AllowEdit = false;
             this.colDOCTYPE.OptionsColumn.ReadOnly = true;
@@ -271,7 +272,7 @@
             // colDEPARTMENT
             // 
             this.colDEPARTMENT.Caption = "Department";
-            this.colDEPARTMENT.FieldName = "DEPARTMENT.NAME";
+            this.colDEPARTMENT.FieldName = "WORKPACK.DEPARTMENT.NAME";
             this.colDEPARTMENT.Name = "colDEPARTMENT";
             this.colDEPARTMENT.OptionsColumn.AllowEdit = false;
             this.colDEPARTMENT.OptionsColumn.ReadOnly = true;
@@ -281,7 +282,7 @@
             // colDISCIPLINE
             // 
             this.colDISCIPLINE.Caption = "Discipline";
-            this.colDISCIPLINE.FieldName = "DISCIPLINE.NAME";
+            this.colDISCIPLINE.FieldName = "WORKPACK.DISCIPLINE.NAME";
             this.colDISCIPLINE.Name = "colDISCIPLINE";
             this.colDISCIPLINE.OptionsColumn.AllowEdit = false;
             this.colDISCIPLINE.OptionsColumn.ReadOnly = true;
@@ -291,7 +292,7 @@
             // colBUDGETED_UNITS
             // 
             this.colBUDGETED_UNITS.Caption = "Budgeted Units";
-            this.colBUDGETED_UNITS.FieldName = "PROGRESS_ITEMInfos.Final_BudgetedUnits";
+            this.colBUDGETED_UNITS.FieldName = "Final_BudgetedUnits";
             this.colBUDGETED_UNITS.Name = "colBUDGETED_UNITS";
             this.colBUDGETED_UNITS.OptionsColumn.AllowEdit = false;
             this.colBUDGETED_UNITS.OptionsColumn.ReadOnly = true;

@@ -533,6 +533,7 @@
             this.groupAndSortDockPanel1 = new DevExpress.XtraReports.UserDesigner.GroupAndSortDockPanel();
             this.groupAndSortDockPanel1_Container = new DevExpress.XtraReports.UserDesigner.DesignControlContainer();
             this.reportDesigner1 = new DevExpress.XtraReports.UserDesigner.XRDesignMdiController(this.components);
+            this.barButtonDefault = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.xrDesignRibbonController1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationMenu1)).BeginInit();
@@ -689,9 +690,10 @@
             this.barButtonItem1,
             this.printPreviewStaticItem2,
             this.zoomTrackBarEditItem1,
-            this.barButtonResetTemplate});
+            this.barButtonResetTemplate,
+            this.barButtonDefault});
             this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl1.MaxItemId = 125;
+            this.ribbonControl1.MaxItemId = 126;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.PageCategories.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageCategory[] {
             this.xrToolboxPageCategory1});
@@ -2888,7 +2890,6 @@
             this.zoomTrackBarEditItem1.ContextSpecifier = this.xrDesignRibbonController1;
             this.zoomTrackBarEditItem1.Edit = this.repositoryItemZoomTrackBar1;
             this.zoomTrackBarEditItem1.EditWidth = 140;
-            this.zoomTrackBarEditItem1.Enabled = false;
             this.zoomTrackBarEditItem1.Id = 123;
             this.zoomTrackBarEditItem1.Name = "zoomTrackBarEditItem1";
             this.zoomTrackBarEditItem1.Range = new int[] {
@@ -2949,6 +2950,7 @@
             this.xrDesignRibbonPageGroup1.ItemLinks.Add(this.commandBarItem32);
             this.xrDesignRibbonPageGroup1.ItemLinks.Add(this.commandBarItem33);
             this.xrDesignRibbonPageGroup1.ItemLinks.Add(this.barButtonResetTemplate);
+            this.xrDesignRibbonPageGroup1.ItemLinks.Add(this.barButtonDefault);
             this.xrDesignRibbonPageGroup1.Kind = DevExpress.XtraReports.UserDesigner.XRDesignRibbonPageGroupKind.Report;
             this.xrDesignRibbonPageGroup1.Name = "xrDesignRibbonPageGroup1";
             this.xrDesignRibbonPageGroup1.ShowCaptionButton = false;
@@ -3407,6 +3409,15 @@
             this.reportDesigner1.Form = this;
             this.reportDesigner1.SqlWizardSettings.QueryBuilderDiagramView = false;
             // 
+            // barButtonDefault
+            // 
+            this.barButtonDefault.Caption = "Always Use Default";
+            this.barButtonDefault.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonDefault.Glyph")));
+            this.barButtonDefault.Id = 125;
+            this.barButtonDefault.Name = "barButtonDefault";
+            this.barButtonDefault.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
+            this.barButtonDefault.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonDefault_ItemClick);
+            // 
             // REPORTDesigner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3616,5 +3627,6 @@
         private DevExpress.XtraReports.UserDesigner.PropertyGridDockPanel propertyGridDockPanel1;
         private DevExpress.XtraReports.UserDesigner.DesignControlContainer propertyGridDockPanel1_Container;
         private DevExpress.XtraBars.BarButtonItem barButtonResetTemplate;
+        private DevExpress.XtraBars.BarButtonItem barButtonDefault;
     }
 }

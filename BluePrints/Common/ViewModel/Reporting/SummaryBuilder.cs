@@ -238,7 +238,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 //Assign the report date for stats display
                 ReportableObject.ReportingDataDate = SummaryObject.ReportingDataDate;
 
-                BASELINE_ITEMJoinRATE currentBASELINE_ITEM = ReportableObject.BASELINE_ITEMJoinRATE;
+                BASELINE_ITEMProjection currentBASELINE_ITEM = ReportableObject.BASELINE_ITEMJoinRATE;
                 WORKPACK currentWORKPACK = currentBASELINE_ITEM.BASELINE_ITEM.WORKPACK;
                 if (currentWORKPACK == null)
                     continue;
@@ -341,7 +341,7 @@ namespace BluePrints.Common.ViewModel.Reporting
             if (P6PROJECT != null && FilteredWORKPACK_ASSIGNMENTS != null && P6TASKS != null && FilteredWORKPACK_ASSIGNMENTS.Count() != 0 && P6TASKS.Count() != 0)
             {
                 DateTime? lastRecalcDate = P6PROJECT.last_recalc_date;
-                BASELINE_ITEMJoinRATE currentBASELINE_ITEM = reportableObject.BASELINE_ITEMJoinRATE;
+                BASELINE_ITEMProjection currentBASELINE_ITEM = reportableObject.BASELINE_ITEMJoinRATE;
                 decimal progressItemTotalHours = currentBASELINE_ITEM.BASELINE_ITEM.TOTAL_HOURS;
                 decimal progressItemTotalCosts = currentBASELINE_ITEM.TOTAL_COSTS;
 
@@ -428,7 +428,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 DateTime? approvedDate = VARIATION.APPROVED;
                 if (VARIATION.GUID_PROJECT == SummaryObject.LivePROGRESS.GUID_PROJECT && approvedDate != null && VARIATION.ORIBASELINE != null && VARIATION.TOBASELINE != null)
                 {
-                    IEnumerable<BASELINE_ITEMJoinRATE> contextBASELINE_ITEMS = this.SummaryObject.ReportableObjects.Select(x => x.BASELINE_ITEMJoinRATE);
+                    IEnumerable<BASELINE_ITEMProjection> contextBASELINE_ITEMS = this.SummaryObject.ReportableObjects.Select(x => x.BASELINE_ITEMJoinRATE);
 
                     foreach (VARIATION_ITEM VARIATION_ITEM in VARIATION.VARIATION_ITEMS)
                     {
@@ -627,7 +627,7 @@ namespace BluePrints.Common.ViewModel.Reporting
             decimal workpackVarProductivity = 0;
             if (reportableObject.VariationProductivity < minimumProductivityBeforeEscalating)
             {
-                IEnumerable<BASELINE_ITEMJoinRATE> WorkpackBASELINE_ITEMJoinRATES = SummaryObject.ReportableObjects.Where(x => x.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_WORKPACK == currentWORKPACK.GUID).Select(x => x.BASELINE_ITEMJoinRATE);
+                IEnumerable<BASELINE_ITEMProjection> WorkpackBASELINE_ITEMJoinRATES = SummaryObject.ReportableObjects.Where(x => x.BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_WORKPACK == currentWORKPACK.GUID).Select(x => x.BASELINE_ITEMJoinRATE);
 
                 //not checking for progressItemWorkpack null because all progress item should have workpacks assigned if the user 
                 decimal totalWorkpackUnits = WorkpackBASELINE_ITEMJoinRATES.Sum(x => x.BASELINE_ITEM.TOTAL_HOURS);

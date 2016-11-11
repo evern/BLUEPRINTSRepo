@@ -457,10 +457,10 @@ namespace BluePrints.Common.ViewModel.Reporting
             TimeSpan intervalPeriod = summarizableObject.IntervalPeriod;
             bool isPOCOViewModel = (summarizableObject as IPOCOViewModel) != null;
 
-            if (summarizableObject.NonCumulative_VariationAdjustments.Count > 0 && summarizableObject.Cumulative_VariationAdjustments == null)
+            if (summarizableObject.NonCumulative_VariationAdjustments.Count > 0)
                 summarizableObject.Cumulative_VariationAdjustments = PopulateCumulativeVariationAdjustments(summarizableObject.NonCumulative_VariationAdjustments, firstDataDate, intervalPeriod);
 
-            if (summarizableObject.NonCumulative_OriginalDataPoints.Count > 0 && summarizableObject.Summary_CumulativeOriginalDataPoints == null)
+            if (summarizableObject.NonCumulative_OriginalDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeOriginalDataPoints = PopulateCumulativeSummaryDataPoints(summarizableObject.NonCumulative_OriginalDataPoints, new ObservableCollection<VariationAdjustment>(), finalBudgetedUnits, finalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -470,7 +470,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_PlannedDataPoints.Count > 0 && summarizableObject.Summary_CumulativePlannedDataPoints == null)
+            if (summarizableObject.NonCumulative_PlannedDataPoints.Count > 0)
             {
                 //Used to show normalized variation
                 //ReportableObject.Summary_CumulativePlannedDataPoints = this.ISupportProgressReportingCollection.PopulateCumulativeSummaryDataPoints(ReportableObject.NonCumulative_PlannedDataPoints, new List<VariationAdjustment>(), finalBudgetedUnits, finalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
@@ -483,7 +483,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0 && summarizableObject.Summary_CumulativeEarnedDataPoints == null)
+            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeEarnedDataPoints = PopulateCumulativeSummaryDataPoints(summarizableObject.NonCumulative_EarnedDataPoints, summarizableObject.Cumulative_VariationAdjustments, totalBudgetedUnits, totalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -493,7 +493,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_BurnedDataPoints.Count > 0 && summarizableObject.Summary_CumulativeBurnedDataPoints == null)
+            if (summarizableObject.NonCumulative_BurnedDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeBurnedDataPoints = PopulateCumulativeSummaryDataPoints(summarizableObject.NonCumulative_BurnedDataPoints, summarizableObject.Cumulative_VariationAdjustments, totalBudgetedUnits, totalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -503,7 +503,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_ActualDataPoints.Count > 0 && summarizableObject.Summary_CumulativeActualDataPoints == null)
+            if (summarizableObject.NonCumulative_ActualDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeActualDataPoints = PopulateCumulativeSummaryDataPoints(summarizableObject.NonCumulative_ActualDataPoints, summarizableObject.Cumulative_VariationAdjustments, totalBudgetedUnits, totalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -513,7 +513,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0 && summarizableObject.Summary_CumulativeRemainingPlannedDataPoints == null)
+            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeRemainingPlannedDataPoints = PopulateCumulativeRemainingSummaryDataPoints(summarizableObject.NonCumulative_EarnedDataPoints, summarizableObject.Cumulative_VariationAdjustments, summarizableObject.NonCumulative_RemainingPlannedDataPoints, totalBudgetedUnits, totalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -523,7 +523,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0 && summarizableObject.Summary_CumulativeRemainingVariationDataPoints == null)
+            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeRemainingVariationDataPoints = PopulateCumulativeRemainingSummaryDataPoints(summarizableObject.NonCumulative_EarnedDataPoints, summarizableObject.Cumulative_VariationAdjustments, summarizableObject.NonCumulative_RemainingVariationDataPoints, totalBudgetedUnits, totalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -533,7 +533,7 @@ namespace BluePrints.Common.ViewModel.Reporting
                 }
             }
 
-            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0 && summarizableObject.Summary_CumulativeRemainingCurrentDataPoints == null)
+            if (summarizableObject.NonCumulative_EarnedDataPoints.Count > 0)
             {
                 summarizableObject.Summary_CumulativeRemainingCurrentDataPoints = PopulateCumulativeRemainingSummaryDataPoints(summarizableObject.NonCumulative_EarnedDataPoints, summarizableObject.Cumulative_VariationAdjustments, summarizableObject.NonCumulative_RemainingCurrentDataPoints, totalBudgetedUnits, totalBudgetedCosts, firstDataDate, intervalPeriod, Guid.Empty);
                 if (isPOCOViewModel)
@@ -1005,7 +1005,7 @@ namespace BluePrints.Common.ViewModel.Reporting
         public static ObservableCollection<ProgressInfo> RemainingDataPointsGenerator(SummarizableObject summaryObject, ReportableObject reportableObject, DateTime firstAlignedWeekEndingDataDate, List<Period> exceptionPeriod, decimal remainingUnits, decimal unitsPerHour, decimal firstPeriodProRate, decimal currencyConversion, DateTime? limitDate = null)
         {
             ObservableCollection<ProgressInfo> remainingDataPoints = new ObservableCollection<ProgressInfo>();
-            BASELINE_ITEMJoinRATE currentBASELINE_ITEM = reportableObject.BASELINE_ITEMJoinRATE;
+            BASELINE_ITEMProjection currentBASELINE_ITEM = reportableObject.BASELINE_ITEMJoinRATE;
             if (currentBASELINE_ITEM.BASELINE_ITEM.TOTAL_HOURS == 0 || unitsPerHour == 0)
                 return remainingDataPoints;
 
