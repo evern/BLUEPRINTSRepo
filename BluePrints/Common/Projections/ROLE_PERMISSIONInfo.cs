@@ -34,7 +34,7 @@ namespace BluePrints.Data
         [StringLength(50)]
         public string PERMISSION { get; set; }
 
-        [Required]
+        [ProjectionPropertyAttribute]
         public bool ASSIGNED { get; set; }
 
         public DateTime CREATED { get; set; }
@@ -50,5 +50,16 @@ namespace BluePrints.Data
         public Guid? DELETEDBY { get; set; }
 
         public virtual ROLE ROLE { get; set; }
+    }
+
+    public static class ROLE_PERMISSIONProjectionQueries
+    {
+        public static IQueryable<ROLE_PERMISSIONInfo> GetAssignedROLE_PERMISSIONByROLE(IQueryable<ROLE_PERMISSION> ROLE_PERMISSION, Func<Guid> GetROLEKeyFunc, IQueryable<ROLE_PERMISSION> SYSTEM_PERMISSIONS)
+        {
+            var finalizedROLE_PERMISSION = ROLE_PERMISSION.ToArray().AsQueryable();
+            Guid roleKey = GetROLEKeyFunc();
+            var currentAssignedROLE_PERMISSIONS = finalizedROLE_PERMISSION.Where(x => x.GUID_ROLE == roleKey).ToArray().AsEnumerable();
+            return SYSTEM_PERMISSIONS.Select(x => new ROLE_PERMISSIONInfo(x, currentAssignedROLE_PERMISSIONS));
+        }
     }
 }

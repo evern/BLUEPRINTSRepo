@@ -27,7 +27,7 @@ namespace BluePrints.Common.ViewModel.Reporting
         }
     }
 
-    public class BuildMinimalStatsForCurrentPercentage
+    public class BuildMinimalStatsForPlannedOriginalPercentage
     {
         public void Manufacture(SummaryBuilder summaryBuilder)
         {
@@ -41,7 +41,7 @@ namespace BluePrints.Common.ViewModel.Reporting
         }
     }
 
-    public class BuildFullStatsIncludingPROGRESS_ITEM
+    public class BuildFullStatsIncludingPROGRESS_ITEMSummary
     {
         BuildProjectStats buildProjectStats = new BuildProjectStats();
         public void Manufacture(SummaryBuilder summaryBuilder)

@@ -218,8 +218,12 @@ namespace BluePrints.Common.DataModel
         {
             isNewEntity = false;
             bool projection = IsProjection<TEntity, TProjection>(projectionEntity);
-            var entity = repository.Find(repository.GetProjectionPrimaryKey(projectionEntity));
-            if (entity == null)
+            //BluePrints Modification Start
+            TPrimaryKey projectionPrimaryKey = repository.GetProjectionPrimaryKey(projectionEntity);
+            bool isGuidEmpty = (projectionPrimaryKey.GetType() == typeof(Guid) && projectionPrimaryKey.ToString() == Guid.Empty.ToString());
+            //BluePrints Modification End
+            var entity = repository.Find(projectionPrimaryKey);
+            if (entity == null || isGuidEmpty)
             {
                 isNewEntity = true;
                 if (projection)

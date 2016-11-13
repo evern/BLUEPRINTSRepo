@@ -132,7 +132,7 @@ namespace BluePrints.Common.ViewModel
             {
                 var projectionEntity = FindActualProjectionByKey(primaryKey);
                 var entity = FindLocalProjectionByKey(primaryKey);
-                if (projectionEntity != null && entity == null)
+                if (projectionEntity != null && entity == null && !owner.IsPersistentView)
                     Entities.Add(projectionEntity);
             }
 

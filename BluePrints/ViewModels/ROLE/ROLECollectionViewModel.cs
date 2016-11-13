@@ -43,7 +43,7 @@ namespace BluePrints.ViewModels
             ROLECollection.OnSelectedEntityChangedCallBack = this.OnSelectedEntityChangedCallBack;
             ROLECollection.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
 
-            ROLE_PERMISSIONCollection = ROLE_PERMISSIONSProjectionCollectionViewModel.Create(null, query => QueriesHelper.MorphROLE_PERMISSIONInfo(query, GetROLE_KEYFunc, GetSystemPermissions()));
+            ROLE_PERMISSIONCollection = ROLE_PERMISSIONSProjectionCollectionViewModel.Create(null, query => ROLE_PERMISSIONProjectionQueries.GetAssignedROLE_PERMISSIONByROLE(query, GetROLE_KEYFunc, GetSystemPermissions()));
             ROLE_PERMISSIONCollection.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntityCallBack;
             ROLE_PERMISSIONCollection.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
             ROLE_PERMISSIONCollection.IsPersistentView = true;

@@ -526,6 +526,7 @@ namespace BluePrints.Common.ViewModel
             var ValueToFillDown = DataUtils.GetNestedValue(info.Column.FieldName, SelectedEntities[0]);
 
             EntitiesUndoRedoManager.PauseActionId();
+            List<TProjection> SaveEntities = new List<TProjection>();
             foreach (TProjection SelectedEntity in SelectedEntities)
             {
                 if (ValidateFillDownCallBack != null && !ValidateFillDownCallBack(SelectedEntity, info.Column.FieldName, ValueToFillDown))
@@ -534,9 +535,10 @@ namespace BluePrints.Common.ViewModel
                 var OldValue = DataUtils.GetNestedValue(info.Column.FieldName, SelectedEntity);
                 EntitiesUndoRedoManager.AddUndo(SelectedEntity, info.Column.FieldName, OldValue, ValueToFillDown, EntityMessageType.Changed);
                 DataUtils.SetNestedValue(info.Column.FieldName, SelectedEntity, ValueToFillDown);
+                SaveEntities.Add(SelectedEntity);
             }
 
-            BulkSave(SelectedEntities);
+            BulkSave(SaveEntities);
             EntitiesUndoRedoManager.UnpauseActionId();
 
             if (OnFillDownCompletedCallBack != null)
@@ -928,8 +930,9 @@ namespace BluePrints.Common.ViewModel
 
                 if (EntityBeforeDeletionCallBack != null)
                     EntityBeforeDeletionCallBack(projectionEntity);
+                if(!IsPersistentView)
                 //BluePrints Customization End
-                Entities.Remove(projectionEntity);
+                    Entities.Remove(projectionEntity);
 
                 TPrimaryKey primaryKey = Repository.GetProjectionPrimaryKey(projectionEntity);
                 TEntity entity = Repository.Find(primaryKey);
