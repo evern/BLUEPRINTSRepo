@@ -979,6 +979,9 @@
     <Compile Include="ViewModels\AREA\PROJECTAREADetailsCollectionViewModel.cs" />
     <Compile Include="ViewModels\BASELINE\BASELINECollectionViewModel.cs" />
     <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMSViewModelWrapper.cs" />
+    <Compile Include="ViewModels\BulkEdit\BulkEditEnumsViewModel.cs" />
+    <Compile Include="ViewModels\BulkEdit\BulkEditNumbersViewModel.cs" />
+    <Compile Include="ViewModels\BulkEdit\BulkEditStringsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\USER\SelectDetailUSERSViewModel.cs" />
     <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKAssignmentViewModel.cs" />
@@ -1040,6 +1043,15 @@
     </Compile>
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BulkEdit\BulkEditEnums.xaml.cs">
+      <DependentUpon>BulkEditEnums.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BulkEdit\BulkEditNumbers.xaml.cs">
+      <DependentUpon>BulkEditNumbers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BulkEdit\BulkEditStrings.xaml.cs">
+      <DependentUpon>BulkEditStrings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NavigationTreeViewPanel.xaml.cs">
       <DependentUpon>NavigationTreeViewPanel.xaml</DependentUpon>
@@ -1291,6 +1303,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BulkEdit\BulkEditEnums.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BulkEdit\BulkEditNumbers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BulkEdit\BulkEditStrings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

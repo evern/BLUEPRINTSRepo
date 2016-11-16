@@ -139,4 +139,13 @@ namespace BluePrints.Common
         TK_Active = 1,
         TK_Complete = 2
     }
+
+    public enum Arithmetic
+    {
+        None,
+        Add,
+        Subtract,
+        Multiply,
+        Divide
+    }
 }

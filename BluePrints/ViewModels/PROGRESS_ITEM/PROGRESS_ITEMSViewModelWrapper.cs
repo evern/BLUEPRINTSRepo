@@ -26,6 +26,7 @@ using BluePrints.Common.Projections;
 using System.ComponentModel;
 using BluePrints.P6Data;
 using BluePrints.P6EntitiesDataModel;
+using DevExpress.Data;
 
 namespace BluePrints.ViewModels
 {
@@ -442,6 +443,46 @@ namespace BluePrints.ViewModels
                             P6TASKCollectionViewModel.Save(P6TASK);
                         }
                     }
+                }
+            }
+        }
+
+        private decimal cumulativePrincipalUnits = 0;
+        private decimal cumulativeCurrentUnits = 0;
+        public void CustomSummary(CustomSummaryEventArgs e)
+        {
+            if (e.IsTotalSummary || e.IsGroupSummary)
+            {
+                if (e.SummaryProcess == CustomSummaryProcess.Start)
+                {
+                    cumulativePrincipalUnits = 0;
+                    cumulativeCurrentUnits = 0;
+                }
+                if (e.SummaryProcess == CustomSummaryProcess.Calculate)
+                {
+                    if (((GridSummaryItem)e.Item).FieldName == "TOTAL_EARNED_PERCENTAGE")
+                    {
+                        decimal budgetedUnits = ((PROGRESS_ITEMProjection)e.Row).BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
+                        decimal previousUnits = ((PROGRESS_ITEMProjection)e.Row).PROGRESS_ITEMSBeforeReportingDate.Sum(x => x.EARNED_UNITS);
+                        decimal currentUnits = ((PROGRESS_ITEMProjection)e.Row).PROGRESS_ITEMCurrent.EARNED_UNITS;
+
+                        cumulativePrincipalUnits += budgetedUnits;
+                        cumulativeCurrentUnits += (currentUnits + previousUnits);
+                        if (cumulativePrincipalUnits > 0)
+                            e.TotalValue = (cumulativeCurrentUnits / cumulativePrincipalUnits);
+                    }
+                    else if (((GridSummaryItem)e.Item).FieldName == "PERIOD_EARNED_PERCENTAGE")
+                    {
+                        decimal totalUnits = ((PROGRESS_ITEMProjection)e.Row).BASELINE_ITEMJoinRATE.BASELINE_ITEM.TOTAL_HOURS;
+                        decimal currentUnits = ((PROGRESS_ITEMProjection)e.Row).PROGRESS_ITEMCurrent.EARNED_UNITS;
+
+                        cumulativePrincipalUnits += totalUnits;
+                        cumulativeCurrentUnits += currentUnits;
+                        if (cumulativePrincipalUnits > 0)
+                            e.TotalValue = (cumulativeCurrentUnits / cumulativePrincipalUnits);
+                    }
+                    else
+                        e.TotalValue = 0;
                 }
             }
         }

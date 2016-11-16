@@ -222,7 +222,10 @@ namespace BluePrints.Common.DataModel
             TPrimaryKey projectionPrimaryKey = repository.GetProjectionPrimaryKey(projectionEntity);
             bool isGuidEmpty = (projectionPrimaryKey.GetType() == typeof(Guid) && projectionPrimaryKey.ToString() == Guid.Empty.ToString());
             //BluePrints Modification End
-            var entity = repository.Find(projectionPrimaryKey);
+            TEntity entity = null;
+            if(!isGuidEmpty)
+                entity = repository.Find(projectionPrimaryKey);
+
             if (entity == null || isGuidEmpty)
             {
                 isNewEntity = true;

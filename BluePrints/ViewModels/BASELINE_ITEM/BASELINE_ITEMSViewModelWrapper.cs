@@ -25,6 +25,8 @@ using BluePrints.Views;
 using BluePrints.Reports;
 using System.IO;
 using DevExpress.Xpf.Printing;
+using DevExpress.Xpf.Editors;
+using DevExpress.Xpf.Editors.Settings;
 
 namespace BluePrints.ViewModels
 {
@@ -270,6 +272,61 @@ namespace BluePrints.ViewModels
         #endregion
 
         #region View Commands
+        public bool CanDuplicate()
+        {
+            if (MainViewModel == null || MainViewModel.SelectedEntities.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        public void Duplicate()
+        {
+            if (!isProcessingMultipleDuplicates)
+                MainViewModel.EntitiesUndoRedoManager.PauseActionId();
+
+            foreach(BASELINE_ITEMProjection selectedEntity in MainViewModel.SelectedEntities)
+            {
+                BASELINE_ITEMProjection newProjection = new BASELINE_ITEMProjection();
+                DataUtils.ShallowCopy(newProjection.BASELINE_ITEM, selectedEntity.BASELINE_ITEM);
+                newProjection.BASELINE_ITEM.GUID = Guid.Empty;
+                newProjection.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadPROJECT, MainViewModel.Entities, newProjection.BASELINE_ITEM.AREA, newProjection.BASELINE_ITEM.DISCIPLINE, newProjection.BASELINE_ITEM.DOCTYPE, newProjection.GUID);
+                MainViewModel.EntitiesUndoRedoManager.AddUndo(newProjection, null, null, null, EntityMessageType.Added);
+                MainViewModel.Save(newProjection);
+            }
+
+            if (!isProcessingMultipleDuplicates)
+                MainViewModel.EntitiesUndoRedoManager.UnpauseActionId();
+        }
+
+        public bool CanDuplicateMultiple(BarEditItem barEdit)
+        {
+            if (MainViewModel == null || MainViewModel.SelectedEntities.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        bool isProcessingMultipleDuplicates;
+        /// <summary>
+        /// Paste clipboard data multiple times
+        /// </summary>
+        public void DuplicateMultiple(BarEditItem barEdit)
+        {
+            MainViewModel.EntitiesUndoRedoManager.PauseActionId();
+            isProcessingMultipleDuplicates = true;
+            int timesToDuplicate = 0;
+            if(Int32.TryParse(barEdit.EditValue.ToString(), out timesToDuplicate))
+            {
+                for(int i=0;i < timesToDuplicate;i++)
+                {
+                    Duplicate();
+                }
+            }
+            isProcessingMultipleDuplicates = false;
+            MainViewModel.EntitiesUndoRedoManager.UnpauseActionId();
+        }
+
         public bool CanAutoPopulate(object button)
         {
             if (MainViewModel == null || MainViewModel.SelectedEntities.Count == 0)

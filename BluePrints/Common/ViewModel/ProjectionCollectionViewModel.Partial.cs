@@ -513,18 +513,34 @@ namespace BluePrints.Common.ViewModel
             return Entities != null && Entities.Count > 1 && !IsLoading && (info != null && info.Column != null && !info.Column.ReadOnly) && (CanFillDownCallBack == null || CanFillDownCallBack(SelectedEntities, info));
         }
 
-        public Func<TProjection, string, object, bool> ValidateFillDownCallBack;
-        public Action OnFillDownCompletedCallBack;
-        /// <summary>
-        /// Copy the selected column and row value of first selected entity to the others
-        /// Since CollectionViewModelBase is a POCO view model, an the instance of this class will also expose the FillDownCommand property that can be used as a binding source in views.
-        /// </summary>
-        /// <param name="button">Must be assigned with a button from a GridControl's context menu</param>
-        public void FillDown(object button)
+        public bool CanFillUp(object button)
         {
             var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
+            return Entities != null && Entities.Count > 1 && !IsLoading && (info != null && info.Column != null && !info.Column.ReadOnly) && (CanFillDownCallBack == null || CanFillDownCallBack(SelectedEntities, info));
+        }
 
-            var ValueToFillDown = DataUtils.GetNestedValue(info.Column.FieldName, SelectedEntities[0]);
+        public Func<TProjection, string, object, bool> ValidateFillDownCallBack;
+        public Action OnFillDownCompletedCallBack;
+
+        public void FillDown(object button)
+        {
+            Fill(button, false);
+        }
+
+        public void FillUp(object button)
+        {
+            Fill(button, true);
+        }
+
+        public void Fill(object button, bool isUp)
+        {
+            var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
+            object ValueToFillDown;
+
+            if(isUp)
+                ValueToFillDown = DataUtils.GetNestedValue(info.Column.FieldName, SelectedEntities[selectedentities.Count - 1]);
+            else
+                ValueToFillDown = DataUtils.GetNestedValue(info.Column.FieldName, SelectedEntities[0]);
 
             EntitiesUndoRedoManager.PauseActionId();
             List<TProjection> SaveEntities = new List<TProjection>();
@@ -544,6 +560,115 @@ namespace BluePrints.Common.ViewModel
 
             if (OnFillDownCompletedCallBack != null)
                 OnFillDownCompletedCallBack();
+        }
+
+        DevExpress.Mvvm.IDialogService BulkColumnEditDialogService { get { return this.GetRequiredService<DevExpress.Mvvm.IDialogService>("BulkColumnEditService"); } }
+
+        public bool CanBulkColumnEdit(object button)
+        {
+            var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
+            if (info != null && info.Column.ReadOnly)
+                return false;
+
+            if (SelectedEntities == null)
+                return false;
+
+            return true;
+        }
+
+        public void BulkColumnEdit(object button)
+        {
+            var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
+
+            object oldValue = null;
+            object newValue = null;
+            List<TProjection> SaveEntities = new List<TProjection>();
+            Arithmetic operation = Arithmetic.None;
+
+            EntitiesUndoRedoManager.PauseActionId();
+            try
+            {
+                PropertyInfo columnPropertyInfo = DataUtils.GetNestedPropertyInfo(info.Column.FieldName, SelectedEntity);
+                if (columnPropertyInfo.PropertyType == typeof(Guid) || columnPropertyInfo.PropertyType == typeof(Guid?))
+                {
+                    ComboBoxEditSettings copyColumnEditSettings = info.Column.ActualEditSettings as ComboBoxEditSettings;
+                    if (copyColumnEditSettings != null)
+                    {
+                        var bulkEditEnumsViewModel = BulkEditEnumsViewModel.Create((IEnumerable<object>)copyColumnEditSettings.ItemsSource, copyColumnEditSettings.DisplayMember);
+                        if (BulkColumnEditDialogService.ShowDialog(MessageButton.OKCancel, "Select Item to assign", "BulkEditEnums", bulkEditEnumsViewModel) == MessageResult.OK)
+                        {
+                            if (bulkEditEnumsViewModel.SelectedItem != null)
+                                newValue = (Guid)bulkEditEnumsViewModel.SelectedItem.GetType().GetProperty("GUID").GetValue(bulkEditEnumsViewModel.SelectedItem);
+                        }
+
+                        bulkEditEnumsViewModel = null;
+                    }
+                }
+                else if (columnPropertyInfo.PropertyType == typeof(decimal) || columnPropertyInfo.PropertyType == typeof(decimal?))
+                {
+                    decimal selectedEntityValue = (decimal)DataUtils.GetNestedValue(info.Column.FieldName, selectedentities.First());
+                    var bulkEditNumbersViewModel = BulkEditNumbersViewModel.Create(selectedEntityValue);
+                    if (BulkColumnEditDialogService.ShowDialog(MessageButton.OKCancel, "Choose number and operation to assign", "BulkEditNumbers", bulkEditNumbersViewModel) == MessageResult.OK)
+                    {
+                        newValue = (decimal)bulkEditNumbersViewModel.EditValue;
+                        if (bulkEditNumbersViewModel.SelectedOperation != null)
+                        {
+                            EnumMemberInfo selectedArithmeticEnum = bulkEditNumbersViewModel.SelectedOperation;
+                            operation = (Arithmetic)Enum.Parse(typeof(Arithmetic), selectedArithmeticEnum.Name);
+                        }
+                    }
+                }
+                else if (columnPropertyInfo.PropertyType == typeof(string))
+                {
+                    string selectedEntityValue = (string)DataUtils.GetNestedValue(info.Column.FieldName, selectedentities.First());
+                    var bulkEditStringsViewModel = BulkEditStringsViewModel.Create(selectedEntityValue);
+                    if (BulkColumnEditDialogService.ShowDialog(MessageButton.OKCancel, "Type in text for bulk edit", "BulkEditStrings", bulkEditStringsViewModel) == MessageResult.OK)
+                    {
+                        if (bulkEditStringsViewModel.EditValue != null)
+                            newValue = (string)bulkEditStringsViewModel.EditValue;
+                    }
+                }
+
+                if (newValue != null)
+                {
+                    foreach (TProjection selectedProjection in SelectedEntities)
+                    {
+                        if (newValue.GetType() == typeof(decimal) && operation != Arithmetic.None)
+                        {
+                            decimal currentValue = (decimal)DataUtils.GetNestedValue(info.Column.FieldName, selectedProjection);
+                            decimal currentOldValue = currentValue;
+
+                            if (operation == Arithmetic.Add)
+                                currentValue = currentValue + (decimal)newValue;
+                            else if (operation == Arithmetic.Subtract)
+                                currentValue = currentValue - (decimal)newValue;
+                            else if (operation == Arithmetic.Multiply)
+                                currentValue = currentValue * (decimal)newValue;
+                            else if (operation == Arithmetic.Divide && ((Decimal)newValue) > 0)
+                                currentValue = currentValue / (decimal)newValue;
+
+                            DataUtils.SetNestedValue(info.Column.FieldName, selectedProjection, currentValue);
+                            EntitiesUndoRedoManager.AddUndo(selectedProjection, info.Column.FieldName, currentOldValue, currentValue, EntityMessageType.Changed);
+                        }
+                        else
+                        {
+                            oldValue = DataUtils.GetNestedValue(info.Column.FieldName, selectedProjection);
+                            DataUtils.SetNestedValue(info.Column.FieldName, selectedProjection, newValue);
+                            EntitiesUndoRedoManager.AddUndo(selectedProjection, info.Column.FieldName, oldValue, newValue, EntityMessageType.Changed);
+                        }
+
+                        SaveEntities.Add(selectedProjection);
+                    }
+                }
+
+                BulkSave(SaveEntities);
+            }
+            catch
+            {
+
+            }
+
+            EntitiesUndoRedoManager.UnpauseActionId();
         }
 
         public void SetNestedValueWithUndo(TProjection entity, string propertyName, object newValue)
