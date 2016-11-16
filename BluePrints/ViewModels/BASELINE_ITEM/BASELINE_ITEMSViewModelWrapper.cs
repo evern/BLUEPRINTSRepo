@@ -33,6 +33,8 @@ namespace BluePrints.ViewModels
     /// </summary>
     public partial class BASELINE_ITEMSViewModelWrapper : CollectionViewModelsWrapper<BASELINE_ITEM, BASELINE_ITEMProjection, Guid, IBluePrintsEntitiesUnitOfWork, CollectionViewModel<BASELINE_ITEM, BASELINE_ITEMProjection, Guid, IBluePrintsEntitiesUnitOfWork>>
     {
+        public Action ShowWORKPACKInternalName1;
+        public Action ShowWORKPACKInternalName2;
         /// <summary>
         /// Creates a new instance of BASELINE_ITEMSViewModelWrapper as a POCO view model.
         /// </summary>
@@ -73,13 +75,13 @@ namespace BluePrints.ViewModels
             loaderCollection.AddEntitiesLoader<PROJECT, PROJECT, Guid, IBluePrintsEntitiesUnitOfWork>(0, bluePrintsUnitOfWorkFactory, x => x.PROJECTS, PROJECTProjectionFunc, null, isContinueLoadingAfterPROJECT, OnEntitiesChanged);
             loaderCollection.AddEntitiesLoader<BASELINE, BASELINE, Guid, IBluePrintsEntitiesUnitOfWork>(1, bluePrintsUnitOfWorkFactory, x => x.BASELINES, BASELINEProjectionFunc, typeof(PROJECT), isContinueLoadingAfterBASELINE, OnEntitiesChanged);
             loaderCollection.AddEntitiesLoader<WORKPACK, WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.WORKPACKS, WORKPACKProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<PHASE, PHASE, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.PHASES, PHASEProjectionFunc, typeof(PROJECT));
-            loaderCollection.AddEntitiesLoader<AREA, AREA, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.AREAS, AREAProjectionFunc, typeof(PROJECT));
-            loaderCollection.AddEntitiesLoader<DEPARTMENT, DEPARTMENT, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.DEPARTMENTS);
-            loaderCollection.AddEntitiesLoader<DISCIPLINE, DISCIPLINE, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.DISCIPLINES);
-            loaderCollection.AddEntitiesLoader<DOCTYPE, DOCTYPE, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.DOCTYPES);
-            loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
-            loaderCollection.AddEntitiesLoader<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>(2, bluePrintsUnitOfWorkFactory, x => x.PROJECT_REPORTS, PROJECT_REPORTProjectionFunc, typeof(BluePrints.Data.PROJECT));
+            loaderCollection.AddEntitiesLoader<PHASE, PHASE, Guid, IBluePrintsEntitiesUnitOfWork>(3, bluePrintsUnitOfWorkFactory, x => x.PHASES, PHASEProjectionFunc, typeof(PROJECT));
+            loaderCollection.AddEntitiesLoader<AREA, AREA, Guid, IBluePrintsEntitiesUnitOfWork>(4, bluePrintsUnitOfWorkFactory, x => x.AREAS, AREAProjectionFunc, typeof(PROJECT));
+            loaderCollection.AddEntitiesLoader<DEPARTMENT, DEPARTMENT, Guid, IBluePrintsEntitiesUnitOfWork>(5, bluePrintsUnitOfWorkFactory, x => x.DEPARTMENTS);
+            loaderCollection.AddEntitiesLoader<DISCIPLINE, DISCIPLINE, Guid, IBluePrintsEntitiesUnitOfWork>(6, bluePrintsUnitOfWorkFactory, x => x.DISCIPLINES);
+            loaderCollection.AddEntitiesLoader<DOCTYPE, DOCTYPE, Guid, IBluePrintsEntitiesUnitOfWork>(7, bluePrintsUnitOfWorkFactory, x => x.DOCTYPES);
+            loaderCollection.AddEntitiesLoader<RATE, RATE, Guid, IBluePrintsEntitiesUnitOfWork>(8, bluePrintsUnitOfWorkFactory, x => x.RATES, RATEProjectionFunc, typeof(PROJECT), null, OnEntitiesChanged);
+            loaderCollection.AddEntitiesLoader<PROJECT_REPORT, PROJECT_REPORT, Guid, IBluePrintsEntitiesUnitOfWork>(9, bluePrintsUnitOfWorkFactory, x => x.PROJECT_REPORTS, PROJECT_REPORTProjectionFunc, typeof(BluePrints.Data.PROJECT));
             
             InvokeEntitiesLoaderDescriptionLoading();
         }
@@ -164,11 +166,13 @@ namespace BluePrints.ViewModels
 
         protected override void AssignCallBacksAndRaisePropertyChange(IEnumerable<BASELINE_ITEMProjection> entities)
         {
+            MainViewModel.CreateNewProjectionFromNewEntityCallBack = this.CreateNewProjectionFromNewEntityCallBack;
             MainViewModel.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntity;
             MainViewModel.OnEntitySavedCallBack = this.OnEntitiesSavedCallBack;
+            MainViewModel.SetParentViewModel(this);
             mainThreadDispatcher.BeginInvoke(new Action(() => this.RaisePropertiesChanged()));
+            mainThreadDispatcher.BeginInvoke(new Action(() => this.ShowWORKPACKColumns()));
         }
-
 
         protected override void OnEntitiesChanged(object key, Type changedType, EntityMessageType messageType, object sender)
         {
@@ -221,6 +225,11 @@ namespace BluePrints.ViewModels
         #endregion
 
         #region View Behavior
+        public BASELINE_ITEMProjection CreateNewProjectionFromNewEntityCallBack(BASELINE_ITEM entity)
+        {
+            return new BASELINE_ITEMProjection();
+        }
+
         /// <summary>
         /// Influence column(s) when changes happens in other column
         /// </summary>
@@ -327,7 +336,8 @@ namespace BluePrints.ViewModels
                         WORKPACK newWORKPACK = new WORKPACK();
                         newWORKPACK.GUID_PROJECT = loadPROJECT.GUID;
                         newWORKPACK.GUID_DAREA = (Guid)entity.BASELINE_ITEM.GUID_AREA;
-                        newWORKPACK.GUID_DPHASE = (Guid)entity.BASELINE_ITEM.GUID_PHASE;
+                        if (entity.BASELINE_ITEM.GUID_PHASE != null)
+                            newWORKPACK.GUID_DPHASE = entity.BASELINE_ITEM.GUID_PHASE;
                         newWORKPACK.GUID_DDISCIPLINE = (Guid)entity.BASELINE_ITEM.GUID_DISCIPLINE;
                         newWORKPACK.GUID_DDEPARTMENT = (Guid)entity.BASELINE_ITEM.GUID_DEPARTMENT;
                         newWORKPACK.GUID_DDOCTYPE = (Guid)entity.BASELINE_ITEM.GUID_DOCTYPE;
@@ -382,6 +392,17 @@ namespace BluePrints.ViewModels
                 else
                     return BindableBase.GetPropertyName(() => new WORKPACK().INTERNAL_NAME2);
             }
+        }
+
+        public void ShowWORKPACKColumns()
+        {
+            if(ShowWORKPACKInternalName1 == null || ShowWORKPACKInternalName2 == null)
+                return;
+
+            if (loadPROJECT == null || loadPROJECT.USELEGACYWORKPACK)
+                ShowWORKPACKInternalName1();
+            else
+                ShowWORKPACKInternalName2();
         }
 
         public IEnumerable<WORKPACK> WORKPACKCollection

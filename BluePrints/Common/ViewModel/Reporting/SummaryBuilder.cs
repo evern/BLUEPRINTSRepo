@@ -3,6 +3,7 @@ using BluePrints.Common.Projections;
 using BluePrints.Data;
 using BluePrints.P6Data;
 using BluePrints.P6EntitiesDataModel;
+using BluePrints.PrimeroData;
 using BluePrints.PrimeroData.PrimeroEntitiesDataModel;
 using DevExpress.Mvvm.POCO;
 using System;

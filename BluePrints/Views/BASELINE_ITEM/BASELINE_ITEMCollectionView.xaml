@@ -55,12 +55,23 @@
                 </dxmvvm:Interaction.Behaviors>
                 <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="BASELINE_ITEMSJoinRATESGrid" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" >
-                            <dxg:GridColumn.CellTemplate>
+                        <dxg:GridColumn Name="colWORKPACKInternalName1" FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" Visible="False" VisibleIndex="0">
+                            <!--<dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
                                     <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, Mode=OneWay, ElementName=userControl}" ValueMember="GUID" />
                                 </DataTemplate>
-                            </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn.CellTemplate>-->
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings Name="PART_Editor_InternalName1" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NAME1" ValueMember="GUID" />
+                            </dxg:GridColumn.EditSettings>
+                            <!--<dxg:GridColumn.Tag>
+                                <viewmodel:CollectionCopyPasteMap ItemSourceProperty="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" DisplayMember="INTERNAL_NAME1" ValueMember="GUID" />
+                            </dxg:GridColumn.Tag>-->
+                        </dxg:GridColumn>
+                        <dxg:GridColumn Name="colWORKPACKInternalName2" FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" Visible="False" VisibleIndex="1">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings Name="PART_Editor_InternalName2" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NAME2" ValueMember="GUID" />
+                            </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
                         <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_PHASE" Header="PHASE"  >
                             <dxg:GridColumn.EditSettings>
@@ -104,10 +115,10 @@
                             </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
                         <dxg:GridColumn FieldName="BASELINE_ITEM.DC_HOURS" Header="DC_HOURS" ReadOnly="True" />
-                        <dxg:GridColumn FieldName="TOTAL_COSTS" Header="COSTS" AllowSearchPanel="False" >
+                        <dxg:GridColumn FieldName="TOTAL_COSTS" Header="COSTS" AllowSearchPanel="False" ReadOnly="True">
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
-                                    <dxe:TextEdit Name="PART_Editor" MaskUseAsDisplayFormat="True" MaskType="Numeric"  Mask="c" />
+                                    <dxe:TextEdit Name="PART_Editor" MaskUseAsDisplayFormat="True" MaskType="Numeric" Mask="c" />
                                 </DataTemplate>
                             </dxg:GridColumn.CellTemplate>
                         </dxg:GridColumn>

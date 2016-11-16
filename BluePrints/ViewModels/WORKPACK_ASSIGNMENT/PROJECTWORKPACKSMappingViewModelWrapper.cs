@@ -225,6 +225,7 @@ namespace BluePrints.ViewModels
         protected override void AssignCallBacksAndRaisePropertyChange(IEnumerable<WORKPACK_Dashboard> entities)
         {
             CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork> WORKPACK_ASSIGNMENTCollectionViewModel = (CollectionViewModel<WORKPACK_ASSIGNMENT, WORKPACK_ASSIGNMENT, Guid, IBluePrintsEntitiesUnitOfWork>)loaderCollection.GetViewModel<WORKPACK_ASSIGNMENT>();
+            
             if (this.isFromPROGRESS)
                 mainThreadDispatcher.BeginInvoke(new Action(() => OnPROJECTWORKPACKSMappingViewModelLoaded(entities)));
             else

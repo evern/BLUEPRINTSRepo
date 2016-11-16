@@ -3,7 +3,6 @@ using BluePrints.Common.DataModel;
 using BluePrints.Data;
 using BluePrints.P6Data;
 using BluePrints.P6EntitiesDataModel;
-using BluePrints.PrimeroData.PrimeroEntitiesDataModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

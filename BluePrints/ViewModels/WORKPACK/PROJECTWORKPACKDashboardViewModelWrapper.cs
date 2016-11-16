@@ -74,6 +74,7 @@ namespace BluePrints.ViewModels
         protected override bool OnMainViewModelLoaded(IEnumerable<WORKPACK_Dashboard> entities)
         {
             MainViewModel = (CollectionViewModel<WORKPACK, WORKPACK_Dashboard, Guid, IBluePrintsEntitiesUnitOfWork>)mainEntityLoader.GetViewModel();
+            MainViewModel.SetParentViewModel(this);
             mainThreadDispatcher.BeginInvoke(new Action(() => this.RaisePropertiesChanged()));
             base.OnMainViewModelLoaded(entities);
             return true;

@@ -166,5 +166,20 @@ namespace BluePrints.Data.Helpers
                 return GetNestedValue(propertyString, childInstance);
             }
         }
+
+        public static PropertyInfo GetNestedPropertyInfo(string propertyString, object parentInstance)
+        {
+            string[] propertyNames = propertyString.Split('.');
+            string firstPropertyName = propertyNames.First();
+            var childInstance = parentInstance.GetType().GetProperty(firstPropertyName).GetValue(parentInstance);
+
+            if (!propertyString.Contains("."))
+                return parentInstance.GetType().GetProperty(firstPropertyName);
+            else
+            {
+                propertyString = propertyString.Replace(firstPropertyName + ".", string.Empty);
+                return GetNestedPropertyInfo(propertyString, childInstance);
+            }
+        }
     }
 }

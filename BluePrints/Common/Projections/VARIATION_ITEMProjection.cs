@@ -16,6 +16,8 @@ namespace BluePrints.Common.Projections
         public VARIATION_ITEMProjection()
         {
             VARIATION_ITEM = new VARIATION_ITEM();
+            BASELINE_ITEMJoinRATE = new BASELINE_ITEMProjection();
+            VARIATION_ITEM.ACTION = VariationAction.Add;
         }
 
         VARIATION_ITEM variation_item { get; set; }
@@ -40,10 +42,7 @@ namespace BluePrints.Common.Projections
                 if (ISLOCKED == true)
                     return true;
 
-                if (VARIATION_ITEM.ACTION == VariationAction.Add)
-                    return true;
-
-                if (VARIATION_ITEM.ACTION == VariationAction.Cancel)
+                if (VARIATION_ITEM.ACTION != VariationAction.Add)
                     return true;
 
                 return false;

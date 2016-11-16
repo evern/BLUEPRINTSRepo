@@ -23,6 +23,7 @@ using BluePrints.Common.ViewModel.Filtering;
 using BluePrints.Common.ViewModel.Utils;
 using DevExpress.Xpf.Editors.Settings;
 using DevExpress.Xpf.Grid.TreeList;
+using BluePrints.ViewModels;
 
 namespace BluePrints.Common.ViewModel
 {
@@ -634,9 +635,6 @@ namespace BluePrints.Common.ViewModel
         /// <param name="e"></param>
         public virtual void PastingFromClipboard(PastingFromClipboardEventArgs e)
         {
-            if (CreateNewProjectionFromNewEntityCallBack == null)
-                return;
-
             String PasteString = Clipboard.GetText();
             string[] RowData = PasteString.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             GridControl sourceGridControl = (GridControl)e.Source;
@@ -649,7 +647,16 @@ namespace BluePrints.Common.ViewModel
                 foreach (string Row in RowData)
                 {
                     TEntity newEntity = CreateEntity();
-                    TProjection projection = CreateNewProjectionFromNewEntity(newEntity);
+                    //have to do a callback here because TProjection is not new() constrained yet
+                    TProjection projection;
+                    if (newEntity is TProjection)
+                        projection = newEntity as TProjection;
+                    else
+                    {
+                        if (CreateNewProjectionFromNewEntityCallBack == null)
+                            return;
+                        projection = CreateNewProjectionFromNewEntity(newEntity);
+                    }
 
                     string[] ColumnStrings = Row.Split('\t');
                     for (int i = 0; i < ColumnStrings.Count(); i++)
@@ -662,10 +669,10 @@ namespace BluePrints.Common.ViewModel
                                 continue;
 
                             string columnName = copyColumn.FieldName;
-                            PropertyInfo columnPropertyInfo = projection.GetType().GetProperty(columnName);
+                            PropertyInfo columnPropertyInfo = DataUtils.GetNestedPropertyInfo(columnName, projection);
                             if (columnPropertyInfo != null)
                             {
-                                if (columnPropertyInfo.PropertyType == typeof(Guid))
+                                if (columnPropertyInfo.PropertyType == typeof(Guid?) || columnPropertyInfo.PropertyType == typeof(Guid))
                                 {
                                     ComboBoxEditSettings copyColumnEditSettings = copyColumn.ActualEditSettings as ComboBoxEditSettings;
                                     if (copyColumnEditSettings != null)
@@ -685,13 +692,18 @@ namespace BluePrints.Common.ViewModel
                                         }
 
                                         if (itemValue != null)
-                                            projection.GetType().GetProperty(columnName).SetValue(projection, itemValue);
+                                            DataUtils.SetNestedValue(columnName, projection, itemValue);
                                         else
-                                            break;
+                                            continue;
+                                    }
+                                    else if(ColumnStrings[i] != Guid.Empty.ToString())
+                                    {
+                                        Guid newGuid = new Guid(ColumnStrings[i]);
+                                        DataUtils.SetNestedValue(columnName, projection, newGuid);
                                     }
                                 }
                                 else if (columnPropertyInfo.PropertyType == typeof(string))
-                                    projection.GetType().GetProperty(columnName).SetValue(projection, ColumnStrings[i]);
+                                    DataUtils.SetNestedValue(columnName, projection, ColumnStrings[i]);
                                 else if (columnPropertyInfo.PropertyType.BaseType == typeof(Enum))
                                 {
                                     var enumValues = Enum.GetValues(columnPropertyInfo.PropertyType);
@@ -708,8 +720,8 @@ namespace BluePrints.Common.ViewModel
                                         var descriptionAttribute = descriptionAttributes.First();
                                         if (ColumnStrings[i] == descriptionAttribute.Name)
                                         {
-                                            projection.GetType().GetProperty(columnName).SetValue(projection, enumValue);
-                                            break;
+                                            DataUtils.SetNestedValue(columnName, projection, enumValue);
+                                            continue;
                                         }
                                     }
                                 }
@@ -726,7 +738,7 @@ namespace BluePrints.Common.ViewModel
                                             if (columnName.Contains('%') || columnName.ToUpper().Contains("PERCENT"))
                                                 getDecimal /= 100;
 
-                                            projection.GetType().GetProperty(columnName).SetValue(projection, getDecimal);
+                                            DataUtils.SetNestedValue(columnName, projection, getDecimal);
                                         }
                                         else
                                             return;
@@ -735,7 +747,7 @@ namespace BluePrints.Common.ViewModel
                                     {
                                         int getInt;
                                         if (int.TryParse(cleanColumnString, out getInt))
-                                            projection.GetType().GetProperty(columnName).SetValue(projection, getInt);
+                                            DataUtils.SetNestedValue(columnName, projection, getInt);
                                         else
                                             return;
                                     }
@@ -747,7 +759,7 @@ namespace BluePrints.Common.ViewModel
                                             if (columnName.Contains('%') || columnName.ToUpper().Contains("PERCENT"))
                                                 getDouble /= 100;
 
-                                            projection.GetType().GetProperty(columnName).SetValue(projection, getDouble);
+                                            DataUtils.SetNestedValue(columnName, projection, getDouble);
                                         }
                                         else
                                             return;
@@ -755,11 +767,19 @@ namespace BluePrints.Common.ViewModel
                                     else
                                         return;
                                 }
+                                else if (columnPropertyInfo.PropertyType == typeof(DateTime?) || columnPropertyInfo.PropertyType == typeof(DateTime)) 
+                                {
+                                    DateTime getDateTime;
+                                    if (DateTime.TryParse(ColumnStrings[i], out getDateTime))
+                                        DataUtils.SetNestedValue(columnName, projection, getDateTime);
+                                    else
+                                        continue;
+                                }
                                 else
-                                    return;
+                                    continue;
                             }
                             else
-                                return;
+                                continue;
                         }
                         catch
                         {

@@ -57,10 +57,17 @@
                         <dxmvvm:EventToCommand EventName="CustomUnboundColumnData" Command="{Binding DataContext.CustomUnboundColumnDataCommand, ElementName=userControl}" PassEventArgsToCommand="True" />
                     </dxmvvm:Interaction.Behaviors>
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" >
+                        <dxg:GridColumn Name="colWORKPACKInternalName1" FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" Visible="False" VisibleIndex="0">
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
-                                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="{Binding DataContext.WORKPACKDisplayMember, Mode=OneWay, ElementName=userControl}" ValueMember="GUID" IsEnabled="{Binding RowData.Row.ISREADONLY, Converter={StaticResource BooleanNegationConverter}}" />
+                                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NAME1" ValueMember="GUID" IsEnabled="{Binding RowData.Row.ISREADONLY, Converter={StaticResource BooleanNegationConverter}}" />
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn Name="colWORKPACKInternalName2" FieldName="BASELINE_ITEMJoinRATE.BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" Visible="False" VisibleIndex="1">
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <dxe:ComboBoxEdit Name="PART_Editor" ItemsSource="{Binding DataContext.WORKPACKCollection, ElementName=userControl}" IsTextEditable="False" DisplayMember="INTERNAL_NAME2" ValueMember="GUID" IsEnabled="{Binding RowData.Row.ISREADONLY, Converter={StaticResource BooleanNegationConverter}}" />
                                 </DataTemplate>
                             </dxg:GridColumn.CellTemplate>
                         </dxg:GridColumn>
@@ -158,19 +165,19 @@
                                 <dxe:SpinEditSettings MaskType="Numeric" Mask="n" MinValue="0" Increment="1" MaskUseAsDisplayFormat="True" IsEnabled="{Binding RowData.Row.ISREADONLY, Converter={StaticResource BooleanNegationConverter}}"/>
                             </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="BASELINE_ITEMJoinRATE.TOTAL_COSTS" Header="COSTS" AllowSearchPanel="False" >
+                        <dxg:GridColumn FieldName="BASELINE_ITEMJoinRATE.TOTAL_COSTS" ReadOnly="True" Header="COSTS" AllowSearchPanel="False" >
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
                                     <dxe:TextEdit Name="PART_Editor" MaskUseAsDisplayFormat="True" MaskType="Numeric"  Mask="c" />
                                 </DataTemplate>
                             </dxg:GridColumn.CellTemplate>
                         </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="VARIATION_ITEM.ACTION" ReadOnly="True" IsEnabled="False">
+                        <dxg:GridColumn Header="ACTION" FieldName="VARIATION_ITEM.ACTION" ReadOnly="True" IsEnabled="False">
                             <dxg:GridColumn.EditSettings>
                                 <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:VariationAction}}" AllowDrop="False"/>
                             </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="UNBOUND_CANCEL" Header="CANCEL" UnboundType="Boolean" AllowEditing="False" CellStyle="{StaticResource GridCellVariationCancellation}">
+                        <dxg:GridColumn FieldName="UNBOUND_CANCEL" Header="CANCEL" ReadOnly="True" UnboundType="Boolean" AllowEditing="False" CellStyle="{StaticResource GridCellVariationCancellation}">
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Height="18" Command="{Binding DataContext.CancelBASELINE_ITEMCommand, ElementName=userControl}" CommandParameter="{Binding RowData.Row}" >

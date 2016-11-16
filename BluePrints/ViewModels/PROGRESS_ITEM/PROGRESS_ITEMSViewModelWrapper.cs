@@ -183,6 +183,7 @@ namespace BluePrints.ViewModels
             MainViewModel.PreSave = this.MainEntityPreSave;
             MainViewModel.BulkPreSave = this.MainEntityBulkPreSave;
             MainViewModel.ValidateFillDownCallBack = this.ValidateFillDownCallBack;
+            MainViewModel.SetParentViewModel(this);
             mainThreadDispatcher.BeginInvoke(new Action(() => this.InitializePROJECTSummary(entities)));
         }
 
