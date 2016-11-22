@@ -52,7 +52,6 @@ namespace BluePrints.Data
         public Guid? DELETEDBY { get; set; }
 
         public virtual AREA AREA { get; set; }
-
         public virtual COMMODITY COMMODITY { get; set; }
 
         public virtual DISCIPLINE DISCIPLINE { get; set; }
