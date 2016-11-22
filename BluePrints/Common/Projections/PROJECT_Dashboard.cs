@@ -59,8 +59,8 @@ namespace BluePrints.Common.Projections
                 if (currentPROJECTLivePROGRESS == null)
                     continue;
 
-                IQueryable<PROGRESS_ITEM> LivePROGRESS_ITEMS = currentPROJECTLivePROGRESS.PROGRESS_ITEMS.AsQueryable();
-                IQueryable<BASELINE_ITEM> LiveBASELINE_ITEMS = currentPROJECTLiveBASELINE.BASELINE_ITEMS.AsQueryable();
+                IQueryable<PROGRESS_ITEM> LivePROGRESS_ITEMS = currentPROJECTLivePROGRESS.PROGRESS_ITEM.AsQueryable();
+                IQueryable<BASELINE_ITEM> LiveBASELINE_ITEMS = currentPROJECTLiveBASELINE.BASELINE_ITEM.AsQueryable();
                 IQueryable<RATE> RATESByProject = AllRATES.Where(x => x.GUID_PROJECT == localPROJECT.GUID).AsQueryable();
                 IEnumerable<VARIATION> ApprovedVARIATIONSByProject = ApprovedVARIATIONS.Where(x => x.GUID_PROJECT == localPROJECT.GUID).AsEnumerable();
 

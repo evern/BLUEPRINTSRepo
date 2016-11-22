@@ -11,8 +11,8 @@ namespace BluePrints.Data
     {
         public ROLE()
         {
-            ROLE_PERMISSIONS = new HashSet<ROLE_PERMISSION>();
-            USERS = new HashSet<USER>();
+            ROLE_PERMISSION = new HashSet<ROLE_PERMISSION>();
+            USER = new HashSet<USER>();
         }
 
         [Key]
@@ -39,8 +39,8 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual ICollection<ROLE_PERMISSION> ROLE_PERMISSIONS { get; set; }
+        public virtual ICollection<ROLE_PERMISSION> ROLE_PERMISSION { get; set; }
 
-        public virtual ICollection<USER> USERS { get; set; }
+        public virtual ICollection<USER> USER { get; set; }
     }
 }

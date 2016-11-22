@@ -79,14 +79,6 @@ namespace BluePrints.ViewModels
         }
 
         /// <summary>
-        /// The view model for the DOCTYPEESTIMATION_ITEMS detail collection.
-        /// </summary>
-        public CollectionViewModel<ESTIMATION_ITEM, Guid, IBluePrintsEntitiesUnitOfWork> DOCTYPEESTIMATION_ITEMSDetails
-        {
-            get { return GetDetailsCollectionViewModel((DOCTYPEViewModel x) => x.DOCTYPEESTIMATION_ITEMSDetails, x => x.ESTIMATION_ITEMS, x => x.GUID_TYPE, (x, key) => { x.GUID_TYPE = key; }); }
-        }
-
-        /// <summary>
         /// The view model for the DOCTYPEWORKPACKS detail collection.
         /// </summary>
         public CollectionViewModel<WORKPACK, Guid, IBluePrintsEntitiesUnitOfWork> DOCTYPEWORKPACKSDetails

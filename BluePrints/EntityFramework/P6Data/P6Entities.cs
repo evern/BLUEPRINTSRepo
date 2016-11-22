@@ -194,6 +194,8 @@ namespace BluePrints.P6Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Database.SetInitializer<P6Entities>(null);   
+
             modelBuilder.Entity<ACCOUNT>()
                 .Property(e => e.acct_short_name)
                 .IsUnicode(false);

@@ -15,6 +15,8 @@ using DevExpress.Xpf.Grid;
 using System.Windows.Threading;
 using DevExpress.Mvvm;
 using System.ComponentModel;
+using DevExpress.Xpf.Bars;
+using System.Windows;
 
 namespace BluePrints.ViewModels
 {
@@ -43,7 +45,7 @@ namespace BluePrints.ViewModels
             ROLECollection.OnSelectedEntityChangedCallBack = this.OnSelectedEntityChangedCallBack;
             ROLECollection.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
 
-            ROLE_PERMISSIONCollection = ROLE_PERMISSIONSProjectionCollectionViewModel.Create(null, query => ROLE_PERMISSIONProjectionQueries.GetAssignedROLE_PERMISSIONByROLE(query, GetROLE_KEYFunc, GetSystemPermissions()));
+            ROLE_PERMISSIONCollection = ROLE_PERMISSIONSProjectionCollectionViewModel.Create(null, query => ROLE_PERMISSIONProjectionQueries.GetAssignedROLE_PERMISSIONByROLE(query, GetROLE_KEYFunc, GetStaticROLE_PERMISSIONS()));
             ROLE_PERMISSIONCollection.ApplyProjectionPropertiesToEntityCallBack = this.ApplyProjectionPropertiesToEntityCallBack;
             ROLE_PERMISSIONCollection.OnEntitiesLoadedCallBack = this.OnEntitiesLoaded;
             ROLE_PERMISSIONCollection.IsPersistentView = true;
@@ -121,12 +123,13 @@ namespace BluePrints.ViewModels
             get 
             { 
                 if(permissionLookUp == null)
-                    permissionLookUp = GetPermissionLookUpInDictionary();
+                    permissionLookUp = LoginCredentials.GetPermissionLookUpInDictionary();
 
                 return permissionLookUp; 
             }
         }
-        private IQueryable<ROLE_PERMISSION> GetSystemPermissions()
+
+        private IQueryable<ROLE_PERMISSION> GetStaticROLE_PERMISSIONS()
         {
             ResourceSet resourceSet = PermissionResources.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
             List<ROLE_PERMISSION> permissions = new List<ROLE_PERMISSION>();
@@ -138,18 +141,28 @@ namespace BluePrints.ViewModels
             return permissions.AsQueryable();
         }
 
-        Dictionary<string, string> GetPermissionLookUpInDictionary()
+        DevExpress.Mvvm.IDialogService AddRoleDialogService { get { return this.GetRequiredService<DevExpress.Mvvm.IDialogService>("AddRoleDialogService"); } }
+        protected IMessageBoxService MessageBoxService { get { return this.GetRequiredService<IMessageBoxService>(); } }
+
+        public void AddRole(object button)
         {
-            Dictionary<string, string> returnPermissions = new Dictionary<string, string>();
-            ResourceSet resourceSet = PermissionResources.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-            foreach (System.Collections.DictionaryEntry permission in resourceSet)
+            var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
+
+            string roleName = string.Empty;
+            var bulkEditStringsViewModel = BulkEditStringsViewModel.Create(roleName);
+            if (AddRoleDialogService.ShowDialog(MessageButton.OKCancel, "Add new role", "BulkEditStrings", bulkEditStringsViewModel) == MessageResult.OK)
             {
-                returnPermissions.Add(permission.Key.ToString(), permission.Value.ToString());
+                if (bulkEditStringsViewModel.EditValue != null)
+                    roleName = (string)bulkEditStringsViewModel.EditValue;
+
+                ROLE newROLE = new ROLE() { NAME = roleName, SORTORDER = 0, PARENTGUID = Guid.Empty };
+                string errorMessage = string.Empty;
+                if (ROLECollection.IsValidEntity(newROLE, ref errorMessage))
+                    ROLECollection.Save(newROLE);
+                else
+                    MessageBoxService.ShowMessage(errorMessage + " already exists", "Error", MessageButton.OK, MessageIcon.Error);
             }
-
-            return returnPermissions;
         }
-
 
         #region IDocumentContent
         protected IDocumentOwner DocumentOwner { get; private set; }

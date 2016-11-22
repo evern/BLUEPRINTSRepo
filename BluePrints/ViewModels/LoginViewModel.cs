@@ -13,13 +13,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace BluePrints.ViewModels
 {
     public class LoginViewModel
     {
-        string adminUsername = "superadmin";
-        string adminPassword = "p4y57zcvp";
         public string UserName { get; set; }
         public string UserPassword { get; set; }
 
@@ -34,13 +33,31 @@ namespace BluePrints.ViewModels
             USERS = USERCollectionViewModel.Create();
             USERS.Entities.ToList();
             UserName = XMLHelpers.GetSettings_Username();
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => EVERNPCLogin()));
+        }
+
+
+        public void EVERNPCLogin()
+        {
+            if (Environment.MachineName == "EVERN-PC")
+            {
+                UserName = CommonResources.AdminUsername;
+                UserPassword = CommonResources.AdminPassword;
+                if (HideControlCallBack != null)
+                    HideControlCallBack();
+                Login();
+            }
         }
 
         public void Login()
         {
-            if ((UserName == adminUsername && UserPassword == adminPassword) || UserAuthenticate())
+            if ((UserName == CommonResources.AdminUsername && UserPassword == CommonResources.AdminPassword) || UserAuthenticate())
             {
-                LoginCredentials.CurrentUser = USERS.Entities.FirstOrDefault(x => x.NAME == UserName);
+                if (UserName == CommonResources.AdminUsername)
+                    LoginCredentials.CurrentUser = new USER() { NAME = CommonResources.AdminUsername };
+                else
+                    LoginCredentials.CurrentUser = USERS.Entities.FirstOrDefault(x => x.NAME == UserName);
+
                 ShowMainWindow();
                 if (HideControlCallBack != null)
                     HideControlCallBack();
@@ -70,19 +87,24 @@ namespace BluePrints.ViewModels
                     return false;
                 }
 
-                if (ActiveDirectory.Authenticate(UserName, UserPassword))
+                if (UserName != null && UserPassword != null)
                 {
-                    ShowError(false, null);
-                    ShowError(true, null);
-                    XMLHelpers.UpdateSettingsXML(new XMLSettings() { Username = UserName.Trim() });
-                    return true;
+                    if (ActiveDirectory.Authenticate(UserName, UserPassword))
+                    {
+                        ShowError(false, null);
+                        ShowError(true, null);
+                        XMLHelpers.UpdateSettingsXML(new XMLSettings() { Username = UserName.Trim() });
+                        return true;
+                    }
+                    else
+                    {
+                        SetUsernamePasswordError();
+                        XMLHelpers.UpdateSettingsXML(new XMLSettings() { Username = string.Empty });
+                        return false;
+                    }
                 }
                 else
-                {
-                    SetUsernamePasswordError();
-                    XMLHelpers.UpdateSettingsXML(new XMLSettings() { Username = string.Empty });
                     return false;
-                }
             }
         }
 

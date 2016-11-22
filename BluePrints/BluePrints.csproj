@@ -17,14 +17,14 @@
     <PublishUrl>\\Fileserver\Data\General\BLUEPRINTS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -328,7 +328,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PermissionResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Common\Projections\ESTIMATION_ITEMProjection.cs" />
     <Compile Include="Common\Projections\BASELINE_ITEMProjection.cs" />
+    <Compile Include="Common\Projections\COMMODITYProjection.cs" />
     <Compile Include="Common\Projections\PROGRESS_ITEMProjection.cs" />
     <Compile Include="Common\Projections\VARIATION_ITEMProjection.cs" />
     <Compile Include="Common\Projections\OptionalEntitiesParameter.cs" />
@@ -358,6 +360,59 @@
     <Compile Include="Common\ViewModel\Reporting\SummaryManufacturer.cs" />
     <Compile Include="Common\Attributes\ProjectionPropertyAttribute.cs" />
     <Compile Include="Common\ViewModel\Settings\XMLSettings.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\AREA.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\BASELINE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\BASELINE_ITEM.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\BluePrintsEntities.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\COMMODITY.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\COMMODITY_CODE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\DEPARTMENT.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\DISCIPLINE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\DOCTYPE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\ESTIMATION.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\ESTIMATION_ITEM.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\PHASE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\PROGRESS.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\PROGRESS_ITEM.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\PROJECT.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\PROJECT_REPORT.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\RATE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\REGISTER.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\ROLE.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\ROLE_PERMISSION.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\SETTINGS_GLOBAL.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\UOM.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\USER.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\VARIATION.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\VARIATION_ITEM.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\WORKPACK.cs" />
+    <Compile Include="EntityFramework\BluePrintsData\WORKPACK_ASSIGNMENT.cs" />
+    <Compile Include="EntityFramework\Annotations\AREA.cs" />
+    <Compile Include="EntityFramework\Annotations\BASELINE.cs" />
+    <Compile Include="EntityFramework\Annotations\BASELINE_ITEM.cs" />
+    <Compile Include="EntityFramework\Annotations\COMMODITY.cs" />
+    <Compile Include="EntityFramework\Annotations\COMMODITY_CODE.cs" />
+    <Compile Include="EntityFramework\Annotations\DEPARTMENT.cs" />
+    <Compile Include="EntityFramework\Annotations\DISCIPLINE.cs" />
+    <Compile Include="EntityFramework\Annotations\DOCTYPE.cs" />
+    <Compile Include="EntityFramework\Annotations\ESTIMATION.cs" />
+    <Compile Include="EntityFramework\Annotations\ESTIMATION_ITEM.cs" />
+    <Compile Include="EntityFramework\Annotations\PHASE.cs" />
+    <Compile Include="EntityFramework\Annotations\PROGRESS.cs" />
+    <Compile Include="EntityFramework\Annotations\PROGRESS_ITEM.cs" />
+    <Compile Include="EntityFramework\Annotations\PROJECT.cs" />
+    <Compile Include="EntityFramework\Annotations\PROJECT_REPORT.cs" />
+    <Compile Include="EntityFramework\Annotations\RATE.cs" />
+    <Compile Include="EntityFramework\Annotations\REGISTER.cs" />
+    <Compile Include="EntityFramework\Annotations\ROLE.cs" />
+    <Compile Include="EntityFramework\Annotations\ROLE_PERMISSION.cs" />
+    <Compile Include="EntityFramework\Annotations\SETTINGS_GLOBAL.cs" />
+    <Compile Include="EntityFramework\Annotations\UOM.cs" />
+    <Compile Include="EntityFramework\Annotations\USER.cs" />
+    <Compile Include="EntityFramework\Annotations\VARIATION.cs" />
+    <Compile Include="EntityFramework\Annotations\VARIATION_ITEM.cs" />
+    <Compile Include="EntityFramework\Annotations\WORKPACK.cs" />
+    <Compile Include="EntityFramework\Annotations\WORKPACK_ASSIGNMENT.cs" />
     <Compile Include="EntityFramework\BluePrintsEntitiesDataModel\BluePrintsEntitiesUnitOfWork.cs" />
     <Compile Include="EntityFramework\BluePrintsEntitiesDataModel\DesignTimeBluePrintsEntitiesUnitOfWork.cs" />
     <Compile Include="EntityFramework\BluePrintsEntitiesDataModel\IBluePrintsEntitiesUnitOfWork.cs" />
@@ -420,7 +475,7 @@
     <Compile Include="Common\ViewModel\Reporting\ProgressInfo.cs" />
     <Compile Include="Common\ViewModel\Reporting\ProgressReportable.cs" />
     <Compile Include="Common\ViewModel\Reporting\VariationAdjustment.cs" />
-    <Compile Include="Common\ViewModel\Utils\BluePrintDataUtils.cs" />
+    <Compile Include="Common\Utils\BluePrintDataUtils.cs" />
     <Compile Include="Common\ViewModel\InstantFeedbackCollectionViewModel.cs" />
     <Compile Include="Common\ViewModel\ISingleObjectViewModel.cs" />
     <Compile Include="Common\ViewModel\LookUpEntitiesViewModel.cs" />
@@ -982,6 +1037,9 @@
     <Compile Include="ViewModels\BulkEdit\BulkEditEnumsViewModel.cs" />
     <Compile Include="ViewModels\BulkEdit\BulkEditNumbersViewModel.cs" />
     <Compile Include="ViewModels\BulkEdit\BulkEditStringsViewModel.cs" />
+    <Compile Include="ViewModels\COMMODITY\AddCOMMODITYViewModel.cs" />
+    <Compile Include="ViewModels\ESTIMATION\ESTIMATIONCollectionViewModelWrapper.cs" />
+    <Compile Include="ViewModels\ESTIMATION_ITEM\ESTIMATION_ITEMSViewModelWrapper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\USER\SelectDetailUSERSViewModel.cs" />
     <Compile Include="ViewModels\WORKPACK_ASSIGNMENT\PROJECTWORKPACKAssignmentViewModel.cs" />
@@ -989,7 +1047,7 @@
     <Compile Include="ViewModels\BASELINE\BASELINECollectionViewModelWrapper.cs" />
     <Compile Include="ViewModels\BASELINE_ITEM\BASELINE_ITEMViewModel.cs" />
     <Compile Include="ViewModels\BluePrintsEntitiesViewModel.cs" />
-    <Compile Include="ViewModels\COMMODITY\COMMODITYCollectionViewModel.cs" />
+    <Compile Include="ViewModels\COMMODITY\COMMODITYCollectionViewModelWrapper.cs" />
     <Compile Include="ViewModels\COMMODITY\COMMODITYViewModel.cs" />
     <Compile Include="ViewModels\COMMODITY_CODE\COMMODITY_CODECollectionViewModel.cs" />
     <Compile Include="ViewModels\COMMODITY_CODE\COMMODITY_CODEViewModel.cs" />
@@ -999,9 +1057,7 @@
     <Compile Include="ViewModels\DISCIPLINE\DISCIPLINEViewModel.cs" />
     <Compile Include="ViewModels\DOCTYPE\DOCTYPECollectionViewModel.cs" />
     <Compile Include="ViewModels\DOCTYPE\DOCTYPEViewModel.cs" />
-    <Compile Include="ViewModels\ESTIMATION\ESTIMATIONCollectionViewModel.cs" />
     <Compile Include="ViewModels\ESTIMATION\ESTIMATIONViewModel.cs" />
-    <Compile Include="ViewModels\ESTIMATION_ITEM\ESTIMATION_ITEMCollectionViewModel.cs" />
     <Compile Include="ViewModels\ESTIMATION_ITEM\ESTIMATION_ITEMViewModel.cs" />
     <Compile Include="ViewModels\PHASE\PHASECollectionViewModel.cs" />
     <Compile Include="ViewModels\PHASE\PHASEViewModel.cs" />
@@ -1052,6 +1108,9 @@
     </Compile>
     <Compile Include="Views\BulkEdit\BulkEditStrings.xaml.cs">
       <DependentUpon>BulkEditStrings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\COMMODITY\AddCOMMODITYView.xaml.cs">
+      <DependentUpon>AddCOMMODITYView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NavigationTreeViewPanel.xaml.cs">
       <DependentUpon>NavigationTreeViewPanel.xaml</DependentUpon>
@@ -1267,33 +1326,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EntityFramework\BluePrintsData\AREA.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\BASELINE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\BASELINE_ITEM.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\BluePrintsEntities.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\COMMODITY.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\COMMODITY_CODE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\DEPARTMENT.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\DISCIPLINE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\DOCTYPE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\ESTIMATION.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\ESTIMATION_ITEM.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\PHASE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\PROGRESS.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\PROGRESS_ITEM.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\PROJECT.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\PROJECT_REPORT.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\RATE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\REGISTER.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\ROLE.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\ROLE_PERMISSION.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\SETTINGS_GLOBAL.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\UOM.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\USER.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\VARIATION.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\VARIATION_ITEM.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\WORKPACK.cs" />
-    <Compile Include="EntityFramework\BluePrintsData\WORKPACK_ASSIGNMENT.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1315,6 +1347,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BulkEdit\BulkEditStrings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\COMMODITY\AddCOMMODITYView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -25,7 +25,6 @@
     <dxmvvm:Interaction.Behaviors>
         <dx:DXMessageBoxService />
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding OnLoadedCommand}" />
-        <dxmvvm:EventToCommand Event="Unloaded" Command="{Binding OnUnloadedCommand}" />
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
@@ -59,7 +58,7 @@
                     </dxmvvm:Interaction.Behaviors>
                     <dxg:TreeListControl.Columns>
                         <dxg:TreeListColumn FieldName="CODE" />
-                        <dxg:TreeListColumn FieldName="UNBOUND_FULLCODE" UnboundType="String" ReadOnly="True" />
+                        <dxg:TreeListColumn Header="FULLCODE" FieldName="FULLCODE" ReadOnly="True" />
                         <dxg:TreeListColumn FieldName="NAME" />
                         <dxg:TreeListColumn Header="DISCIPLINE" FieldName="GUID_DISCIPLINE" >
                             <dxg:TreeListColumn.EditSettings>

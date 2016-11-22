@@ -16,6 +16,7 @@ using BluePrints.Common.ViewModel.Filtering;
 using System.Windows.Threading;
 using BluePrints.Data.Helpers;
 using BluePrints.Common.Projections;
+using BluePrints.Common;
 
 namespace BluePrints.ViewModels
 {
@@ -54,7 +55,7 @@ namespace BluePrints.ViewModels
             ImageSource CategoryViewImage = new BitmapImage(new Uri("pack://application:,,,/DevExpress.Images.v16.1;component/Images/Data/ManageDataSource_16x16.png"));
             TreeViewProperty PROJECTDASHBOARDCollectionModuleTreeProperty = new TreeViewProperty() { Id = "PROJECTDASHBOARDCollectionView", ParentId = 0, Image = TreeViewImage };
             TreeViewProperty PROJECTCollectionModuleTreeProperty = new TreeViewProperty() { Id = "PROJECTCollectionView", ParentId = 0, Image = TreeViewImage, IsExpanded = true };
-            TreeViewProperty DATACategoryTreeProperty = new TreeViewProperty() { Id = "DATACategoryView", ParentId = 0, Image = CategoryViewImage, IsExpanded = true };
+            TreeViewProperty DATACategoryTreeProperty = new TreeViewProperty() { Id = "DATACategoryView", ParentId = 0, Image = CategoryViewImage, IsExpanded = false };
             TreeViewProperty DEPARTMENTCollectionModuleTreeProperty = new TreeViewProperty() { Id = "DEPARTMENTCollectionView", ParentId = DATACategoryTreeProperty.Id, Image = TreeViewImage };
             TreeViewProperty DISCIPLINECollectionModuleTreeProperty = new TreeViewProperty() { Id = "DISCIPLINECollectionView", ParentId = DATACategoryTreeProperty.Id, Image = TreeViewImage };
             TreeViewProperty DOCTYPECollectionModuleTreeProperty = new TreeViewProperty() { Id = "DOCTYPECollectionView", ParentId = DATACategoryTreeProperty.Id, Image = TreeViewImage };
@@ -64,8 +65,11 @@ namespace BluePrints.ViewModels
             TreeViewProperty COMMODITY_CODECollectionModuleTreeProperty = new TreeViewProperty() { Id = "COMMODITY_CODECollectionView", ParentId = DATACategoryTreeProperty.Id, Image = TreeViewImage };
 
             List<BluePrintsEntitiesModuleDescription> BluePrintsEntitiesModuleDescriptions = new List<BluePrintsEntitiesModuleDescription>();
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DASHBOARDS", "PROJECTDashboardCollectionView", TablesGroup, null, null, PROJECTDASHBOARDCollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("PROJECTS", "PROJECTCollectionView", TablesGroup, null, null, PROJECTCollectionModuleTreeProperty));
+            if (LoginCredentials.hasPermission(PermissionResources.ViewDashboard))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DASHBOARDS", "PROJECTDashboardCollectionView", TablesGroup, null, null, PROJECTDASHBOARDCollectionModuleTreeProperty));
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageProject))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("PROJECTS", "PROJECTCollectionView", TablesGroup, null, null, PROJECTCollectionModuleTreeProperty));
 
             var Projects = this.CreateUnitOfWork().PROJECTS.OrderBy(x => x.NUMBER).AsQueryable();
             if(Projects.Count() > 0)
@@ -77,14 +81,27 @@ namespace BluePrints.ViewModels
                 }
 
             BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DATA", "DATACategoryView", TablesGroup, null, null, DATACategoryTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DEPARTMENTS", "DEPARTMENTCollectionView", TablesGroup, null, null, DEPARTMENTCollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DISCIPLINES", "DISCIPLINECollectionView", TablesGroup, null, null, DISCIPLINECollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DOCTYPES", "DOCTYPECollectionView", TablesGroup, null, null, DOCTYPECollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("UOM", "UOMCollectionView", TablesGroup, null, null, UOMCollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("USER", "USERCollectionView", TablesGroup, null, null, USERCollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("ROLE", "ROLECollectionView", TablesGroup, null, null, ROLECollectionModuleTreeProperty));
-            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("COMMODITY_CODE", "COMMODITY_CODECollectionView", TablesGroup, null, null, COMMODITY_CODECollectionModuleTreeProperty));
             
+            if(LoginCredentials.hasPermission(PermissionResources.ManageDepartment))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DEPARTMENTS", "DEPARTMENTCollectionView", TablesGroup, null, null, DEPARTMENTCollectionModuleTreeProperty));
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageDiscipline))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DISCIPLINES", "DISCIPLINECollectionView", TablesGroup, null, null, DISCIPLINECollectionModuleTreeProperty));
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageDocType))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("DOCTYPES", "DOCTYPECollectionView", TablesGroup, null, null, DOCTYPECollectionModuleTreeProperty));
+            
+            BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("UOM", "UOMCollectionView", TablesGroup, null, null, UOMCollectionModuleTreeProperty));
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageUser))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("USER", "USERCollectionView", TablesGroup, null, null, USERCollectionModuleTreeProperty));
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageRole))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("ROLE", "ROLECollectionView", TablesGroup, null, null, ROLECollectionModuleTreeProperty));
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageCommodity))
+                BluePrintsEntitiesModuleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create("COMMODITY_CODE", "COMMODITY_CODECollectionView", TablesGroup, null, null, COMMODITY_CODECollectionModuleTreeProperty));
+
             return BluePrintsEntitiesModuleDescriptions.ToArray();
         }
 
@@ -95,48 +112,82 @@ namespace BluePrints.ViewModels
 
             ImageSource TreeViewImage = new BitmapImage(new Uri("pack://application:,,,/DevExpress.Images.v16.1;component/Images/Actions/Open_16x16.png"));
             TreeViewProperty PROJECTCollectionModuleTreeProperty = new TreeViewProperty() { Id = "PROJECTCollectionView", ParentId = 0, Image = TreeViewImage, IsExpanded = true }; 
-            TreeViewProperty PROJECTModuleTreeProperty = new TreeViewProperty() { Id = "PROJECTView" + entity.NUMBER, ParentId = PROJECTCollectionModuleTreeProperty.Id, Image = TreeViewImage };
+            TreeViewProperty PROJECTModuleTreeProperty = new TreeViewProperty() { Id = "PROJECTView" + entity.NUMBER, ParentId = PROJECTCollectionModuleTreeProperty.Id, IsExpanded = false, Image = TreeViewImage };
 
             string moduleTitle;
             moduleTitle = entity.NUMBER;
             //moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(entity.NUMBER, "PROJECTView", TablesGroup, null, entity.GUID, PROJECTModuleTreeProperty));
             moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(entity.NUMBER, "ComingSoon", TablesGroup, null, entity.GUID, PROJECTModuleTreeProperty));
 
-            TreeViewProperty PROJECTPHASEModuleTreeProperty = new TreeViewProperty() { Id = "PHASEDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] PHASES";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTPHASEDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTPHASEModuleTreeProperty));
+            if(LoginCredentials.hasPermission(PermissionResources.ManageAreaAndPhases))
+            {
+                TreeViewProperty PROJECTPHASEModuleTreeProperty = new TreeViewProperty() { Id = "PHASEDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] PHASES";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTPHASEDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTPHASEModuleTreeProperty));
 
-            TreeViewProperty PROJECTAREAModuleTreeProperty = new TreeViewProperty() { Id = "AREADetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] AREAS";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTAREADetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTAREAModuleTreeProperty));
+                TreeViewProperty PROJECTAREAModuleTreeProperty = new TreeViewProperty() { Id = "AREADetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] AREAS";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTAREADetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTAREAModuleTreeProperty));
+            }
 
-            TreeViewProperty PROJECTRATEModuleTreeProperty = new TreeViewProperty() { Id = "RATEDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] RATES";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTRATEDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTRATEModuleTreeProperty));
+            if (LoginCredentials.hasPermission(PermissionResources.ManageRate))
+            {
+                TreeViewProperty PROJECTRATEModuleTreeProperty = new TreeViewProperty() { Id = "RATEDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] RATES";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTRATEDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTRATEModuleTreeProperty));
+            }
 
-            TreeViewProperty PROJECTBASELINEModuleTreeProperty = new TreeViewProperty() { Id = "BASELINECollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] BASELINES";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "BASELINECollectionView", TablesGroup, null, new EntitiesParameter<PROJECT>(entity), PROJECTBASELINEModuleTreeProperty));
+            if(LoginCredentials.hasPermission(PermissionResources.ManageBaseline))
+            {
+                TreeViewProperty PROJECTBASELINEModuleTreeProperty = new TreeViewProperty() { Id = "BASELINECollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] BASELINES";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "BASELINECollectionView", TablesGroup, null, new EntitiesParameter<PROJECT>(entity), PROJECTBASELINEModuleTreeProperty));
+                TreeViewProperty PROJECTLIVEBASELINEModuleTreeProperty = new TreeViewProperty() { Id = "LiveBASELINEView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] LIVE BASELINE";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "BASELINE_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, BASELINE>(entity, null), PROJECTLIVEBASELINEModuleTreeProperty));
+            }
 
-            TreeViewProperty PROJECTLIVEBASELINEModuleTreeProperty = new TreeViewProperty() { Id = "LiveBASELINEView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] LIVE BASELINE";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "BASELINE_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, BASELINE>(entity, null), PROJECTLIVEBASELINEModuleTreeProperty));
+            if(LoginCredentials.hasPermission(PermissionResources.ManageWorkpack))
+            {
+                TreeViewProperty PROJECTWORKPACKModuleTreeProperty = new TreeViewProperty() { Id = "WORKPACKDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] WORKPACKS";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTWORKPACKDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTWORKPACKModuleTreeProperty));
+            }
 
-            TreeViewProperty PROJECTWORKPACKModuleTreeProperty = new TreeViewProperty() { Id = "WORKPACKDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] WORKPACKS";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTWORKPACKDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTWORKPACKModuleTreeProperty));
+            if (LoginCredentials.hasPermission(PermissionResources.ManageProgress))
+            {
+                TreeViewProperty PROJECTALLPROGRESSModuleTreeProperty = new TreeViewProperty() { Id = "PROGRESSDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] ALL PROGRESSES";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTPROGRESSDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTALLPROGRESSModuleTreeProperty));
 
-            TreeViewProperty PROJECTALLPROGRESSModuleTreeProperty = new TreeViewProperty() { Id = "PROGRESSDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] ALL PROGRESSES";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROJECTPROGRESSDetailsCollectionView", TablesGroup, null, entity.GUID, PROJECTALLPROGRESSModuleTreeProperty));
+                TreeViewProperty PROJECTLIVEPROGRESSModuleTreeProperty = new TreeViewProperty() { Id = "LivePROGRESSView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] LIVE PROGRESS";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROGRESS_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, PROGRESS>(entity, null), PROJECTLIVEPROGRESSModuleTreeProperty));
+            }
 
-            TreeViewProperty PROJECTLIVEPROGRESSModuleTreeProperty = new TreeViewProperty() { Id = "LivePROGRESSView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] LIVE PROGRESS";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "PROGRESS_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, PROGRESS>(entity, null), PROJECTLIVEPROGRESSModuleTreeProperty));
+            if (LoginCredentials.hasPermission(PermissionResources.ManageVariation))
+            {
+                TreeViewProperty PROJECTVARIATIONModuleTreeProperty = new TreeViewProperty() { Id = "VARIATIONDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] VARIATIONS";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "VARIATIONCollectionView", TablesGroup, null, entity.GUID, PROJECTVARIATIONModuleTreeProperty));
+            }
 
-            TreeViewProperty PROJECTVARIATIONModuleTreeProperty = new TreeViewProperty() { Id = "VARIATIONDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
-            moduleTitle = "[" + entity.NUMBER + "] VARIATIONS";
-            moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "VARIATIONCollectionView", TablesGroup, null, entity.GUID, PROJECTVARIATIONModuleTreeProperty));
+            if (LoginCredentials.hasPermission(PermissionResources.ManageCommodity))
+            {
+                TreeViewProperty COMMODITYModuleTreeProperty = new TreeViewProperty() { Id = "COMMODITYDetailsCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] COMMODITIES";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "COMMODITYCollectionView", TablesGroup, null, new EntitiesParameter<PROJECT>(entity), COMMODITYModuleTreeProperty));
+            }
+
+            if (LoginCredentials.hasPermission(PermissionResources.ManageEstimation))
+            {
+                TreeViewProperty PROJECTESTIMATIONModuleTreeProperty = new TreeViewProperty() { Id = "ESTIMATIONCollectionView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] ESTIMATIONS";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "ESTIMATIONCollectionView", TablesGroup, null, new EntitiesParameter<PROJECT>(entity), PROJECTESTIMATIONModuleTreeProperty));
+                TreeViewProperty PROJECTLIVEESTIMATIONModuleTreeProperty = new TreeViewProperty() { Id = "LiveESTIMATIONView" + entity.NUMBER, ParentId = PROJECTModuleTreeProperty.Id, Image = TreeViewImage };
+                moduleTitle = "[" + entity.NUMBER + "] LIVE ESTIMATION";
+                moduleDescriptions.Add(BluePrintsEntitiesModuleDescription.Create(moduleTitle, "ESTIMATION_ITEMCollectionView", TablesGroup, null, new OptionalEntitiesParameter<PROJECT, ESTIMATION>(entity, null), PROJECTLIVEESTIMATIONModuleTreeProperty));
+            }
 
             return moduleDescriptions.ToArray();
         }
@@ -355,7 +406,10 @@ namespace BluePrints.Common.ViewModel
         /// </summary>
         public ImageSource TreeViewImage { get; set; }
 
-        public bool IsExpanded { get; set; }
+        /// <summary>
+        /// Describe whether the treelist item is expanded
+        /// </summary>
+        public bool TreeViewIsExpanded { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the ModuleDescription class.
@@ -377,7 +431,7 @@ namespace BluePrints.Common.ViewModel
             TreeViewParentId = treeViewProperty.ParentId;
             TreeViewId = treeViewProperty.Id;
             TreeViewImage = treeViewProperty.Image;
-            IsExpanded = treeViewProperty.IsExpanded;
+            TreeViewIsExpanded = treeViewProperty.IsExpanded;
             this.peekCollectionViewModelFactory = peekCollectionViewModelFactory;
         }
     }

@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,15 +7,14 @@ namespace BluePrints.Data
     using System.Data.Entity.Spatial;
 
     [Table("DEPARTMENT")]
-    [ConstraintAttributes("CODE")]
     public partial class DEPARTMENT
     {
         public DEPARTMENT()
         {
-            BASELINE_ITEMS = new HashSet<BASELINE_ITEM>();
-            DOCTYPES = new HashSet<DOCTYPE>();
-            RATES = new HashSet<RATE>();
-            WORKPACKS = new HashSet<WORKPACK>();
+            BASELINE_ITEM = new HashSet<BASELINE_ITEM>();
+            DOCTYPE = new HashSet<DOCTYPE>();
+            RATE = new HashSet<RATE>();
+            WORKPACK = new HashSet<WORKPACK>();
         }
 
         [Key]
@@ -25,8 +23,6 @@ namespace BluePrints.Data
 
         [Required]
         [StringLength(50)]
-        [FilterNameAttribute]
-        [FilterValueAttribute]
         public string CODE { get; set; }
 
         [Required]
@@ -45,12 +41,12 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEMS { get; set; }
+        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEM { get; set; }
 
-        public virtual ICollection<DOCTYPE> DOCTYPES { get; set; }
+        public virtual ICollection<DOCTYPE> DOCTYPE { get; set; }
 
-        public virtual ICollection<RATE> RATES { get; set; }
+        public virtual ICollection<RATE> RATE { get; set; }
 
-        public virtual ICollection<WORKPACK> WORKPACKS { get; set; }
+        public virtual ICollection<WORKPACK> WORKPACK { get; set; }
     }
 }

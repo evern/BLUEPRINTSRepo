@@ -11,7 +11,7 @@ namespace BluePrints.Data
     {
         public COMMODITY()
         {
-            ESTIMATION_ITEMS = new HashSet<ESTIMATION_ITEM>();
+            ESTIMATION_ITEM = new HashSet<ESTIMATION_ITEM>();
         }
 
         [Key]
@@ -22,7 +22,7 @@ namespace BluePrints.Data
 
         public Guid GUID_PROJECT { get; set; }
 
-        public Guid GUID_ITEM { get; set; }
+        public Guid GUID_COMMODITYCODE { get; set; }
 
         [Column(TypeName = "numeric")]
         public decimal? RATE_SUPPLY { get; set; }
@@ -48,8 +48,10 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
+        public virtual COMMODITY_CODE COMMODITY_CODE { get; set; }
+
         public virtual PROJECT PROJECT { get; set; }
 
-        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEMS { get; set; }
+        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEM { get; set; }
     }
 }

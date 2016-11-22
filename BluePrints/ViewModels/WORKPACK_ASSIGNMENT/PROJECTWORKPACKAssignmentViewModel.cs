@@ -191,7 +191,7 @@ namespace BluePrints.ViewModels
             };
 
             WORKPACK_ASSIGNMENTSViewModel.Save(newWORKPACK_ASSIGNMENT);
-            this.SelectedWORKPACK.WORKPACK.WORKPACK_ASSIGNMENTS.Add(newWORKPACK_ASSIGNMENT);
+            this.SelectedWORKPACK.WORKPACK.WORKPACK_ASSIGNMENT.Add(newWORKPACK_ASSIGNMENT);
             this.SelectedWORKPACK_ASSIGNMENT = newWORKPACK_ASSIGNMENT;
 
             if (this.AssignmentMinValue == 0)
@@ -244,7 +244,7 @@ namespace BluePrints.ViewModels
             if (activeWORKPACK == null)
                 return;
 
-            activeWORKPACK.WORKPACK.WORKPACK_ASSIGNMENTS.Remove(removeWORKPACK_ASSIGNMENT);
+            activeWORKPACK.WORKPACK.WORKPACK_ASSIGNMENT.Remove(removeWORKPACK_ASSIGNMENT);
             WORKPACK_ASSIGNMENTSViewModel.Delete(removeWORKPACK_ASSIGNMENT);
 
             List<WORKPACK_ASSIGNMENT> workpackAssignmentsInOrder = activeWORKPACK.ObservableWORKPACK_ASSIGNMENTS.Where(x => x.LOW_VALUE > removingWORKPACK_ASSIGNMENTLowValue).OrderBy(x => x.PRIORITY).ToList();

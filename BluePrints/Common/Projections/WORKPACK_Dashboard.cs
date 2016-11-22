@@ -37,7 +37,7 @@ namespace BluePrints.Common.Projections
         {
             get
             {
-                return WORKPACK.WORKPACK_ASSIGNMENTS.Where(x => x.ISMODIFIEDBASELINE == IsGetModifiedWORKPACK_ASSIGNMENTS).ToList();
+                return WORKPACK.WORKPACK_ASSIGNMENT.Where(x => x.ISMODIFIEDBASELINE == IsGetModifiedWORKPACK_ASSIGNMENTS).ToList();
             }
         }
 

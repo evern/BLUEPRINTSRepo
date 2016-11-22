@@ -2,15 +2,18 @@
 using BluePrints.Common.DataModel;
 using BluePrints.Common.ViewModel;
 using BluePrints.Data;
+using BluePrints.Data.Attributes;
 using DevExpress.Mvvm.POCO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BluePrints.Common.Projections
 {
+    [ConstraintAttributes("BASELINE_ITEM.GUID_BASELINE, BASELINE_ITEM.INTERNAL_NUM")]
     public class BASELINE_ITEMProjection
     {
         public BASELINE_ITEMProjection()
@@ -18,6 +21,7 @@ namespace BluePrints.Common.Projections
             BASELINE_ITEM = new BASELINE_ITEM();
         }
 
+        [Key]
         public Guid GUID { get; set; }
         public BASELINE_ITEM BASELINE_ITEM { get; set; }
         public RATE RATE { get; set; }

@@ -1,32 +1,28 @@
 namespace BluePrints.Data
 {
+    using BluePrints.Common;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
-    using BluePrints.Common;
-    using Attributes;
-    using System.ComponentModel;
 
     [Table("PROJECT")]
-    [ConstraintAttributes("NUMBER")]
     public partial class PROJECT
     {
         public PROJECT()
         {
-            AREAS = new HashSet<AREA>();
-            BASELINES = new HashSet<BASELINE>();
-            COMMODITIES = new HashSet<COMMODITY>();
-            ESTIMATIONS = new HashSet<ESTIMATION>();
-            PHASES = new HashSet<PHASE>();
-            PROGRESSES = new HashSet<PROGRESS>();
-            REGISTERS = new HashSet<REGISTER>();
-            PROJECT_REPORTS = new HashSet<PROJECT_REPORT>();
-            RATES = new HashSet<RATE>();
-            VARIATIONS = new HashSet<VARIATION>();
-            WORKPACKS = new HashSet<WORKPACK>();
-            CURRENCYCONVERSION = 1;
+            AREA = new HashSet<AREA>();
+            BASELINE = new HashSet<BASELINE>();
+            COMMODITY = new HashSet<COMMODITY>();
+            ESTIMATION = new HashSet<ESTIMATION>();
+            PHASE = new HashSet<PHASE>();
+            PROGRESS = new HashSet<PROGRESS>();
+            REGISTER = new HashSet<REGISTER>();
+            PROJECT_REPORT = new HashSet<PROJECT_REPORT>();
+            RATE = new HashSet<RATE>();
+            VARIATION = new HashSet<VARIATION>();
+            WORKPACK = new HashSet<WORKPACK>();
         }
 
         [Key]
@@ -35,8 +31,6 @@ namespace BluePrints.Data
 
         [Required]
         [StringLength(100)]
-        [FilterNameAttribute]
-        [FilterValueAttribute]
         public string NUMBER { get; set; }
 
         [StringLength(100)]
@@ -55,11 +49,11 @@ namespace BluePrints.Data
 
         public decimal CURRENCYCONVERSION { get; set; }
 
-        public bool USELEGACYWORKPACK { get; set; }
-
         public decimal REVIEWPERCENTAGE { get; set; }
 
         public decimal REVIEWPERIOD { get; set; }
+
+        public bool USELEGACYWORKPACK { get; set; }
 
         public DateTime CREATED { get; set; }
 
@@ -73,26 +67,26 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual ICollection<AREA> AREAS { get; set; }
+        public virtual ICollection<AREA> AREA { get; set; }
 
-        public virtual ICollection<BASELINE> BASELINES { get; set; }
+        public virtual ICollection<BASELINE> BASELINE { get; set; }
 
-        public virtual ICollection<COMMODITY> COMMODITIES { get; set; }
+        public virtual ICollection<COMMODITY> COMMODITY { get; set; }
 
-        public virtual ICollection<ESTIMATION> ESTIMATIONS { get; set; }
+        public virtual ICollection<ESTIMATION> ESTIMATION { get; set; }
 
-        public virtual ICollection<PHASE> PHASES { get; set; }
+        public virtual ICollection<PHASE> PHASE { get; set; }
 
-        public virtual ICollection<PROGRESS> PROGRESSES { get; set; }
+        public virtual ICollection<PROGRESS> PROGRESS { get; set; }
 
-        public virtual ICollection<REGISTER> REGISTERS { get; set; }
+        public virtual ICollection<REGISTER> REGISTER { get; set; }
 
-        public virtual ICollection<PROJECT_REPORT> PROJECT_REPORTS { get; set; }
+        public virtual ICollection<PROJECT_REPORT> PROJECT_REPORT { get; set; }
 
-        public virtual ICollection<RATE> RATES { get; set; }
+        public virtual ICollection<RATE> RATE { get; set; }
 
-        public virtual ICollection<VARIATION> VARIATIONS { get; set; }
+        public virtual ICollection<VARIATION> VARIATION { get; set; }
 
-        public virtual ICollection<WORKPACK> WORKPACKS { get; set; }
+        public virtual ICollection<WORKPACK> WORKPACK { get; set; }
     }
 }

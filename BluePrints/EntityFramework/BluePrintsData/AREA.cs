@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,21 +7,19 @@ namespace BluePrints.Data
     using System.Data.Entity.Spatial;
 
     [Table("AREA")]
-    [ConstraintAttributes("INTERNAL_NUM")]
     public partial class AREA
     {
         public AREA()
         {
-            BASELINE_ITEMS = new HashSet<BASELINE_ITEM>();
-            ESTIMATION_ITEMS = new HashSet<ESTIMATION_ITEM>();
-            WORKPACKS = new HashSet<WORKPACK>();
+            BASELINE_ITEM = new HashSet<BASELINE_ITEM>();
+            ESTIMATION_ITEM = new HashSet<ESTIMATION_ITEM>();
+            WORKPACK = new HashSet<WORKPACK>();
         }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid GUID { get; set; }
 
-        [FilterValueAttribute]
         public Guid GUID_PROJECT { get; set; }
 
         [Required]
@@ -48,13 +45,12 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        [FilterNameAttribute]
         public virtual PROJECT PROJECT { get; set; }
 
-        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEMS { get; set; }
+        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEM { get; set; }
 
-        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEMS { get; set; }
+        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEM { get; set; }
 
-        public virtual ICollection<WORKPACK> WORKPACKS { get; set; }
+        public virtual ICollection<WORKPACK> WORKPACK { get; set; }
     }
 }

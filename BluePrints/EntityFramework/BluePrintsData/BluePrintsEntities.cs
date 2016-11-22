@@ -4,13 +4,9 @@ namespace BluePrints.Data
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
-    using System.Reflection;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using DevExpress.Mvvm;
-    using System.Diagnostics;
+    using System.Reflection;
     using BluePrints.Data.Helpers;
-
     public class EntityFrameworkConfiguration : DbConfiguration
     {
         public EntityFrameworkConfiguration()
@@ -27,47 +23,49 @@ namespace BluePrints.Data
         {
         }
 
-        public virtual DbSet<AREA> AREAS { get; set; }
-        public virtual DbSet<BASELINE> BASELINES { get; set; }
-        public virtual DbSet<BASELINE_ITEM> BASELINE_ITEMS { get; set; }
-        public virtual DbSet<COMMODITY> COMMODITIES { get; set; }
-        public virtual DbSet<COMMODITY_CODE> COMMODITY_CODES { get; set; }
-        public virtual DbSet<DEPARTMENT> DEPARTMENTS { get; set; }
-        public virtual DbSet<DISCIPLINE> DISCIPLINES { get; set; }
-        public virtual DbSet<DOCTYPE> DOCTYPES { get; set; }
-        public virtual DbSet<ESTIMATION> ESTIMATIONS { get; set; }
-        public virtual DbSet<ESTIMATION_ITEM> ESTIMATION_ITEMS { get; set; }
-        public virtual DbSet<PHASE> PHASES { get; set; }
-        public virtual DbSet<PROGRESS> PROGRESSES { get; set; }
-        public virtual DbSet<PROGRESS_ITEM> PROGRESS_ITEMS { get; set; }
-        public virtual DbSet<PROJECT> PROJECTS { get; set; }
-        public virtual DbSet<PROJECT_REPORT> PROJECT_REPORTS { get; set; }
-        public virtual DbSet<RATE> RATES { get; set; }
-        public virtual DbSet<REGISTER> REGISTERS { get; set; }
-        public virtual DbSet<ROLE> ROLES { get; set; }
-        public virtual DbSet<ROLE_PERMISSION> ROLE_PERMISSIONS { get; set; }
-        public virtual DbSet<SETTINGS_GLOBAL> SETTINGS_GLOBALS { get; set; }
-        public virtual DbSet<UOM> UOMS { get; set; }
-        public virtual DbSet<USER> USERS { get; set; }
-        public virtual DbSet<VARIATION> VARIATIONS { get; set; }
-        public virtual DbSet<VARIATION_ITEM> VARIATION_ITEMS { get; set; }
-        public virtual DbSet<WORKPACK> WORKPACKS { get; set; }
-        public virtual DbSet<WORKPACK_ASSIGNMENT> WORKPACK_ASSIGNMENTS { get; set; }
+        public virtual DbSet<AREA> AREA { get; set; }
+        public virtual DbSet<BASELINE> BASELINE { get; set; }
+        public virtual DbSet<BASELINE_ITEM> BASELINE_ITEM { get; set; }
+        public virtual DbSet<COMMODITY> COMMODITY { get; set; }
+        public virtual DbSet<COMMODITY_CODE> COMMODITY_CODE { get; set; }
+        public virtual DbSet<DEPARTMENT> DEPARTMENT { get; set; }
+        public virtual DbSet<DISCIPLINE> DISCIPLINE { get; set; }
+        public virtual DbSet<DOCTYPE> DOCTYPE { get; set; }
+        public virtual DbSet<ESTIMATION> ESTIMATION { get; set; }
+        public virtual DbSet<ESTIMATION_ITEM> ESTIMATION_ITEM { get; set; }
+        public virtual DbSet<PHASE> PHASE { get; set; }
+        public virtual DbSet<PROGRESS> PROGRESS { get; set; }
+        public virtual DbSet<PROGRESS_ITEM> PROGRESS_ITEM { get; set; }
+        public virtual DbSet<PROJECT> PROJECT { get; set; }
+        public virtual DbSet<PROJECT_REPORT> PROJECT_REPORT { get; set; }
+        public virtual DbSet<RATE> RATE { get; set; }
+        public virtual DbSet<REGISTER> REGISTER { get; set; }
+        public virtual DbSet<ROLE> ROLE { get; set; }
+        public virtual DbSet<ROLE_PERMISSION> ROLE_PERMISSION { get; set; }
+        public virtual DbSet<SETTINGS_GLOBAL> SETTINGS_GLOBAL { get; set; }
+        public virtual DbSet<UOM> UOM { get; set; }
+        public virtual DbSet<USER> USER { get; set; }
+        public virtual DbSet<VARIATION> VARIATION { get; set; }
+        public virtual DbSet<VARIATION_ITEM> VARIATION_ITEM { get; set; }
+        public virtual DbSet<WORKPACK> WORKPACK { get; set; }
+        public virtual DbSet<WORKPACK_ASSIGNMENT> WORKPACK_ASSIGNMENT { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Database.SetInitializer<BluePrintsEntities>(null);
+
             modelBuilder.Entity<AREA>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.AREA)
                 .HasForeignKey(e => e.GUID_AREA);
 
             modelBuilder.Entity<AREA>()
-                .HasMany(e => e.ESTIMATION_ITEMS)
+                .HasMany(e => e.ESTIMATION_ITEM)
                 .WithOptional(e => e.AREA)
                 .HasForeignKey(e => e.GUID_AREA);
 
             modelBuilder.Entity<AREA>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.WORKPACK)
                 .WithRequired(e => e.AREA)
                 .HasForeignKey(e => e.GUID_DAREA)
                 .WillCascadeOnDelete(false);
@@ -81,112 +79,124 @@ namespace BluePrints.Data
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<BASELINE>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.BASELINE)
-                .HasForeignKey(e => e.GUID_BASELINE)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<BASELINE>()
-                .HasMany(e => e.VARIATIONS)
-                .WithOptional(e => e.ORIBASELINE)
                 .HasForeignKey(e => e.GUID_BASELINE);
 
             modelBuilder.Entity<BASELINE>()
-                .HasMany(e => e.VARIATIONS1)
+                .HasMany(e => e.VARIATION)
+                .WithOptional(e => e.FROMBASELINE)
+                .HasForeignKey(e => e.GUID_BASELINE);
+
+            modelBuilder.Entity<BASELINE>()
+                .HasMany(e => e.VARIATION1)
                 .WithOptional(e => e.TOBASELINE)
                 .HasForeignKey(e => e.GUID_ORIBASELINE);
 
             modelBuilder.Entity<COMMODITY>()
-                .HasMany(e => e.ESTIMATION_ITEMS)
+                .HasMany(e => e.ESTIMATION_ITEM)
                 .WithRequired(e => e.COMMODITY)
                 .HasForeignKey(e => e.GUID_COMMODITY)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<COMMODITY_CODE>()
+                .HasMany(e => e.COMMODITY)
+                .WithRequired(e => e.COMMODITY_CODE)
+                .HasForeignKey(e => e.GUID_COMMODITYCODE)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<DEPARTMENT>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.DEPARTMENT)
                 .HasForeignKey(e => e.GUID_DEPARTMENT);
 
             modelBuilder.Entity<DEPARTMENT>()
-                .HasMany(e => e.DOCTYPES)
+                .HasMany(e => e.DOCTYPE)
                 .WithRequired(e => e.DEPARTMENT)
                 .HasForeignKey(e => e.GUID_DDEPARTMENT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DEPARTMENT>()
-                .HasMany(e => e.RATES)
+                .HasMany(e => e.RATE)
                 .WithRequired(e => e.DEPARTMENT)
                 .HasForeignKey(e => e.GUID_DEPARTMENT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DEPARTMENT>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.WORKPACK)
                 .WithRequired(e => e.DEPARTMENT)
                 .HasForeignKey(e => e.GUID_DDEPARTMENT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DISCIPLINE>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.DISCIPLINE)
                 .HasForeignKey(e => e.GUID_DISCIPLINE);
 
             modelBuilder.Entity<DISCIPLINE>()
-                .HasMany(e => e.COMMODITY_CODES)
+                .HasMany(e => e.COMMODITY_CODE)
                 .WithRequired(e => e.DISCIPLINE)
                 .HasForeignKey(e => e.GUID_DISCIPLINE)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DISCIPLINE>()
-                .HasMany(e => e.ESTIMATION_ITEMS)
+                .HasMany(e => e.ESTIMATION_ITEM)
                 .WithOptional(e => e.DISCIPLINE)
                 .HasForeignKey(e => e.GUID_DISCIPLINE);
 
             modelBuilder.Entity<DISCIPLINE>()
-                .HasMany(e => e.RATES)
-                .WithRequired(e => e.DISCIPLINE)
-                .HasForeignKey(e => e.GUID_DISCIPLINE)
-                .WillCascadeOnDelete(false);
+                .HasMany(e => e.RATE)
+                .WithOptional(e => e.DISCIPLINE)
+                .HasForeignKey(e => e.GUID_DISCIPLINE);
 
             modelBuilder.Entity<DISCIPLINE>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.WORKPACK)
                 .WithRequired(e => e.DISCIPLINE)
                 .HasForeignKey(e => e.GUID_DDISCIPLINE)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DOCTYPE>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.DOCTYPE)
                 .HasForeignKey(e => e.GUID_DOCTYPE);
 
             modelBuilder.Entity<DOCTYPE>()
-                .HasMany(e => e.ESTIMATION_ITEMS)
-                .WithOptional(e => e.DOCTYPE)
-                .HasForeignKey(e => e.GUID_TYPE);
-
-            modelBuilder.Entity<DOCTYPE>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.WORKPACK)
                 .WithRequired(e => e.DOCTYPE)
                 .HasForeignKey(e => e.GUID_DDOCTYPE)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ESTIMATION>()
-                .HasMany(e => e.ESTIMATION_ITEMS)
+                .Property(e => e.MARGIN)
+                .HasPrecision(9, 2);
+
+            modelBuilder.Entity<ESTIMATION>()
+                .Property(e => e.CONTINGENCY)
+                .HasPrecision(9, 2);
+
+            modelBuilder.Entity<ESTIMATION>()
+                .HasMany(e => e.ESTIMATION_ITEM)
                 .WithRequired(e => e.ESTIMATION)
                 .HasForeignKey(e => e.GUID_ESTIMATION)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PHASE>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.PHASE)
                 .HasForeignKey(e => e.GUID_PHASE);
 
             modelBuilder.Entity<PHASE>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.ESTIMATION_ITEM)
+                .WithOptional(e => e.PHASE)
+                .HasForeignKey(e => e.GUID_PHASE);
+
+            modelBuilder.Entity<PHASE>()
+                .HasMany(e => e.WORKPACK)
                 .WithOptional(e => e.PHASE)
                 .HasForeignKey(e => e.GUID_DPHASE);
 
             modelBuilder.Entity<PROGRESS>()
-                .HasMany(e => e.PROGRESS_ITEMS)
+                .HasMany(e => e.PROGRESS_ITEM)
                 .WithRequired(e => e.PROGRESS)
                 .HasForeignKey(e => e.GUID_PROGRESS)
                 .WillCascadeOnDelete(false);
@@ -208,72 +218,66 @@ namespace BluePrints.Data
                 .HasPrecision(2, 0);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.AREAS)
+                .HasMany(e => e.AREA)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.BASELINE)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.BASELINES)
+                .HasMany(e => e.COMMODITY)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.COMMODITIES)
+                .HasMany(e => e.ESTIMATION)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.ESTIMATIONS)
+                .HasMany(e => e.PHASE)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.PHASES)
+                .HasMany(e => e.PROGRESS)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.PROGRESSES)
-                .WithRequired(e => e.PROJECT)
-                .HasForeignKey(e => e.GUID_PROJECT)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.REGISTERS)
+                .HasMany(e => e.REGISTER)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.PROJECT_REPORTS)
+                .HasMany(e => e.PROJECT_REPORT)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.RATES)
+                .HasMany(e => e.RATE)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.VARIATIONS)
+                .HasMany(e => e.VARIATION)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PROJECT>()
-                .HasMany(e => e.WORKPACKS)
+                .HasMany(e => e.WORKPACK)
                 .WithRequired(e => e.PROJECT)
                 .HasForeignKey(e => e.GUID_PROJECT)
                 .WillCascadeOnDelete(false);
@@ -287,13 +291,13 @@ namespace BluePrints.Data
                 .IsFixedLength();
 
             modelBuilder.Entity<ROLE>()
-                .HasMany(e => e.ROLE_PERMISSIONS)
+                .HasMany(e => e.ROLE_PERMISSION)
                 .WithRequired(e => e.ROLE)
                 .HasForeignKey(e => e.GUID_ROLE)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ROLE>()
-                .HasMany(e => e.USERS)
+                .HasMany(e => e.USER)
                 .WithOptional(e => e.ROLE)
                 .HasForeignKey(e => e.GUID_ROLE);
 
@@ -306,26 +310,24 @@ namespace BluePrints.Data
                 .HasPrecision(2, 0);
 
             modelBuilder.Entity<VARIATION>()
-                .HasMany(e => e.VARIATION_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
+                .WithOptional(e => e.VARIATION)
+                .HasForeignKey(e => e.GUID_VARIATION);
+
+            modelBuilder.Entity<VARIATION>()
+                .HasMany(e => e.VARIATION_ITEM)
                 .WithRequired(e => e.VARIATION)
                 .HasForeignKey(e => e.GUID_VARIATION)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<VARIATION>()
-                .HasMany(e => e.BASELINE_ITEMS)
-                .WithOptional(e => e.VARIATION)
-                .HasForeignKey(e => e.GUID_VARIATION)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<WORKPACK>()
-                .HasMany(e => e.WORKPACK_ASSIGNMENTS)
-                .WithRequired(e => e.WORKPACK)
-                .HasForeignKey(e => e.GUID_WORKPACK)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<WORKPACK>()
-                .HasMany(e => e.BASELINE_ITEMS)
+                .HasMany(e => e.BASELINE_ITEM)
                 .WithOptional(e => e.WORKPACK)
+                .HasForeignKey(e => e.GUID_WORKPACK);
+
+            modelBuilder.Entity<WORKPACK>()
+                .HasMany(e => e.WORKPACK_ASSIGNMENT)
+                .WithRequired(e => e.WORKPACK)
                 .HasForeignKey(e => e.GUID_WORKPACK)
                 .WillCascadeOnDelete(false);
 
@@ -347,7 +349,7 @@ namespace BluePrints.Data
         public override int SaveChanges()
         {
             IEnumerable<System.Data.Entity.Infrastructure.DbEntityEntry> AddedDbEntries = ChangeTracker.Entries().Where(e => e.State == EntityState.Added);
-            if(AddedDbEntries.Count() > 0)
+            if (AddedDbEntries.Count() > 0)
             {
                 Type entityType = AddedDbEntries.First().Entity.GetType();
                 PropertyInfo keyPropertyInfo = DataUtils.GetKeyPropertyInfo(entityType);
@@ -356,9 +358,9 @@ namespace BluePrints.Data
                     keyPropertyInfoDbGenerationAttribute = entityType.GetProperty(keyPropertyInfo.Name).GetCustomAttributes(
                         typeof(DatabaseGeneratedAttribute), true).Cast<DatabaseGeneratedAttribute>().Single();
 
-                if(keyPropertyInfo != null && keyPropertyInfoDbGenerationAttribute != null && keyPropertyInfoDbGenerationAttribute.DatabaseGeneratedOption != DatabaseGeneratedOption.Identity)
+                if (keyPropertyInfo != null && keyPropertyInfoDbGenerationAttribute != null && keyPropertyInfoDbGenerationAttribute.DatabaseGeneratedOption != DatabaseGeneratedOption.Identity)
                 {
-                    foreach(var dbEntry in AddedDbEntries)
+                    foreach (var dbEntry in AddedDbEntries)
                     {
                         var entryKeyMember = dbEntry.Property(keyPropertyInfo.Name);
                         if (entryKeyMember.CurrentValue.GetType() == typeof(Guid))
@@ -373,10 +375,10 @@ namespace BluePrints.Data
                             else
                             {
                                 entryKeyMember.CurrentValue = Guid.NewGuid();
-                                if(entityType.BaseType == typeof(BASELINE_ITEM))
+                                if (entityType.BaseType == typeof(BASELINE_ITEM))
                                 {
                                     PropertyInfo OGPropertyInfo = entityType.GetProperty("GUID_ORIGINAL");
-                                    if(OGPropertyInfo.GetValue(dbEntry.Entity).ToString() == Guid.Empty.ToString())
+                                    if (OGPropertyInfo.GetValue(dbEntry.Entity).ToString() == Guid.Empty.ToString())
                                         OGPropertyInfo.SetValue(dbEntry.Entity, entryKeyMember.CurrentValue);
                                 }
                             }

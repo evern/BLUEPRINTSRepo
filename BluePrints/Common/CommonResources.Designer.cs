@@ -70,6 +70,24 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to p4y57zcvp.
+        /// </summary>
+        internal static string AdminPassword {
+            get {
+                return ResourceManager.GetString("AdminPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to superadmin.
+        /// </summary>
+        internal static string AdminUsername {
+            get {
+                return ResourceManager.GetString("AdminUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please add disciplines before adding commodity code.
         /// </summary>
         internal static string CommodityCode_NoDiscipline {
@@ -129,6 +147,15 @@ namespace BluePrints.Common {
         internal static string Confirmation_SaveParent {
             get {
                 return ResourceManager.GetString("Confirmation_SaveParent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CONSTRUCTION.
+        /// </summary>
+        internal static string DefaultConstructionDepartment {
+            get {
+                return ResourceManager.GetString("DefaultConstructionDepartment", resourceCulture);
             }
         }
         

@@ -332,12 +332,12 @@ namespace BluePrints.Common.ViewModel.Reporting
             IEnumerable<WORKPACK_ASSIGNMENT> FilteredWORKPACK_ASSIGNMENTS;
             if (assignmentLoadType == WorkpackAssignmentLoadType.Modified)
             {
-                FilteredWORKPACK_ASSIGNMENTS = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.WORKPACK_ASSIGNMENTS.Where(assignment => assignment.ISMODIFIEDBASELINE == true);
+                FilteredWORKPACK_ASSIGNMENTS = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.WORKPACK_ASSIGNMENT.Where(assignment => assignment.ISMODIFIEDBASELINE == true);
                 if (FilteredWORKPACK_ASSIGNMENTS.Count() == 0)
-                    FilteredWORKPACK_ASSIGNMENTS = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.WORKPACK_ASSIGNMENTS; //try to get original if modified is empty
+                    FilteredWORKPACK_ASSIGNMENTS = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.WORKPACK_ASSIGNMENT; //try to get original if modified is empty
             }
             else
-                FilteredWORKPACK_ASSIGNMENTS = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.WORKPACK_ASSIGNMENTS.Where(assignment => assignment.ISMODIFIEDBASELINE == false);
+                FilteredWORKPACK_ASSIGNMENTS = reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.WORKPACK.WORKPACK_ASSIGNMENT.Where(assignment => assignment.ISMODIFIEDBASELINE == false);
 
             if (P6PROJECT != null && FilteredWORKPACK_ASSIGNMENTS != null && P6TASKS != null && FilteredWORKPACK_ASSIGNMENTS.Count() != 0 && P6TASKS.Count() != 0)
             {
@@ -427,11 +427,11 @@ namespace BluePrints.Common.ViewModel.Reporting
             foreach (VARIATION VARIATION in this.SummaryObject.VARIATIONS)
             {
                 DateTime? approvedDate = VARIATION.APPROVED;
-                if (VARIATION.GUID_PROJECT == SummaryObject.LivePROGRESS.GUID_PROJECT && approvedDate != null && VARIATION.ORIBASELINE != null && VARIATION.TOBASELINE != null)
+                if (VARIATION.GUID_PROJECT == SummaryObject.LivePROGRESS.GUID_PROJECT && approvedDate != null && VARIATION.TOBASELINE != null && VARIATION.FROMBASELINE != null)
                 {
                     IEnumerable<BASELINE_ITEMProjection> contextBASELINE_ITEMS = this.SummaryObject.ReportableObjects.Select(x => x.BASELINE_ITEMJoinRATE);
 
-                    foreach (VARIATION_ITEM VARIATION_ITEM in VARIATION.VARIATION_ITEMS)
+                    foreach (VARIATION_ITEM VARIATION_ITEM in VARIATION.VARIATION_ITEM)
                     {
                         if (VARIATION_ITEM.ACTION != VariationAction.Add && VARIATION_ITEM.ACTION != VariationAction.Append)
                             continue;
@@ -640,7 +640,7 @@ namespace BluePrints.Common.ViewModel.Reporting
 
             decimal workpackBaseProductivity = 0;
             //not checking for progressItemWorkpack null because all progress item should have workpacks assigned if the user 
-            decimal totalWorkpackBudgetedUnits = (currentWORKPACK == null || currentWORKPACK.BASELINE_ITEMS == null) ? 0 : currentWORKPACK.BASELINE_ITEMS.Sum(pItem => pItem.ESTIMATED_HOURS);
+            decimal totalWorkpackBudgetedUnits = (currentWORKPACK == null || currentWORKPACK.BASELINE_ITEM == null) ? 0 : currentWORKPACK.BASELINE_ITEM.Sum(pItem => pItem.ESTIMATED_HOURS);
             workpackBaseProductivity = ISupportProgressReportingExtensions.CalculatePlannedProductivity(assessmentPeriod, exceptionPeriods, remainingUnitsAfterDataDate);
 
             if (reportableObject.BASELINE_ITEMJoinRATE.BASELINE_ITEM.ESTIMATED_HOURS == 0)
@@ -684,7 +684,7 @@ namespace BluePrints.Common.ViewModel.Reporting
             TimeSpan progressInterval = SummaryObject.IntervalPeriod;
             DateTime loopDate = firstAlignedDataDate;
 
-            IEnumerable<WORKPACK> WORKPACKS = SummaryObject.LiveBASELINE.PROJECT.WORKPACKS;
+            IEnumerable<WORKPACK> WORKPACKS = SummaryObject.LiveBASELINE.PROJECT.WORKPACK;
             IEnumerable<string> qualifiedWorkpack = WORKPACKS == null ? new List<string>() : WORKPACKS.Select(x => x.INTERNAL_NAME1);
             var PrimeroUnitOfWork = PrimeroEntitiesUnitOfWorkSource.GetUnitOfWorkFactory().CreateUnitOfWork();
             var jobTransactions = from JOBTRANS in PrimeroUnitOfWork.JOB_TRANSACTIONS

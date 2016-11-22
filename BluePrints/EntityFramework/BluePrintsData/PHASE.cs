@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,13 +7,13 @@ namespace BluePrints.Data
     using System.Data.Entity.Spatial;
 
     [Table("PHASE")]
-    [ConstraintAttributes("INTERNAL_NUM")] //GUID_PROJECT isn't included because phasees will always be retrieved in the context of a project
     public partial class PHASE
     {
         public PHASE()
         {
-            BASELINE_ITEMS = new HashSet<BASELINE_ITEM>();
-            WORKPACKS = new HashSet<WORKPACK>();
+            BASELINE_ITEM = new HashSet<BASELINE_ITEM>();
+            ESTIMATION_ITEM = new HashSet<ESTIMATION_ITEM>();
+            WORKPACK = new HashSet<WORKPACK>();
         }
 
         [Key]
@@ -46,10 +45,12 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEMS { get; set; }
+        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEM { get; set; }
 
-        public virtual ICollection<WORKPACK> WORKPACKS { get; set; }
+        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEM { get; set; }
 
         public virtual PROJECT PROJECT { get; set; }
+
+        public virtual ICollection<WORKPACK> WORKPACK { get; set; }
     }
 }

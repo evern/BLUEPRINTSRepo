@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,13 +7,12 @@ namespace BluePrints.Data
     using System.Data.Entity.Spatial;
 
     [Table("VARIATION")]
-    [ConstraintAttributes("GUID_PROJECT, NAME")]
     public partial class VARIATION
     {
         public VARIATION()
         {
-            VARIATION_ITEMS = new HashSet<VARIATION_ITEM>();
-            BASELINE_ITEMS = new HashSet<BASELINE_ITEM>();
+            BASELINE_ITEM = new HashSet<BASELINE_ITEM>();
+            VARIATION_ITEM = new HashSet<VARIATION_ITEM>();
         }
 
         [Key]
@@ -54,14 +52,14 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual BASELINE ORIBASELINE { get; set; }
+        public virtual BASELINE FROMBASELINE { get; set; }
 
         public virtual BASELINE TOBASELINE { get; set; }
 
+        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEM { get; set; }
+
         public virtual PROJECT PROJECT { get; set; }
 
-        public virtual ICollection<VARIATION_ITEM> VARIATION_ITEMS { get; set; }
-
-        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEMS { get; set; }
+        public virtual ICollection<VARIATION_ITEM> VARIATION_ITEM { get; set; }
     }
 }

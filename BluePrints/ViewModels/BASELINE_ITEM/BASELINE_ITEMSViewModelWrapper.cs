@@ -290,7 +290,10 @@ namespace BluePrints.ViewModels
                 BASELINE_ITEMProjection newProjection = new BASELINE_ITEMProjection();
                 DataUtils.ShallowCopy(newProjection.BASELINE_ITEM, selectedEntity.BASELINE_ITEM);
                 newProjection.BASELINE_ITEM.GUID = Guid.Empty;
-                newProjection.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadPROJECT, MainViewModel.Entities, newProjection.BASELINE_ITEM.AREA, newProjection.BASELINE_ITEM.DISCIPLINE, newProjection.BASELINE_ITEM.DOCTYPE, newProjection.GUID);
+                AREA selectedAREA = AREACollection.FirstOrDefault(x => x.GUID == newProjection.BASELINE_ITEM.GUID_AREA);
+                DISCIPLINE selectedDISCIPLINE = DISCIPLINECollection.FirstOrDefault(x => x.GUID == newProjection.BASELINE_ITEM.GUID_DISCIPLINE);
+                DOCTYPE selectedDOCTYPE = DOCTYPECollection.FirstOrDefault(x => x.GUID == newProjection.BASELINE_ITEM.GUID_DOCTYPE);
+                newProjection.BASELINE_ITEM.INTERNAL_NUM = BluePrintDataUtils.BASELINEITEM_Generate_InternalNumber(loadPROJECT, MainViewModel.Entities, selectedAREA, selectedDISCIPLINE, selectedDOCTYPE, newProjection.GUID);
                 MainViewModel.EntitiesUndoRedoManager.AddUndo(newProjection, null, null, null, EntityMessageType.Added);
                 MainViewModel.Save(newProjection);
             }
@@ -552,7 +555,8 @@ namespace BluePrints.ViewModels
                 }
             }
 
-
+            //make sure disciplines are all populated
+            PopulateNavigationalProperties();
             baselineReport.AssignProperties(loadPROJECT, loadBASELINE, MainViewModel.Entities);
             DocumentPreviewWindow previewWindow = new DocumentPreviewWindow();
             previewWindow.PreviewControl.DocumentSource = baselineReport;
@@ -561,6 +565,23 @@ namespace BluePrints.ViewModels
             baselineReport.RequestParameters = false;
             baselineReport.CreateDocument(true);
             previewWindow.ShowDialog();
+        }
+
+
+        void PopulateNavigationalProperties()
+        {
+            foreach(BASELINE_ITEMProjection projection in MainViewModel.Entities)
+            {
+                if(projection.BASELINE_ITEM.GUID_DISCIPLINE != null && projection.BASELINE_ITEM.DISCIPLINE == null)
+                {
+                    projection.BASELINE_ITEM.DISCIPLINE = DISCIPLINECollection.FirstOrDefault(x => x.GUID == projection.BASELINE_ITEM.GUID_DISCIPLINE);
+                }
+
+                if(projection.BASELINE_ITEM.GUID_AREA != null && projection.BASELINE_ITEM.AREA == null)
+                {
+                    projection.BASELINE_ITEM.AREA = AREACollection.FirstOrDefault(x => x.GUID == projection.BASELINE_ITEM.GUID_AREA);
+                }
+            }
         }
         #endregion
     }

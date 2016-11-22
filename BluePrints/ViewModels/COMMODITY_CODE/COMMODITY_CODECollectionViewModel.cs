@@ -92,6 +92,7 @@ namespace BluePrints.ViewModels
 
             COMMODITY_CODE newCommodityCode = this.CreateEntity();
             newCommodityCode.CODE = "temp";
+            newCommodityCode.FULLCODE = "temp";
             newCommodityCode.NAME = "new commodity";
             newCommodityCode.GUID_DISCIPLINE = LookUpDISCIPLINES.Entities.First().GUID;
             newCommodityCode.SORTORDER = commodityCodeOrder;
@@ -121,7 +122,7 @@ namespace BluePrints.ViewModels
             List<COMMODITY_CODE> childrenEntities = new List<COMMODITY_CODE>();
             foreach (var entity in entities)
             {
-                var childrenEntitiesInTotal = RecurseFindChildren(entity);
+                var childrenEntitiesInTotal = RecurseFindChildren(entity, this.Entities);
                 List<COMMODITY_CODE> childrenEntitiesNotInDeletionCollection = new List<COMMODITY_CODE>();
                 foreach(var childrenEntityInTotal in childrenEntitiesInTotal)
                 {
@@ -139,19 +140,20 @@ namespace BluePrints.ViewModels
                 if (!uniqueGUID_PARENTS.Any(x => x == childrenEntity.GUID_PARENT))
                     uniqueGUID_PARENTS.Add(childrenEntity.GUID_PARENT);
 
+                EntitiesUndoRedoManager.AddUndo(childrenEntity, null, null, null, EntityMessageType.Deleted);
                 Delete(childrenEntity);
             }
         }
 
-        private IEnumerable<COMMODITY_CODE> RecurseFindChildren(COMMODITY_CODE parentEntity)
+        public static IEnumerable<COMMODITY_CODE> RecurseFindChildren(COMMODITY_CODE parentEntity, IEnumerable<COMMODITY_CODE> entities)
         {
-            foreach(COMMODITY_CODE entity in this.Entities)
+            foreach (COMMODITY_CODE entity in entities)
             {
                 if(entity.GUID_PARENT == parentEntity.GUID)
                 {
                     yield return entity;
 
-                    foreach (COMMODITY_CODE entityChild in RecurseFindChildren(entity))
+                    foreach (COMMODITY_CODE entityChild in RecurseFindChildren(entity, entities))
                         yield return entityChild;
                 }
             }
@@ -177,6 +179,7 @@ namespace BluePrints.ViewModels
         {
             uniqueGUID_PARENTS = new List<Guid>();
             if (e.TargetNode != null)
+            {
                 EntitiesUndoRedoManager.PauseActionId(); //save will unpause this
                 foreach (object obj in e.DraggedRows)
                 {
@@ -188,12 +191,14 @@ namespace BluePrints.ViewModels
                     COMMODITY_CODE targetCommodityCode = (e.TargetNode.Content as COMMODITY_CODE);
                     EntitiesUndoRedoManager.AddUndo(editCommodityCode, BindableBase.GetPropertyName(() => new COMMODITY_CODE().GUID_PARENT), editCommodityCode.GUID_PARENT, targetCommodityCode.GUID, EntityMessageType.Changed);
                 }
+            }
         }
 
         public void dragDropManager_Dropped(object sender, DevExpress.Xpf.Grid.DragDrop.TreeListDroppedEventArgs e)
         {
             Guid newParentGuid = Guid.Empty;
             if (e.TargetNode != null)
+            {
                 foreach (TreeListNode obj in e.DraggedRows)
                 {
                     COMMODITY_CODE droppedCOMMODITY_CODE = obj.Content as COMMODITY_CODE;
@@ -217,8 +222,24 @@ namespace BluePrints.ViewModels
                     newParentGuid = droppedCOMMODITY_CODE.GUID_PARENT;
                 }
 
-            uniqueGUID_PARENTS.Add(newParentGuid);
-            ReorderAndSave(uniqueGUID_PARENTS);
+                uniqueGUID_PARENTS.Add(newParentGuid);
+                ReorderAndSave(uniqueGUID_PARENTS);
+            }
+        }
+
+        public override void TreelistExistingRowAddUndoAndSave(TreeListCellValueChangedEventArgs e)
+        {
+            base.TreelistExistingRowAddUndoAndSave(e);
+            if(e.Column.FieldName == BindableBase.GetPropertyName(() => new COMMODITY_CODE().CODE))
+            {
+                EntitiesUndoRedoManager.RewindActionId(1);
+                EntitiesUndoRedoManager.PauseActionId();
+                COMMODITY_CODE editedCOMMODITY_CODE = (COMMODITY_CODE)e.Row;
+                AddUndoOnFULLCODEChanges(editedCOMMODITY_CODE);
+                RecurseRenameChildrenFULLCODE(editedCOMMODITY_CODE.GUID);
+                IEnumerable<COMMODITY_CODE> childrenCOMMODITY_CODES = RecurseFindChildren(editedCOMMODITY_CODE, this.Entities);
+                BulkSave(childrenCOMMODITY_CODES);
+            }
         }
 
         private IEnumerable<COMMODITY_CODE> ReorderAndSave(Guid guid_parent, bool dontSave = false)
@@ -241,15 +262,38 @@ namespace BluePrints.ViewModels
                 commodityCodeOrderCount += 10;
             }
 
+            RecurseRenameChildrenFULLCODE(guid_parent);
+
             if (!dontSave)
                 this.BulkSave(childCommodityCodes);
 
             return childCommodityCodes;
         }
 
+        private void RecurseRenameChildrenFULLCODE(Guid guid_parent)
+        {
+            IEnumerable<COMMODITY_CODE> childCommodityCodes = this.Entities.Where(x => x.GUID_PARENT == guid_parent).OrderBy(x => x.SORTORDER).ToList();
+            foreach (COMMODITY_CODE childCommodityCode in childCommodityCodes)
+            {
+                if(childCommodityCode.CODE == "temp")
+                    childCommodityCode.FULLCODE = GenerateFullCode(childCommodityCode);
+                else
+                    childCommodityCode.FULLCODE = AddUndoOnFULLCODEChanges(childCommodityCode);
+
+                RecurseRenameChildrenFULLCODE(childCommodityCode.GUID);
+            }
+        }
+
         private string AddUndoOnCODEChanges(COMMODITY_CODE entity, string newValue)
         {
             EntitiesUndoRedoManager.AddUndo(entity, BindableBase.GetPropertyName(() => new COMMODITY_CODE().CODE), entity.CODE, newValue, EntityMessageType.Changed);
+            return newValue;
+        }
+
+        private string AddUndoOnFULLCODEChanges(COMMODITY_CODE entity)
+        {
+            string newValue = GenerateFullCode(entity);
+            EntitiesUndoRedoManager.AddUndo(entity, BindableBase.GetPropertyName(() => new COMMODITY_CODE().FULLCODE), entity.FULLCODE, newValue, EntityMessageType.Changed);
             return newValue;
         }
 
@@ -262,21 +306,7 @@ namespace BluePrints.ViewModels
                 return OrderNum.ToString();
         }
 
-        public void CustomUnboundColumnData(TreeListUnboundColumnDataEventArgs e)
-        {
-            if (e.IsGetData)
-            {
-                if (this.Entities == null)
-                    e.Value = null;
-                else
-                {
-                    COMMODITY_CODE entity = (COMMODITY_CODE)e.Node.Content;
-                    e.Value = GenerateFullCode(entity);
-                }
-            }
-        }
-
-        private string GenerateFullCode(COMMODITY_CODE startChildEntity)
+        public string GenerateFullCode(COMMODITY_CODE startChildEntity)
         {
             string nameString = string.Empty;
 

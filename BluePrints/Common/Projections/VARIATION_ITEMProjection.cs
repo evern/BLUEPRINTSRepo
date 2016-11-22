@@ -17,7 +17,7 @@ namespace BluePrints.Common.Projections
         {
             VARIATION_ITEM = new VARIATION_ITEM();
             BASELINE_ITEMJoinRATE = new BASELINE_ITEMProjection();
-            VARIATION_ITEM.ACTION = VariationAction.Add;
+            VARIATION_ITEM.ACTION = VariationAction.NoAction;
         }
 
         VARIATION_ITEM variation_item { get; set; }

@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,7 +7,6 @@ namespace BluePrints.Data
     using System.Data.Entity.Spatial;
 
     [Table("RATE")]
-    [ConstraintAttributes("GUID_DEPARTMENT, GUID_DISCIPLINE")] //GUID_PROJECT isn't included because rates will always be retrieved in the context of a project
     public partial class RATE
     {
         [Key]
@@ -19,7 +17,7 @@ namespace BluePrints.Data
 
         public Guid GUID_DEPARTMENT { get; set; }
 
-        public Guid GUID_DISCIPLINE { get; set; }
+        public Guid? GUID_DISCIPLINE { get; set; }
 
         [Column("RATE")]
         public decimal? RATE1 { get; set; }

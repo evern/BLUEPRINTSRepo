@@ -1,14 +1,12 @@
 namespace BluePrints.Data
 {
     using BluePrints.Common;
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [ConstraintAttributes("GUID_BASELINE, INTERNAL_NUM")]
     public partial class BASELINE_ITEM
     {
         [Key]
@@ -77,8 +75,6 @@ namespace BluePrints.Data
 
         public virtual BASELINE BASELINE { get; set; }
 
-        public virtual VARIATION VARIATION { get; set; }
-
         public virtual DEPARTMENT DEPARTMENT { get; set; }
 
         public virtual DISCIPLINE DISCIPLINE { get; set; }
@@ -87,14 +83,8 @@ namespace BluePrints.Data
 
         public virtual PHASE PHASE { get; set; }
 
-        public virtual WORKPACK WORKPACK { get; set; }
+        public virtual VARIATION VARIATION { get; set; }
 
-        public decimal TOTAL_HOURS
-        {
-            get
-            {
-                return ESTIMATED_HOURS + DC_HOURS;
-            }
-        }
+        public virtual WORKPACK WORKPACK { get; set; }
     }
 }

@@ -237,7 +237,13 @@ namespace BluePrints.Common.ViewModel.UndoRedo
         {
             if (!_PauseActionId) //sometimes pause can be called multiple times
                 _ActionId += 1;
+
             _PauseActionId = true;
+        }
+
+        public void RewindActionId(int rewindValue)
+        {
+            _ActionId -= rewindValue;
         }
 
         /// <summary>
@@ -246,7 +252,7 @@ namespace BluePrints.Common.ViewModel.UndoRedo
         public void UnpauseActionId()
         {
             _PauseActionId = false;
-        } 
+        }
 
         public bool IsInUndoRedoOperation()
         {

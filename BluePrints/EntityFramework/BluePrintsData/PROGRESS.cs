@@ -12,7 +12,7 @@ namespace BluePrints.Data
     {
         public PROGRESS()
         {
-            PROGRESS_ITEMS = new HashSet<PROGRESS_ITEM>();
+            PROGRESS_ITEM = new HashSet<PROGRESS_ITEM>();
             PROGRESS_START = DateTime.Now;
             DATA_DATE = DateTime.Now;
         }
@@ -55,7 +55,7 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual ICollection<PROGRESS_ITEM> PROGRESS_ITEMS { get; set; }
+        public virtual ICollection<PROGRESS_ITEM> PROGRESS_ITEM { get; set; }
 
         public virtual PROJECT PROJECT { get; set; }
     }

@@ -61,6 +61,15 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow user to manage areas and phases.
+        /// </summary>
+        internal static string ManageAreaAndPhases {
+            get {
+                return ResourceManager.GetString("ManageAreaAndPhases", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow user to manage baselines.
         /// </summary>
         internal static string ManageBaseline {
@@ -133,6 +142,15 @@ namespace BluePrints.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow user to manage rates.
+        /// </summary>
+        internal static string ManageRate {
+            get {
+                return ResourceManager.GetString("ManageRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow user to manage roles.
         /// </summary>
         internal static string ManageRole {
@@ -156,6 +174,15 @@ namespace BluePrints.Common {
         internal static string ManageVariation {
             get {
                 return ResourceManager.GetString("ManageVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow user to manage workpacks.
+        /// </summary>
+        internal static string ManageWorkpack {
+            get {
+                return ResourceManager.GetString("ManageWorkpack", resourceCulture);
             }
         }
         

@@ -92,13 +92,13 @@
         <Setter Property="AllowScrollAnimation" Value="True" />
     </Style>
     <Style x:Key="DefaultGridTemplate" TargetType="{x:Type dxg:GridControl}">
+        <Setter Property="ShowLoadingPanel" Value="{Binding IsLoading}" />
         <Setter Property="ItemsSource" Value="{Binding Entities}" />
         <Setter Property="ClipboardCopyMode" Value="ExcludeHeader" />
         <Setter Property="SelectionMode" Value="Row" />
         <Setter Property="CurrentItem" Value="{Binding SelectedEntity}" />
         <Setter Property="SelectedItems" Value="{Binding SelectedEntities, Mode=TwoWay}" />
         <Setter Property="ShowBorder" Value="False" />
-        <Setter Property="ShowLoadingPanel" Value="{Binding isLoading}" />
         <!--<Setter Property="dxmvvm:Interaction.BehaviorsTemplate">
             <Setter.Value>
                 <DataTemplate>
@@ -265,10 +265,61 @@
                 <dxe:ComboBoxEditSettings IsTextEditable="True" AutoComplete="True" ItemsSource="{dxe:EnumItemsSource EnumType={x:Type common:BaselineStatus}}"/>
             </dxg:GridColumn.EditSettings>
         </dxg:GridColumn>
-        <!--<dxg:GridColumn FieldName="P6BASELINE_NAME" />
-        <dxg:GridColumn FieldName="UNBOUND_ORIGINALBASELINE" Header="ORIGINAL BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_BASELINE_ASSIGN}" EditTemplate="{StaticResource Button_BASELINE_ASSIGN}"/>
-        <dxg:GridColumn FieldName="P6MODBASELINE_NAME" />
-        <dxg:GridColumn FieldName="UNBOUND_MODBASELINE" Header="MODIFIED BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_MODBASELINE_ASSIGN}" EditTemplate="{StaticResource Button_MODBASELINE_ASSIGN}"/>-->
+        <dxg:GridColumn FieldName="P6BASELINE_NAME" >
+            <dxg:GridColumn.EditSettings>
+                <dxg:LookUpEditSettings
+                                        Name="LookUpBASELINE"
+                                        DisplayMember="wbs_short_name"
+                                        ValueMember="wbs_short_name"
+                                        PopupMinWidth="600"
+                                        AutoPopulateColumns="False"
+                                        NullValueButtonPlacement="Popup"
+                                    >
+                    <dxg:LookUpEditSettings.PopupContentTemplate>
+                        <ControlTemplate TargetType="ContentControl" >
+                            <dxg:GridControl x:Name="PART_GridControlP6" ItemsSource="{Binding DataContext.P6PROJECTS, ElementName=userControl}" ShowBorder="False" SelectionMode="Row">
+                                <dxg:GridControl.Columns>
+                                    <dxg:GridColumn Header="Code" FieldName="wbs_short_name" AllowEditing="False" />
+                                    <dxg:GridColumn Header="Name" Width="500" FieldName="wbs_name" AllowEditing="False" />
+                                </dxg:GridControl.Columns>
+                                <dxg:GridControl.View>
+                                    <dxg:TreeListView Name="treeListView1" TreeDerivationMode="Selfreference" KeyFieldName="wbs_id" ParentFieldName="parent_wbs_id"/>
+                                </dxg:GridControl.View>
+                            </dxg:GridControl>
+                        </ControlTemplate>
+                    </dxg:LookUpEditSettings.PopupContentTemplate>
+                </dxg:LookUpEditSettings>
+            </dxg:GridColumn.EditSettings>
+        </dxg:GridColumn>
+        <!--<dxg:GridColumn FieldName="UNBOUND_ORIGINALBASELINE" Header="ORIGINAL BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_BASELINE_ASSIGN}" EditTemplate="{StaticResource Button_BASELINE_ASSIGN}"/>-->
+        <dxg:GridColumn FieldName="P6MODBASELINE_NAME" >
+            <dxg:GridColumn.EditSettings>
+                <dxg:LookUpEditSettings
+                                        Name="LookUpModBASELINE"
+                                        DisplayMember="wbs_short_name"
+                                        ValueMember="wbs_short_name"
+                                        IsTextEditable="False"
+                                        PopupMinWidth="600"
+                                        AutoPopulateColumns="False"
+                                        NullValueButtonPlacement="Popup"
+                                    >
+                    <dxg:LookUpEditSettings.PopupContentTemplate>
+                        <ControlTemplate TargetType="ContentControl" >
+                            <dxg:GridControl x:Name="PART_GridControlModP6" ItemsSource="{Binding DataContext.P6PROJECTS, ElementName=userControl}" ShowBorder="False" SelectionMode="Row">
+                                <dxg:GridControl.Columns>
+                                    <dxg:GridColumn IsSmart="True" Header="Code" FieldName="wbs_short_name" AllowEditing="False" />
+                                    <dxg:GridColumn IsSmart="True" Header="Name" Width="500" FieldName="wbs_name" AllowEditing="False" />
+                                </dxg:GridControl.Columns>
+                                <dxg:GridControl.View>
+                                    <dxg:TreeListView Name="treeListView1" TreeDerivationMode="Selfreference" KeyFieldName="wbs_id" ParentFieldName="parent_wbs_id"/>
+                                </dxg:GridControl.View>
+                            </dxg:GridControl>
+                        </ControlTemplate>
+                    </dxg:LookUpEditSettings.PopupContentTemplate>
+                </dxg:LookUpEditSettings>
+            </dxg:GridColumn.EditSettings>
+        </dxg:GridColumn>
+        <!--<dxg:GridColumn FieldName="UNBOUND_MODBASELINE" Header="MODIFIED BASELINE" UnboundType="Boolean" AllowEditing="False" DisplayTemplate="{StaticResource Button_MODBASELINE_ASSIGN}" EditTemplate="{StaticResource Button_MODBASELINE_ASSIGN}"/>-->
     </collections:ArrayList>
     <collections:ArrayList x:Key="BASELINEITEMColumns">
         <dxg:GridColumn FieldName="BASELINE_ITEM.GUID_WORKPACK" Header="WORKPACK" DataContext="{Binding DataContext, ElementName=userControl}" >

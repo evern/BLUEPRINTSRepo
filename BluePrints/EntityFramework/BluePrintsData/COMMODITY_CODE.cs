@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Helpers;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -9,6 +8,11 @@ namespace BluePrints.Data
 
     public partial class COMMODITY_CODE
     {
+        public COMMODITY_CODE()
+        {
+            COMMODITY = new HashSet<COMMODITY>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid GUID { get; set; }
@@ -34,6 +38,10 @@ namespace BluePrints.Data
         [StringLength(50)]
         public string CODE { get; set; }
 
+        [Required]
+        [StringLength(100)]
+        public string FULLCODE { get; set; }
+
         [StringLength(50)]
         public string UOM { get; set; }
 
@@ -52,6 +60,8 @@ namespace BluePrints.Data
         public DateTime? DELETED { get; set; }
 
         public Guid? DELETEDBY { get; set; }
+
+        public virtual ICollection<COMMODITY> COMMODITY { get; set; }
 
         public virtual DISCIPLINE DISCIPLINE { get; set; }
     }

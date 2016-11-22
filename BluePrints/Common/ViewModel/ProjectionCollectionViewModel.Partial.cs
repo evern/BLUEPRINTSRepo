@@ -259,7 +259,8 @@ namespace BluePrints.Common.ViewModel
         /// <returns>Returns true if no other entity contains similar constraint member values</returns>
         public bool IsValidEntityCellValue(TProjection entity, string fieldName, object newValue, ref string errorMessage)
         {
-            return IsUniqueEntityConstraintValues(entity, ref errorMessage, new KeyValuePair<string,object>(fieldName, newValue));
+            return IsUniqueEntityConstraintValues(entity, ref errorMessage, new KeyValuePair<string, object>(fieldName, newValue));
+            //return IsUniqueEntityConstraintValues(entity, ref errorMessage);
         }
 
         /// <summary>
@@ -289,6 +290,8 @@ namespace BluePrints.Common.ViewModel
                     KeyValuePair<string, object> keyValuePairForNewFieldValue = (KeyValuePair<string, object>)keyValuePairNewFieldValue;
                     if (constraintMemberPropertyString == keyValuePairForNewFieldValue.Key)
                         constraintMemberPropertyValue = keyValuePairForNewFieldValue.Value;
+                    else
+                        constraintMemberPropertyValue = DataUtils.GetNestedValue(constraintMemberPropertyString, entity);
                 }
 
                 if (constraintMemberPropertyValue != null)
@@ -500,7 +503,7 @@ namespace BluePrints.Common.ViewModel
             {
                 e.IsValid = false;
                 e.ErrorType = DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical;
-                e.ErrorContent = errorMessage ;
+                e.ErrorContent = errorMessage;
             }
         }
         #endregion
@@ -567,13 +570,37 @@ namespace BluePrints.Common.ViewModel
         public bool CanBulkColumnEdit(object button)
         {
             var info = GridPopupMenuBase.GetGridMenuInfo((DependencyObject)button) as GridMenuInfo;
-            if (info != null && info.Column.ReadOnly)
+            if (info == null)
                 return false;
 
-            if (SelectedEntities == null)
+            if (info.Column == null)
                 return false;
 
-            return true;
+            if (info.Column.ReadOnly)
+                return false;
+
+            if (SelectedEntities == null || SelectedEntities.Count < 2)
+                return false;
+
+            PropertyInfo columnPropertyInfo = DataUtils.GetNestedPropertyInfo(info.Column.FieldName, SelectedEntity);
+            if((columnPropertyInfo.PropertyType == typeof(Guid) || 
+                columnPropertyInfo.PropertyType == typeof(Guid?) || 
+                columnPropertyInfo.PropertyType.BaseType == typeof(Enum) ||
+                columnPropertyInfo.PropertyType == typeof(decimal) ||
+                columnPropertyInfo.PropertyType == typeof(decimal?) ||
+                columnPropertyInfo.PropertyType == typeof(string)))
+            {
+                IEnumerable<string> constraintString = DataUtils.GetConstraintPropertyStrings(SelectedEntity.GetType());
+                if(constraintString == null)
+                    constraintString = DataUtils.GetConstraintPropertyStrings(SelectedEntity.GetType().BaseType);
+
+                if (constraintString != null && constraintString.Any(x => x == columnPropertyInfo.Name))
+                    return false;
+                else
+                    return true;
+            }
+
+            return false;
         }
 
         public void BulkColumnEdit(object button)
@@ -589,7 +616,7 @@ namespace BluePrints.Common.ViewModel
             try
             {
                 PropertyInfo columnPropertyInfo = DataUtils.GetNestedPropertyInfo(info.Column.FieldName, SelectedEntity);
-                if (columnPropertyInfo.PropertyType == typeof(Guid) || columnPropertyInfo.PropertyType == typeof(Guid?))
+                if (columnPropertyInfo.PropertyType == typeof(Guid) || columnPropertyInfo.PropertyType == typeof(Guid?) || columnPropertyInfo.PropertyType.BaseType == typeof(Enum))
                 {
                     ComboBoxEditSettings copyColumnEditSettings = info.Column.ActualEditSettings as ComboBoxEditSettings;
                     if (copyColumnEditSettings != null)
@@ -598,7 +625,15 @@ namespace BluePrints.Common.ViewModel
                         if (BulkColumnEditDialogService.ShowDialog(MessageButton.OKCancel, "Select Item to assign", "BulkEditEnums", bulkEditEnumsViewModel) == MessageResult.OK)
                         {
                             if (bulkEditEnumsViewModel.SelectedItem != null)
-                                newValue = (Guid)bulkEditEnumsViewModel.SelectedItem.GetType().GetProperty("GUID").GetValue(bulkEditEnumsViewModel.SelectedItem);
+                            {
+                                if (columnPropertyInfo.PropertyType.BaseType == typeof(Enum))
+                                {
+                                    EnumMemberInfo selectedEnum = (EnumMemberInfo)bulkEditEnumsViewModel.SelectedItem;
+                                    newValue = Enum.Parse(columnPropertyInfo.PropertyType, selectedEnum.Id.ToString());
+                                }
+                                else
+                                    newValue = (Guid)bulkEditEnumsViewModel.SelectedItem.GetType().GetProperty("GUID").GetValue(bulkEditEnumsViewModel.SelectedItem);
+                            }
                         }
 
                         bulkEditEnumsViewModel = null;
@@ -766,7 +801,7 @@ namespace BluePrints.Common.ViewModel
             PropertyInfo[] entityProperties = typeof(TEntity).GetProperties();
             DataViewBase gridView = sourceGridControl.View;
 
-            if (gridView.GetType() == typeof(TableView))
+            if (gridView.ActiveEditor == null && gridView.GetType() == typeof(TableView))
             {
                 TableView gridTableView = gridView as TableView;
                 foreach (string Row in RowData)
@@ -922,9 +957,9 @@ namespace BluePrints.Common.ViewModel
                         break;
                     }
                 }
-            }
 
-            e.Handled = true;
+                e.Handled = true;
+            }
         }
         #endregion
 

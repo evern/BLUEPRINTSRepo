@@ -126,7 +126,6 @@
                                                                      DisplayMode="Text"
                                                                      NavigationPaneVisible="True" 
                                                                      NavPaneShowMode="Items"
-                                                                     IsExpanded="True"
                                                                      CollapsedNavPaneItemsStyle="{StaticResource collapsedNavPaneItemsStyle}">
                                             <dxn:NavBarGroup.CollapsedNavPaneItemsTemplate>
                                                 <DataTemplate>
@@ -143,7 +142,7 @@
                                 </DataTemplate>
                             </dxn:NavBarControl.ItemTemplate>
                             <dxn:NavBarControl.View>
-                                <dxn:NavigationPaneView IsExpanded="True"/>
+                                <dxn:NavigationPaneView />
                             </dxn:NavBarControl.View>
                         </dxn:NavBarControl>
                     </dxdo:LayoutPanel>

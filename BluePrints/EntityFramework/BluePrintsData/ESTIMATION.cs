@@ -1,5 +1,6 @@
 namespace BluePrints.Data
 {
+    using BluePrints.Common;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ namespace BluePrints.Data
     {
         public ESTIMATION()
         {
-            ESTIMATION_ITEMS = new HashSet<ESTIMATION_ITEM>();
+            ESTIMATION_ITEM = new HashSet<ESTIMATION_ITEM>();
         }
 
         [Key]
@@ -31,7 +32,11 @@ namespace BluePrints.Data
         [StringLength(100)]
         public string COMMENTS { get; set; }
 
-        public int STATUS { get; set; }
+        public EstimationStatus STATUS { get; set; }
+
+        public decimal MARGIN { get; set; }
+
+        public decimal CONTINGENCY { get; set; }
 
         [StringLength(20)]
         public string P6ESTIMATION_NAME { get; set; }
@@ -51,7 +56,7 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEMS { get; set; }
+        public virtual ICollection<ESTIMATION_ITEM> ESTIMATION_ITEM { get; set; }
 
         public virtual PROJECT PROJECT { get; set; }
     }

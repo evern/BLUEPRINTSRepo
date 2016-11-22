@@ -32,48 +32,39 @@ namespace BluePrints.Common.ViewModel
         {
             if (MainViewModel != null)
                 return;
-
-            mainThreadDispatcher.BeginInvoke(new Action(() => loadEntitiesCollectionOnMainThread()));
+            else if (isAllEntitiesLoaded())
+                mainThreadDispatcher.BeginInvoke(new Action(() => OnAllEntitiesCollectionLoaded()));
+            else
+                mainThreadDispatcher.BeginInvoke(new Action(() => loadEntitiesCollectionOnMainThread()));
         }
 
-        public bool dispatcherSent;
         /// <summary>
         /// Begins loading the collection of entities loader
         /// </summary>
         void loadEntitiesCollectionOnMainThread()
         {
-            if (isAllEntitiesLoaded())
-            {
-                if (!dispatcherSent)
-                {
-                    dispatcherSent = true;
-                    mainThreadDispatcher.BeginInvoke(new Action(() => OnAllEntitiesCollectionLoaded()));
-                }
-
+            IEnumerable<IEntitiesLoaderDescription> entitiesLoader = loaderCollection.Where(x => !x.isLoaded);
+            if (entitiesLoader == null)
                 return;
-            }
 
-            int currentLoadOrder = loaderCollection.Where(x => !x.isLoaded).Min(x => x.loadOrder);
-            IEnumerable<IEntitiesLoaderDescription> entitiesLoaderDescriptions = loaderCollection.Where(x => x.loadOrder == currentLoadOrder);
+            int currentLoadOrder = entitiesLoader.Min(x => x.loadOrder);
+            IEntitiesLoaderDescription entitiesLoaderDescription = loaderCollection.First(x => x.loadOrder == currentLoadOrder);
 
-            foreach(IEntitiesLoaderDescription entitiesLoaderDescription in entitiesLoaderDescriptions)
+            if (entitiesLoaderDescription.dependencyType != null)
             {
-                if (entitiesLoaderDescription.dependencyType != null)
+                if (loaderCollection.IsEntitiesLoaderExists(entitiesLoaderDescription.dependencyType))
                 {
-                    if (loaderCollection.IsEntitiesLoaderExists(entitiesLoaderDescription.dependencyType))
-                    {
-                        IEntitiesLoaderDescription dependentEntitiesLoaderDescription = loaderCollection.GetLoader(entitiesLoaderDescription.dependencyType);
-                        if (!dependentEntitiesLoaderDescription.isLoaded)
-                            throw new InvalidOperationException("Dependent entities loader is sequenced after the current entities loader.");
-                        else
-                            entitiesLoaderDescription.CreateCollectionViewModel();
-                    }
+                    IEntitiesLoaderDescription dependentEntitiesLoaderDescription = loaderCollection.GetLoader(entitiesLoaderDescription.dependencyType);
+                    if (!dependentEntitiesLoaderDescription.isLoaded)
+                        throw new InvalidOperationException("Dependent entities loader is sequenced after the current entities loader.");
                     else
-                        throw new InvalidOperationException("Dependent entities loader not added.");
+                        entitiesLoaderDescription.CreateCollectionViewModel();
                 }
                 else
-                    entitiesLoaderDescription.CreateCollectionViewModel();
+                    throw new InvalidOperationException("Dependent entities loader not added.");
             }
+            else
+                entitiesLoaderDescription.CreateCollectionViewModel();
         }
 
         bool isAllEntitiesLoaded()

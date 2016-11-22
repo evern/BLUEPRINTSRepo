@@ -189,4 +189,13 @@
   <data name="Notify_AddBASELINE_ITEMBeforeVARIATION_UNITS" xml:space="preserve">
     <value>Please add this record first before adjusting it's units</value>
   </data>
+  <data name="AdminPassword" xml:space="preserve">
+    <value>p4y57zcvp</value>
+  </data>
+  <data name="AdminUsername" xml:space="preserve">
+    <value>superadmin</value>
+  </data>
+  <data name="DefaultConstructionDepartment" xml:space="preserve">
+    <value>CONSTRUCTION</value>
+  </data>
 </root>

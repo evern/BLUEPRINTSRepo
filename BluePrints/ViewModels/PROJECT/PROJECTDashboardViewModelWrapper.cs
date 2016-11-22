@@ -65,12 +65,12 @@ namespace BluePrints.ViewModels
 
         Func<IRepositoryQuery<BASELINE>, IQueryable<BASELINE>> BASELINEProjectionFunc()
         {
-            return query => query.Where(x => x.STATUS == BaselineStatus.Live).Include(x => x.BASELINE_ITEMS);
+            return query => query.Where(x => x.STATUS == BaselineStatus.Live).Include(x => x.BASELINE_ITEM);
         }
 
         Func<IRepositoryQuery<PROGRESS>, IQueryable<PROGRESS>> PROGRESSProjectionFunc()
         {
-            return query => query.Where(x => x.STATUS == ProgressStatus.Live).Include(x => x.PROGRESS_ITEMS);
+            return query => query.Where(x => x.STATUS == ProgressStatus.Live).Include(x => x.PROGRESS_ITEM);
         }
 
         Func<IRepositoryQuery<VARIATION>, IQueryable<VARIATION>> VARIATIONProjectionFunc()

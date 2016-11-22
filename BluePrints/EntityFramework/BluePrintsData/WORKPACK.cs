@@ -1,6 +1,5 @@
 namespace BluePrints.Data
 {
-    using BluePrints.Data.Attributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,13 +7,12 @@ namespace BluePrints.Data
     using System.Data.Entity.Spatial;
 
     [Table("WORKPACK")]
-    [ConstraintAttributes("GUID_PROJECT, INTERNAL_NAME1, INTERNAL_NAME2")]
     public partial class WORKPACK
     {
         public WORKPACK()
         {
-            WORKPACK_ASSIGNMENTS = new HashSet<WORKPACK_ASSIGNMENT>();
-            BASELINE_ITEMS = new HashSet<BASELINE_ITEM>();
+            BASELINE_ITEM = new HashSet<BASELINE_ITEM>();
+            WORKPACK_ASSIGNMENT = new HashSet<WORKPACK_ASSIGNMENT>();
             STARTDATE = DateTime.Now;
             ENDDATE = DateTime.Now;
             REVIEWSTARTDATE = DateTime.Now;
@@ -26,7 +24,6 @@ namespace BluePrints.Data
         public Guid GUID { get; set; }
 
         [Required]
-        [FilterValueAttribute]
         public Guid GUID_PROJECT { get; set; }
 
         public Guid? GUID_DPHASE { get; set; }
@@ -76,9 +73,9 @@ namespace BluePrints.Data
 
         public Guid? DELETEDBY { get; set; }
 
-        public virtual PHASE PHASE { get; set; }
-
         public virtual AREA AREA { get; set; }
+
+        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEM { get; set; }
 
         public virtual DEPARTMENT DEPARTMENT { get; set; }
 
@@ -86,11 +83,10 @@ namespace BluePrints.Data
 
         public virtual DOCTYPE DOCTYPE { get; set; }
 
-        [FilterNameAttribute]
+        public virtual PHASE PHASE { get; set; }
+
         public virtual PROJECT PROJECT { get; set; }
 
-        public virtual ICollection<WORKPACK_ASSIGNMENT> WORKPACK_ASSIGNMENTS { get; set; }
-
-        public virtual ICollection<BASELINE_ITEM> BASELINE_ITEMS { get; set; }
+        public virtual ICollection<WORKPACK_ASSIGNMENT> WORKPACK_ASSIGNMENT { get; set; }
     }
 }

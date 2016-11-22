@@ -47,28 +47,10 @@
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand Event="{x:Static Binding.SourceUpdatedEvent}" Command="{Binding UpdateCommand}" />
                     </dxmvvm:Interaction.Behaviors>
-                    <dxlc:DataLayoutItem Label="GUID" Name="layoutItemGUID" Binding="{Binding GUID, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding DataContext.IsPrimaryKeyReadOnly, RelativeSource={RelativeSource AncestorType={x:Type dxlc:DataLayoutControl}}}" />
-                    <dxlc:DataLayoutItem Label="GUID_PARENT" Name="layoutItemGUID_PARENT" Binding="{Binding GUID_PARENT, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="GUID_ITEM" Name="layoutItemGUID_ITEM" Binding="{Binding GUID_ITEM, UpdateSourceTrigger=PropertyChanged}" />
+                    <dxlc:DataLayoutItem Label="ITEM_DESC" Name="layoutItemITEM_DESC" Binding="{Binding ITEM_DESC, UpdateSourceTrigger=PropertyChanged}" />
                     <dxlc:DataLayoutItem Label="RATE_SUPPLY" Name="layoutItemRATE_SUPPLY" Binding="{Binding RATE_SUPPLY, UpdateSourceTrigger=PropertyChanged}" />
                     <dxlc:DataLayoutItem Label="HOURS_INSTALL" Name="layoutItemHOURS_INSTALL" Binding="{Binding HOURS_INSTALL, UpdateSourceTrigger=PropertyChanged}" />
                     <dxlc:DataLayoutItem Label="RATE_FREIGHT" Name="layoutItemRATE_FREIGHT" Binding="{Binding RATE_FREIGHT, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="ITEM_DESC" Name="layoutItemITEM_DESC" Binding="{Binding ITEM_DESC, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="CREATED" Name="layoutItemCREATED" Binding="{Binding CREATED, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="CREATEDBY" Name="layoutItemCREATEDBY" Binding="{Binding CREATEDBY, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="UPDATED" Name="layoutItemUPDATED" Binding="{Binding UPDATED, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="UPDATEDBY" Name="layoutItemUPDATEDBY" Binding="{Binding UPDATEDBY, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="DELETED" Name="layoutItemDELETED" Binding="{Binding DELETED, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:DataLayoutItem Label="DELETEDBY" Name="layoutItemDELETEDBY" Binding="{Binding DELETEDBY, UpdateSourceTrigger=PropertyChanged}" />
-                    <dxlc:LayoutItem Label="PROJECT" Name="layoutItemPROJECT">
-                        <dxg:LookUpEdit ItemsSource="{Binding LookUpPROJECTS.Entities}" EditValue="{Binding Entity.GUID_PROJECT, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnSourceUpdated=True}" ValueMember="GUID" DisplayMember="NAME" IsTextEditable="False" AllowUpdateTwoWayBoundPropertiesOnSynchronization="False">
-                            <dxg:LookUpEdit.PopupContentTemplate>
-                                <ControlTemplate TargetType="ContentControl">
-                                    <dxg:GridControl x:Name="PART_GridControl" ShowBorder="False" ShowLoadingPanel="{Binding LookUpPROJECTS.IsLoading}" />
-                                </ControlTemplate>
-                            </dxg:LookUpEdit.PopupContentTemplate>
-                        </dxg:LookUpEdit>
-                    </dxlc:LayoutItem>
                     <dxlc:LayoutGroup x:Name="Tabs" View="Tabs" MinHeight="250">
                         <Grid dxb:MergingProperties.AllowMerging="False" x:Name="COMMODITYESTIMATION_ITEMSDetailsPanel" dxb:BarNameScope.IsScopeOwner="True" DataContext="{Binding COMMODITYESTIMATION_ITEMSDetails}" dxlc:LayoutControl.TabHeader="ESTIMATION_ITEMS">
                             <Grid.RowDefinitions>
