@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -1100,13 +1100,13 @@
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\BulkEdit\BulkEditEnums.xaml.cs">
+    <Compile Include="Common\View\BulkEditEnums.xaml.cs">
       <DependentUpon>BulkEditEnums.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\BulkEdit\BulkEditNumbers.xaml.cs">
+    <Compile Include="Common\View\BulkEditNumbers.xaml.cs">
       <DependentUpon>BulkEditNumbers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\BulkEdit\BulkEditStrings.xaml.cs">
+    <Compile Include="Common\View\BulkEditStrings.xaml.cs">
       <DependentUpon>BulkEditStrings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\COMMODITY\AddCOMMODITYView.xaml.cs">
@@ -1163,23 +1163,14 @@
     <Compile Include="Views\BASELINE_ITEM\BASELINE_ITEMCollectionView.xaml.cs">
       <DependentUpon>BASELINE_ITEMCollectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\BASELINE_ITEM\BASELINE_ITEMView.xaml.cs">
-      <DependentUpon>BASELINE_ITEMView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\BluePrintsEntitiesView.xaml.cs">
       <DependentUpon>BluePrintsEntitiesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\COMMODITY\COMMODITYCollectionView.xaml.cs">
       <DependentUpon>COMMODITYCollectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\COMMODITY\COMMODITYView.xaml.cs">
-      <DependentUpon>COMMODITYView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\COMMODITY_CODE\COMMODITY_CODECollectionView.xaml.cs">
       <DependentUpon>COMMODITY_CODECollectionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\COMMODITY_CODE\COMMODITY_CODEView.xaml.cs">
-      <DependentUpon>COMMODITY_CODEView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CustomFilterView.xaml.cs">
       <DependentUpon>CustomFilterView.xaml</DependentUpon>
@@ -1228,9 +1219,6 @@
     </Compile>
     <Compile Include="Views\PROGRESS_ITEM\PROGRESS_ITEMCollectionView.xaml.cs">
       <DependentUpon>PROGRESS_ITEMCollectionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PROGRESS_ITEM\PROGRESS_ITEMView.xaml.cs">
-      <DependentUpon>PROGRESS_ITEMView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PROJECT\PROJECTCollectionView.xaml.cs">
       <DependentUpon>PROJECTCollectionView.xaml</DependentUpon>
@@ -1307,12 +1295,6 @@
     <Compile Include="Views\WORKPACK\WORKPACKView.xaml.cs">
       <DependentUpon>WORKPACKView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTCollectionView.xaml.cs">
-      <DependentUpon>WORKPACK_ASSIGNMENTCollectionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTView.xaml.cs">
-      <DependentUpon>WORKPACK_ASSIGNMENTView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="XRDesignRibbonControllerResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1338,15 +1320,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\BulkEdit\BulkEditEnums.xaml">
+    <Page Include="Common\View\BulkEditEnums.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\BulkEdit\BulkEditNumbers.xaml">
+    <Page Include="Common\View\BulkEditNumbers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\BulkEdit\BulkEditStrings.xaml">
+    <Page Include="Common\View\BulkEditStrings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1406,10 +1388,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\BASELINE_ITEM\BASELINE_ITEMView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\BluePrintsEntitiesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1422,15 +1400,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\COMMODITY\COMMODITYView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\COMMODITY_CODE\COMMODITY_CODECollectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\COMMODITY_CODE\COMMODITY_CODEView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1495,10 +1465,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PROGRESS_ITEM\PROGRESS_ITEMCollectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PROGRESS_ITEM\PROGRESS_ITEMView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1602,14 +1568,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTCollectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\WORKPACK_ASSIGNMENT\WORKPACK_ASSIGNMENTView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -1698,9 +1656,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\BASELINE_MAPPING\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Common\Images\PRIMERO.jpg" />
   </ItemGroup>

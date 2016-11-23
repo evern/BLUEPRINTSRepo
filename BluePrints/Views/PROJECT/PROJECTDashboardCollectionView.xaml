@@ -29,9 +29,9 @@
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding OnLoadedCommand}" />
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
-    <Grid>
+    <Grid DataContext="{Binding MainViewModel}">
         <DockPanel>
-            <dxr:RibbonControl RibbonStyle="Office2010" DataContext="{Binding MainViewModel}" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="PROJECT Tasks">
@@ -45,7 +45,7 @@
             </dxr:RibbonControl>
             <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
                 <dxr:RibbonStatusBarControl.LeftItems>
-                    <dxb:BarStaticItem Content="{Binding PROJECTDashboardCollection.Entities.Count, Converter={dxmvvm:FormatStringConverter FormatString='RECORDS: {0}'}}" />
+                    <dxb:BarStaticItem Content="{Binding Entities.Count, Converter={dxmvvm:FormatStringConverter FormatString='RECORDS: {0}'}}" />
                 </dxr:RibbonStatusBarControl.LeftItems>
             </dxr:RibbonStatusBarControl>
             <dxlc:LayoutControl Orientation="Vertical">
@@ -56,9 +56,9 @@
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:LayoutSerializationService />
                     </dxmvvm:Interaction.Behaviors>
-                    <dxg:GridControl Name="gridControl" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                    <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="PROJECT_DashboardGrid" Style="{StaticResource WrapperGridTemplate}">
                         <dxmvvm:Interaction.Behaviors>
-                            <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding EditCommand}" EventName="MouseDoubleClick" MarkRoutedEventsAsHandled="True">
+                            <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding DataContext.EditCommand, ElementName=userControl}" EventName="MouseDoubleClick" MarkRoutedEventsAsHandled="True">
                                 <dxmvvm:EventToCommand.EventArgsConverter>
                                     <dx:EventArgsToDataRowConverter />
                                 </dxmvvm:EventToCommand.EventArgsConverter>

@@ -7,6 +7,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -151,6 +152,25 @@ namespace BluePrints.Common.ViewModel
             get
             {
                 throw new NotImplementedException("Override this method to specify the view name.");
+            }
+        }
+
+        public virtual void OnLoaded()
+        {
+            PersistentLayoutHelper.TryDeserializeLayout(LayoutSerializationService, ViewName);
+        }
+
+        public bool IsLoading
+        {
+            get
+            {
+                if (this.IsInDesignMode())
+                    return true;
+                if (MainViewModel == null)
+                    return true;
+
+                //assuming RaisePropertyChanged will be always be called upon on MainViewModel entities loaded
+                return false;
             }
         }
 

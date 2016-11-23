@@ -35,9 +35,9 @@
             </dx:DialogService.DialogStyle>
         </dx:DialogService>
     </dxmvvm:Interaction.Behaviors>
-    <Grid>
+    <Grid DataContext="{Binding MainViewModel}" >
         <DockPanel>
-            <dxr:RibbonControl DataContext="{Binding MainViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="BASELINE Tasks">
@@ -59,7 +59,7 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="BASELINESGrid" Style="{StaticResource WrapperGridTemplate}">
                     <dxg:GridControl.Columns>
                         <dxg:GridColumn FieldName="NAME" />
                         <dxg:GridColumn FieldName="REVISION" />

@@ -27,9 +27,9 @@
         <!--<dxmvvm:EventToCommand Event="Unloaded" Command="{Binding OnUnloadedCommand}" />-->
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
-    <Grid>
+    <Grid DataContext="{Binding MainViewModel}" >
         <DockPanel>
-            <dxr:RibbonControl DataContext="{Binding MainViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="PROGRESS ITEM Tasks" >
@@ -69,7 +69,7 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="PROGRESSPROGRESS_ITEMSDetailsGrid" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="PROGRESS_ITEMSGrid" Style="{StaticResource WrapperGridTemplate}">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand Command="{Binding DataContext.CustomSummaryCommand, ElementName=userControl}" PassEventArgsToCommand="True" EventName="CustomSummary" />
                     </dxmvvm:Interaction.Behaviors>

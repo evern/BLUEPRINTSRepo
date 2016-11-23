@@ -25,6 +25,7 @@
     <dxmvvm:Interaction.Behaviors>
         <dx:DXMessageBoxService />
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding OnLoadedCommand}" />
+        <dxmvvm:EventToCommand Event="Unloaded" Command="{Binding OnUnloadedCommand}" />
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
@@ -52,7 +53,7 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:TreeListControl Name="treeListControl" Style="{StaticResource DefaultTreeTemplate}" >
+                <dxg:TreeListControl Name="treeListControl" Style="{StaticResource WrapperTreeTemplate}" >
                     <dxmvvm:Interaction.Behaviors>
                         <dxg:TreeListDragDropManager x:Name="dragDropManager" Dropped="dragDropManager_Dropped" Drop="dragDropManager_Drop" />
                     </dxmvvm:Interaction.Behaviors>

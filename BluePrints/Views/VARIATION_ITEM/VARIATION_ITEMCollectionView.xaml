@@ -27,9 +27,9 @@
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding OnLoadedCommand}" />
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
-    <Grid>
+    <Grid DataContext="{Binding MainViewModel}" >
         <DockPanel>
-            <dxr:RibbonControl DataContext="{Binding MainViewModel}" RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="VARIATION ITEM Tasks" >
@@ -50,7 +50,7 @@
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:LayoutSerializationService />
                 </dxmvvm:Interaction.Behaviors>
-                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="VARIATIONVARIATION_ITEMSDetailsGrid" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}" >
+                <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="VARIATION_ITEMSGrid" Style="{StaticResource WrapperGridTemplate}" >
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:KeyToCommand KeyGesture="CTRL+Z" Command="{Binding DataContext.UndoCommand, ElementName=userControl}" />
                         <dxmvvm:KeyToCommand KeyGesture="CTRL+Y" Command="{Binding DataContext.RedoCommand, ElementName=userControl}" />

@@ -29,9 +29,9 @@
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding OnLoadedCommand}" />
         <dx:WindowedDocumentUIService YieldToParent="True" />
     </dxmvvm:Interaction.Behaviors>
-    <Grid>
+    <Grid DataContext="{Binding MainViewModel}" >
         <DockPanel>
-            <dxr:RibbonControl RibbonStyle="Office2010" DataContext="{Binding MainViewModel}" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
+            <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" AllowCustomization="False" MDIMergeStyle="Always">
                 <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                     <dxr:RibbonPage Caption="Home">
                         <dxr:RibbonPageGroup Caption="PROJECT Tasks">
@@ -55,7 +55,7 @@
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:LayoutSerializationService />
                     </dxmvvm:Interaction.Behaviors>
-                    <dxg:GridControl Name="gridControl" DataContext="{Binding MainViewModel}" Style="{StaticResource DefaultGridTemplate}">
+                    <dxg:GridControl Name="gridControl" dx:DXSerializer.SerializationID="WORKPACKDashboardGrid" Style="{StaticResource WrapperGridTemplate}">
                         <dxg:GridControl.Bands>
                             <dxg:GridControlBand Name="bandGeneral" Header="General">
                                 <dxg:GridColumn FieldName="WORKPACK.GUID_DPHASE" Header="PHASE"  >
